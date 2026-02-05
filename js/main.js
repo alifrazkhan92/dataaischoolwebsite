@@ -5,6 +5,61 @@
 (function () {
   "use strict";
 
+  const THEME_KEY = "data-ai-school-theme";
+  const THEMES = ["dark", "light", "system"];
+
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem(THEME_KEY) || "dark";
+    } catch (e) {
+      return "dark";
+    }
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (e) {}
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const btn = document.querySelector(".theme-toggle");
+    if (btn) {
+      btn.setAttribute("aria-label", "Theme: " + theme);
+      btn.querySelector(".theme-toggle-label").textContent =
+        theme.charAt(0).toUpperCase() + theme.slice(1);
+    }
+  }
+
+  function nextTheme(current) {
+    const i = THEMES.indexOf(current);
+    return THEMES[(i + 1) % THEMES.length];
+  }
+
+  function initTheme() {
+    let theme = getStoredTheme();
+    if (!THEMES.includes(theme)) theme = "dark";
+    applyTheme(theme);
+    const btn = document.querySelector(".theme-toggle");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        const next = nextTheme(getStoredTheme());
+        setStoredTheme(next);
+        applyTheme(next);
+      });
+    }
+    window.addEventListener("storage", function (e) {
+      if (e.key === THEME_KEY && e.newValue) applyTheme(e.newValue);
+    });
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    mq.addEventListener("change", function () {
+      if (getStoredTheme() === "system") applyTheme("system");
+    });
+  }
+
+  initTheme();
+
   // Mobile nav toggle
   const menuToggle = document.querySelector(".menu-toggle");
   const navMain = document.querySelector(".nav-main");
