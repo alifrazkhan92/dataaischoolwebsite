@@ -160,6 +160,104 @@ main {
   flex-wrap: wrap;
   position: relative;
 }
+.hero-image {
+  position: relative;
+  margin-top: 2rem;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Image sections */
+.image-section {
+  margin-bottom: 3rem;
+}
+.image-section img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  object-fit: cover;
+}
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.image-grid img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+.image-grid img:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.img-with-caption {
+  margin-bottom: 2rem;
+}
+.img-with-caption img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+.img-with-caption .caption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.banner-image {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.banner-image img {
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+.two-col-image {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.two-col-image img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  object-fit: cover;
+}
+@media (max-width: 768px) {
+  .two-col-image {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* Buttons */
 .btn {
