@@ -10,9 +10,9 @@
 
   function getStoredTheme() {
     try {
-      return localStorage.getItem(THEME_KEY) || "dark";
+      return localStorage.getItem(THEME_KEY) || "light";
     } catch (e) {
-      return "dark";
+      return "light";
     }
   }
 
@@ -39,7 +39,7 @@
 
   function initTheme() {
     let theme = getStoredTheme();
-    if (!THEMES.includes(theme)) theme = "dark";
+    if (!THEMES.includes(theme)) theme = "light";
     applyTheme(theme);
     const btn = document.querySelector(".theme-toggle");
     if (btn) {

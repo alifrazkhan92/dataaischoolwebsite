@@ -1,69 +1,77 @@
 /* The Data and AI School of London - Main Styles */
-/* Dark theme (default) */
-:root,
-html[data-theme="dark"] {
-  --bg-dark: #0d1117;
-  --bg-card: #161b22;
-  --bg-elevated: #21262d;
-  --text-primary: #e6edf3;
-  --text-muted: #8b949e;
-  --accent: #00d4aa;
-  --accent-hover: #00f5c4;
-  --accent-muted: rgba(0, 212, 170, 0.15);
-  --border: #30363d;
-  --header-bg: rgba(13, 17, 23, 0.9);
+/* Shared tokens */
+:root {
   --font-sans: "DM Sans", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
   --radius: 12px;
   --radius-lg: 20px;
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --transition: 0.2s ease;
 }
 
-/* Light theme */
+/* Light: white & royal blue (default) */
+:root,
 html[data-theme="light"] {
-  --bg-dark: #f6f8fa;
+  --bg-dark: #f8fafc;
   --bg-card: #ffffff;
-  --bg-elevated: #eaeef2;
-  --text-primary: #1f2328;
-  --text-muted: #656d76;
-  --accent: #098c6a;
-  --accent-hover: #057a5c;
-  --accent-muted: rgba(9, 140, 106, 0.12);
-  --border: #d0d7de;
-  --header-bg: rgba(246, 248, 250, 0.9);
-  --shadow: 0 8px 32px rgba(31, 35, 40, 0.12);
+  --bg-elevated: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --accent: #1e40af;
+  --accent-hover: #1d4ed8;
+  --accent-muted: rgba(30, 64, 175, 0.12);
+  --on-accent: #ffffff;
+  --border: #e2e8f0;
+  --header-bg: rgba(255, 255, 255, 0.92);
+  --shadow: 0 8px 32px rgba(30, 64, 175, 0.1);
+}
+
+/* Dark: deep navy with royal blue accents */
+html[data-theme="dark"] {
+  --bg-dark: #0f172a;
+  --bg-card: #1e293b;
+  --bg-elevated: #334155;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-muted: rgba(59, 130, 246, 0.22);
+  --on-accent: #ffffff;
+  --border: #334155;
+  --header-bg: rgba(15, 23, 42, 0.92);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 /* System theme: follow OS preference */
 @media (prefers-color-scheme: light) {
   html[data-theme="system"] {
-    --bg-dark: #f6f8fa;
+    --bg-dark: #f8fafc;
     --bg-card: #ffffff;
-    --bg-elevated: #eaeef2;
-    --text-primary: #1f2328;
-    --text-muted: #656d76;
-    --accent: #098c6a;
-    --accent-hover: #057a5c;
-    --accent-muted: rgba(9, 140, 106, 0.12);
-    --border: #d0d7de;
-    --header-bg: rgba(246, 248, 250, 0.9);
-    --shadow: 0 8px 32px rgba(31, 35, 40, 0.12);
+    --bg-elevated: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --accent: #1e40af;
+    --accent-hover: #1d4ed8;
+    --accent-muted: rgba(30, 64, 175, 0.12);
+    --on-accent: #ffffff;
+    --border: #e2e8f0;
+    --header-bg: rgba(255, 255, 255, 0.92);
+    --shadow: 0 8px 32px rgba(30, 64, 175, 0.1);
   }
 }
 @media (prefers-color-scheme: dark) {
   html[data-theme="system"] {
-    --bg-dark: #0d1117;
-    --bg-card: #161b22;
-    --bg-elevated: #21262d;
-    --text-primary: #e6edf3;
-    --text-muted: #8b949e;
-    --accent: #00d4aa;
-    --accent-hover: #00f5c4;
-    --accent-muted: rgba(0, 212, 170, 0.15);
-    --border: #30363d;
-    --header-bg: rgba(13, 17, 23, 0.9);
-    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --bg-elevated: #334155;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --accent-muted: rgba(59, 130, 246, 0.22);
+    --on-accent: #ffffff;
+    --border: #334155;
+    --header-bg: rgba(15, 23, 42, 0.92);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -359,7 +367,7 @@ main {
 }
 .btn-primary {
   background: var(--accent);
-  color: var(--bg-dark);
+  color: var(--on-accent);
 }
 .btn-primary:hover {
   background: var(--accent-hover);
