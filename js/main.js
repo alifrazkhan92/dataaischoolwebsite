@@ -222,33 +222,100 @@
     });
   });
 
-  // ─── Form submission ──────────────────────────────────────────────────────────
+  // ─── Form submission (AJAX via Formspree) ────────────────────────────────────
 
-  var form = document.querySelector(".contact-form, .apply-form");
-  if (form) {
+  var forms = document.querySelectorAll(".contact-form, .apply-form");
+  forms.forEach(function (form) {
     form.addEventListener("submit", function (e) {
-      var btn = form.querySelector('button[type="submit"]');
-      var originalText = btn ? (btn.dataset.originalText || btn.textContent) : "";
+      e.preventDefault();
 
-      // If no real endpoint is set (action is "#"), prevent and show a message
-      if (form.getAttribute("action") === "#") {
-        e.preventDefault();
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = "Submission not yet configured";
-          setTimeout(function () {
-            btn.disabled = false;
-            btn.textContent = originalText;
-          }, 3000);
+      var btn = form.querySelector('button[type="submit"]');
+      var feedback = form.querySelector(".form-feedback");
+      var originalText = btn ? btn.textContent.trim() : "Submit";
+      var action = form.getAttribute("action") || "";
+
+      // Clear previous feedback
+      if (feedback) {
+        feedback.className = "form-feedback";
+        feedback.textContent = "";
+      }
+
+      // Guard: Formspree ID not yet configured
+      if (action.indexOf("YOUR_FORM_ID") !== -1 || action === "#" || action === "") {
+        if (feedback) {
+          feedback.className = "form-feedback error";
+          feedback.textContent =
+            "⚠ Form not yet connected. Please set up a Formspree endpoint in the HTML action attribute (see code comment).";
         }
         return;
       }
 
+      // Validate required fields
+      var invalid = false;
+      form.querySelectorAll("[required]").forEach(function (field) {
+        if (!field.value.trim()) {
+          field.style.borderColor = "var(--gold)";
+          invalid = true;
+          field.addEventListener("input", function () {
+            field.style.borderColor = "";
+          }, { once: true });
+        }
+      });
+      if (invalid) {
+        if (feedback) {
+          feedback.className = "form-feedback error";
+          feedback.textContent = "Please fill in all required fields marked with *.";
+        }
+        return;
+      }
+
+      // Submit via fetch
       if (btn) {
         btn.disabled = true;
         btn.textContent = "Sending…";
       }
+
+      fetch(action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      })
+        .then(function (res) {
+          if (res.ok) {
+            form.reset();
+            if (feedback) {
+              feedback.className = "form-feedback success";
+              feedback.textContent =
+                "✓ Message sent! We'll get back to you within two working days.";
+            }
+            if (btn) {
+              btn.textContent = "Sent ✓";
+              setTimeout(function () {
+                btn.disabled = false;
+                btn.textContent = originalText;
+              }, 4000);
+            }
+          } else {
+            return res.json().then(function (data) {
+              throw new Error(
+                (data.errors && data.errors.map(function (e) { return e.message; }).join(", ")) ||
+                "Submission failed."
+              );
+            });
+          }
+        })
+        .catch(function (err) {
+          if (feedback) {
+            feedback.className = "form-feedback error";
+            feedback.textContent =
+              "✗ " + (err.message || "Something went wrong. Please try again or call us on +44 207 0990 956.");
+          }
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+        });
     });
-  }
+  });
 
 })();

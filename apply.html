@@ -74,7 +74,15 @@
       </div>
 
       <section class="content-section">
-        <form class="apply-form" action="#" method="post">
+        <!-- To activate: replace YOUR_FORM_ID with your Formspree form ID.
+             Sign up free at https://formspree.io → New Form → copy the ID. -->
+        <form
+          class="apply-form"
+          id="apply-form"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST"
+          novalidate
+        >
           <div class="form-group">
             <label for="name">Full name *</label>
             <input
@@ -121,11 +129,12 @@
             <button
               type="submit"
               class="btn btn-primary"
-              data-original-text="Submit application"
+              id="apply-submit"
             >
               Submit application
             </button>
           </div>
+          <div class="form-feedback" id="apply-feedback" aria-live="polite"></div>
           <p class="form-privacy-notice">
             By submitting this form you confirm you have read our
             <a href="privacy-policy.html">Privacy Policy</a>. We use your

@@ -574,6 +574,11 @@ html[data-theme="dark"] .course-card .badge {
 }
 
 /* ─── Forms ──────────────────────────────────────────────────────────────────── */
+.contact-form,
+.apply-form {
+  max-width: 560px;
+}
+
 .form-group { margin-bottom: 1.375rem; }
 .form-group label {
   display: block;
@@ -892,6 +897,38 @@ button.cookie-settings-inline {
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
+}
+
+/* ─── Form feedback messages ─────────────────────────────────────────────────── */
+.form-feedback {
+  margin-top: 1rem;
+  padding: 0.875rem 1.125rem;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  display: none;
+}
+.form-feedback.success {
+  display: block;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1.5px solid rgba(34, 197, 94, 0.4);
+  color: #16a34a;
+}
+html[data-theme="dark"] .form-feedback.success {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+.form-feedback.error {
+  display: block;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  color: #dc2626;
+}
+html[data-theme="dark"] .form-feedback.error {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* ─── Form privacy notice ────────────────────────────────────────────────────── */

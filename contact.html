@@ -74,7 +74,15 @@
       </div>
 
       <section class="content-section">
-        <form class="contact-form" action="#" method="post">
+        <!-- To activate: replace YOUR_FORM_ID below with your Formspree form ID.
+             Sign up free at https://formspree.io → New Form → copy the ID. -->
+        <form
+          class="contact-form"
+          id="contact-form"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST"
+          novalidate
+        >
           <div class="form-group">
             <label for="name">Name *</label>
             <input
@@ -82,6 +90,7 @@
               id="name"
               name="name"
               required
+              autocomplete="name"
               placeholder="Your name"
             />
           </div>
@@ -92,16 +101,17 @@
               id="email"
               name="email"
               required
+              autocomplete="email"
               placeholder="you@example.com"
             />
           </div>
           <div class="form-group">
             <label for="subject">Subject</label>
             <select id="subject" name="subject">
-              <option value="general">General enquiry</option>
-              <option value="courses">Course information</option>
-              <option value="admissions">Admissions</option>
-              <option value="partnerships">Partnerships</option>
+              <option value="General enquiry">General enquiry</option>
+              <option value="Course information">Course information</option>
+              <option value="Admissions">Admissions</option>
+              <option value="Partnerships">Partnerships</option>
             </select>
           </div>
           <div class="form-group">
@@ -117,11 +127,12 @@
             <button
               type="submit"
               class="btn btn-primary"
-              data-original-text="Send message"
+              id="contact-submit"
             >
               Send message
             </button>
           </div>
+          <div class="form-feedback" id="contact-feedback" aria-live="polite"></div>
           <p class="form-privacy-notice">
             By submitting this form you confirm you have read our
             <a href="privacy-policy.html">Privacy Policy</a>. We use your
