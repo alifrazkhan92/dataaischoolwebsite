@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#122B55"/>
+    </linearGradient>
+    <linearGradient id="deskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2A3A55"/>
+      <stop offset="100%" style="stop-color:#1A2A40"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="220" fill="url(#bg)"/>
+
+  <!-- Window / light source top right -->
+  <rect x="280" y="20" width="90" height="70" rx="4" fill="#1A3A6A" opacity="0.5"/>
+  <line x1="325" y1="20" x2="325" y2="90" stroke="#0A2240" stroke-width="2"/>
+  <line x1="280" y1="55" x2="370" y2="55" stroke="#0A2240" stroke-width="2"/>
+  <rect x="280" y="20" width="90" height="70" rx="4" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Desk surface -->
+  <rect x="30" y="145" width="340" height="12" rx="3" fill="url(#deskGrad)"/>
+  <rect x="40" y="155" width="10" height="45" rx="2" fill="#1A2A40"/>
+  <rect x="350" y="155" width="10" height="45" rx="2" fill="#1A2A40"/>
+
+  <!-- Stack of books on left -->
+  <rect x="45" y="110" width="55" height="10" rx="2" fill="#C89930" opacity="0.8"/>
+  <rect x="48" y="100" width="55" height="10" rx="2" fill="#1A4A8A"/>
+  <rect x="45" y="90" width="55" height="10" rx="2" fill="#0E3268"/>
+  <rect x="50" y="80" width="55" height="10" rx="2" fill="#C89930" opacity="0.6"/>
+
+  <!-- Laptop (open) -->
+  <g transform="translate(120, 60)">
+    <!-- Screen -->
+    <rect x="0" y="0" width="160" height="100" rx="6" fill="#0D1E35"/>
+    <rect x="6" y="6" width="148" height="88" rx="3" fill="#1A3A6A"/>
+    <!-- Code on screen -->
+    <text x="12" y="26" font-family="monospace" font-size="8" fill="#C89930">def train_model(data):</text>
+    <text x="20" y="38" font-family="monospace" font-size="8" fill="#6B8FAE">    X, y = preprocess(data)</text>
+    <text x="20" y="50" font-family="monospace" font-size="8" fill="#6B8FAE">    model = NeuralNet()</text>
+    <text x="20" y="62" font-family="monospace" font-size="8" fill="#E8B030">    model.fit(X, y)</text>
+    <text x="20" y="74" font-family="monospace" font-size="8" fill="#6B8FAE">    return model</text>
+    <!-- Cursor blink -->
+    <rect x="82" y="68" width="5" height="9" fill="#C89930" opacity="0.9"/>
+    <!-- Keyboard -->
+    <rect x="0" y="100" width="160" height="12" rx="3" fill="#0F2540"/>
+    <rect x="50" y="104" width="60" height="5" rx="1" fill="#1A2A40"/>
+  </g>
+
+  <!-- Notebook and pen on right -->
+  <rect x="295" y="100" width="70" height="50" rx="3" fill="#F5F0E8" opacity="0.9" transform="rotate(-5,330,125)"/>
+  <line x1="303" y1="113" x2="358" y2="110" stroke="#D8D0C3" stroke-width="1.5" transform="rotate(-5,330,125)"/>
+  <line x1="303" y1="122" x2="358" y2="119" stroke="#D8D0C3" stroke-width="1.5" transform="rotate(-5,330,125)"/>
+  <line x1="303" y1="131" x2="358" y2="128" stroke="#D8D0C3" stroke-width="1.5" transform="rotate(-5,330,125)"/>
+  <!-- Pen -->
+  <rect x="362" y="98" width="6" height="50" rx="3" fill="#C89930" transform="rotate(15,365,123)"/>
+
+  <!-- Student person silhouette -->
+  <circle cx="200" cy="48" r="22" fill="#1A4A8A"/>
+  <!-- Body hint -->
+  <ellipse cx="200" cy="85" rx="30" ry="15" fill="#1A3A60"/>
+  <!-- Face -->
+  <circle cx="193" cy="46" r="3" fill="#6B8FAE"/>
+  <circle cx="207" cy="46" r="3" fill="#6B8FAE"/>
+  <path d="M195,56 Q200,61 205,56" fill="none" stroke="#6B8FAE" stroke-width="1.5"/>
+
+  <!-- Coffee cup -->
+  <rect x="55" y="128" width="22" height="18" rx="3" fill="#1A3055"/>
+  <path d="M77,133 Q85,133 85,140 Q85,147 77,147" fill="none" stroke="#1A3055" stroke-width="3"/>
+  <!-- Steam -->
+  <path d="M63,126 Q65,120 63,114" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.5"/>
+  <path d="M70,126 Q72,120 70,114" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.5"/>
+
+  <text x="200" y="205" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">FOCUSED SELF-PACED STUDY</text>
+</svg>

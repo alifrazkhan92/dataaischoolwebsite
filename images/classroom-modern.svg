@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#0E2E5A"/>
+    </linearGradient>
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A4A8A"/>
+      <stop offset="100%" style="stop-color:#0D2040"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="220" fill="url(#bg)"/>
+
+  <!-- Room perspective lines -->
+  <polygon points="0,0 400,0 400,220 0,220" fill="none"/>
+  <!-- Floor -->
+  <polygon points="0,180 400,180 400,220 0,220" fill="#091B30" opacity="0.5"/>
+  <!-- Back wall -->
+  <polygon points="40,40 360,40 400,0 0,0" fill="#0D2545" opacity="0.4"/>
+
+  <!-- Large interactive whiteboard / screen at front -->
+  <rect x="80" y="30" width="240" height="130" rx="6" fill="url(#screenGrad)" stroke="#C89930" stroke-width="2"/>
+  <!-- Board content: Data visualization -->
+  <rect x="88" y="38" width="224" height="114" rx="3" fill="#0F2A50"/>
+  <!-- Chart title -->
+  <rect x="95" y="44" width="80" height="6" rx="2" fill="#E8B030"/>
+  <!-- Bar chart on board -->
+  <g fill="#C89930" opacity="0.8">
+    <rect x="100" y="100" width="18" height="44"/>
+    <rect x="124" y="85" width="18" height="59"/>
+    <rect x="148" y="70" width="18" height="74"/>
+    <rect x="172" y="90" width="18" height="54"/>
+    <rect x="196" y="78" width="18" height="66"/>
+    <rect x="220" y="65" width="18" height="79"/>
+    <rect x="244" y="82" width="18" height="62"/>
+    <rect x="268" y="72" width="18" height="72"/>
+  </g>
+  <!-- Trend line -->
+  <polyline points="109,100 133,85 157,70 181,90 205,78 229,65 253,82 277,72" fill="none" stroke="#E8B030" stroke-width="2" stroke-linecap="round"/>
+  <!-- Board frame/stand -->
+  <rect x="185" y="160" width="30" height="12" rx="2" fill="#1A3055"/>
+  <rect x="160" y="172" width="80" height="6" rx="3" fill="#142840"/>
+
+  <!-- Students at desks (silhouettes) - front row -->
+  <!-- Student 1 -->
+  <circle cx="80" cy="158" r="12" fill="#1A4A8A"/>
+  <ellipse cx="80" cy="178" rx="18" ry="10" fill="#142840"/>
+  <!-- Desk -->
+  <rect x="55" y="174" width="50" height="5" rx="1" fill="#1A3055" opacity="0.7"/>
+  <!-- Laptop on desk -->
+  <rect x="63" y="164" width="34" height="12" rx="2" fill="#0D1E35" opacity="0.8"/>
+
+  <!-- Student 2 -->
+  <circle cx="170" cy="155" r="12" fill="#1A4A8A"/>
+  <ellipse cx="170" cy="175" rx="18" ry="10" fill="#142840"/>
+  <rect x="145" y="171" width="50" height="5" rx="1" fill="#1A3055" opacity="0.7"/>
+  <rect x="153" y="161" width="34" height="12" rx="2" fill="#0D1E35" opacity="0.8"/>
+
+  <!-- Student 3 -->
+  <circle cx="260" cy="155" r="12" fill="#1A4A8A"/>
+  <ellipse cx="260" cy="175" rx="18" ry="10" fill="#142840"/>
+  <rect x="235" y="171" width="50" height="5" rx="1" fill="#1A3055" opacity="0.7"/>
+  <rect x="243" y="161" width="34" height="12" rx="2" fill="#0D1E35" opacity="0.8"/>
+
+  <!-- Student 4 -->
+  <circle cx="340" cy="158" r="12" fill="#1A4A8A"/>
+  <ellipse cx="340" cy="178" rx="18" ry="10" fill="#142840"/>
+  <rect x="315" y="174" width="50" height="5" rx="1" fill="#1A3055" opacity="0.7"/>
+  <rect x="323" y="164" width="34" height="12" rx="2" fill="#0D1E35" opacity="0.8"/>
+
+  <!-- Instructor at front -->
+  <circle cx="200" cy="145" r="10" fill="#C89930"/>
+  <ellipse cx="200" cy="162" rx="14" ry="8" fill="#A8690A"/>
+
+  <!-- Gold accent dots -->
+  <circle cx="80" cy="20" r="3" fill="#C89930" opacity="0.5"/>
+  <circle cx="320" cy="20" r="3" fill="#C89930" opacity="0.5"/>
+
+  <text x="200" y="208" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">LIVE INSTRUCTOR-LED SESSIONS</text>
+</svg>

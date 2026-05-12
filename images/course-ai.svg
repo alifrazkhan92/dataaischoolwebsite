@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#0E3268"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C89930"/>
+      <stop offset="100%" style="stop-color:#E8B030"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="400" fill="url(#bg)"/>
+  <rect x="0" y="0" width="900" height="4" fill="url(#gold)"/>
+
+  <!-- Central brain / neural network illustration -->
+  <g transform="translate(80, 30)">
+    <!-- Input layer -->
+    <g>
+      <circle cx="30" cy="70" r="14" fill="#112038" stroke="#C89930" stroke-width="2"/>
+      <text x="30" y="75" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">TXT</text>
+      <circle cx="30" cy="130" r="14" fill="#112038" stroke="#C89930" stroke-width="2"/>
+      <text x="30" y="135" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">IMG</text>
+      <circle cx="30" cy="190" r="14" fill="#112038" stroke="#C89930" stroke-width="2"/>
+      <text x="30" y="195" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">DOC</text>
+      <circle cx="30" cy="250" r="14" fill="#112038" stroke="#C89930" stroke-width="2"/>
+      <text x="30" y="255" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">API</text>
+      <text x="30" y="295" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">Input</text>
+    </g>
+
+    <!-- Hidden layer 1 -->
+    <g>
+      <circle cx="160" cy="50" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="160" cy="110" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="160" cy="170" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="160" cy="230" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="160" cy="290" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+    </g>
+
+    <!-- Hidden layer 2 - larger (LLM core) -->
+    <g>
+      <circle cx="280" cy="80" r="18" fill="#C89930"/>
+      <circle cx="280" cy="140" r="18" fill="#C89930"/>
+      <circle cx="280" cy="200" r="18" fill="#C89930"/>
+      <circle cx="280" cy="260" r="18" fill="#C89930"/>
+      <text x="280" y="35" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#C89930">LLM Core</text>
+    </g>
+
+    <!-- Hidden layer 3 -->
+    <g>
+      <circle cx="400" cy="50" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="400" cy="110" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="400" cy="170" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="400" cy="230" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+      <circle cx="400" cy="290" r="14" fill="#1A3A6A" stroke="#1E3A5E" stroke-width="1.5"/>
+    </g>
+
+    <!-- Output layer -->
+    <g>
+      <circle cx="520" cy="100" r="14" fill="#112038" stroke="#E8B030" stroke-width="2"/>
+      <text x="520" y="105" text-anchor="middle" font-family="monospace" font-size="8" fill="#E8B030">RAG</text>
+      <circle cx="520" cy="170" r="14" fill="#112038" stroke="#E8B030" stroke-width="2"/>
+      <text x="520" y="175" text-anchor="middle" font-family="monospace" font-size="8" fill="#E8B030">GEN</text>
+      <circle cx="520" cy="240" r="14" fill="#112038" stroke="#E8B030" stroke-width="2"/>
+      <text x="520" y="245" text-anchor="middle" font-family="monospace" font-size="8" fill="#E8B030">ANS</text>
+      <text x="520" y="295" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">Output</text>
+    </g>
+
+    <!-- Connections: input to h1 -->
+    <g stroke="#1E3A5E" stroke-width="0.8" opacity="0.4">
+      <line x1="44" y1="70" x2="146" y2="50"/><line x1="44" y1="70" x2="146" y2="110"/>
+      <line x1="44" y1="70" x2="146" y2="170"/>
+      <line x1="44" y1="130" x2="146" y2="50"/><line x1="44" y1="130" x2="146" y2="110"/>
+      <line x1="44" y1="130" x2="146" y2="170"/><line x1="44" y1="130" x2="146" y2="230"/>
+      <line x1="44" y1="190" x2="146" y2="110"/><line x1="44" y1="190" x2="146" y2="170"/>
+      <line x1="44" y1="190" x2="146" y2="230"/><line x1="44" y1="190" x2="146" y2="290"/>
+      <line x1="44" y1="250" x2="146" y2="170"/><line x1="44" y1="250" x2="146" y2="230"/>
+      <line x1="44" y1="250" x2="146" y2="290"/>
+    </g>
+    <!-- h1 to LLM -->
+    <g stroke="#C89930" stroke-width="0.8" opacity="0.35">
+      <line x1="174" y1="50" x2="262" y2="80"/><line x1="174" y1="50" x2="262" y2="140"/>
+      <line x1="174" y1="110" x2="262" y2="80"/><line x1="174" y1="110" x2="262" y2="140"/>
+      <line x1="174" y1="110" x2="262" y2="200"/>
+      <line x1="174" y1="170" x2="262" y2="140"/><line x1="174" y1="170" x2="262" y2="200"/>
+      <line x1="174" y1="230" x2="262" y2="200"/><line x1="174" y1="230" x2="262" y2="260"/>
+      <line x1="174" y1="290" x2="262" y2="260"/>
+    </g>
+    <!-- LLM to h3 -->
+    <g stroke="#C89930" stroke-width="0.8" opacity="0.35">
+      <line x1="298" y1="80" x2="386" y2="50"/><line x1="298" y1="80" x2="386" y2="110"/>
+      <line x1="298" y1="140" x2="386" y2="110"/><line x1="298" y1="140" x2="386" y2="170"/>
+      <line x1="298" y1="200" x2="386" y2="170"/><line x1="298" y1="200" x2="386" y2="230"/>
+      <line x1="298" y1="260" x2="386" y2="230"/><line x1="298" y1="260" x2="386" y2="290"/>
+    </g>
+    <!-- h3 to output -->
+    <g stroke="#1E3A5E" stroke-width="0.8" opacity="0.4">
+      <line x1="414" y1="50" x2="506" y2="100"/><line x1="414" y1="110" x2="506" y2="100"/>
+      <line x1="414" y1="110" x2="506" y2="170"/>
+      <line x1="414" y1="170" x2="506" y2="170"/><line x1="414" y1="170" x2="506" y2="240"/>
+      <line x1="414" y1="230" x2="506" y2="170"/><line x1="414" y1="230" x2="506" y2="240"/>
+      <line x1="414" y1="290" x2="506" y2="240"/>
+    </g>
+  </g>
+
+  <!-- Right panel: topics -->
+  <g transform="translate(650, 60)">
+    <!-- Brain icon outline -->
+    <path d="M100,20 Q140,0 160,30 Q180,10 190,40 Q215,35 215,65 Q215,90 195,100 Q205,120 185,135 Q175,155 150,150 Q135,165 110,155 Q90,165 75,150 Q50,155 40,135 Q20,120 30,100 Q10,90 10,65 Q10,35 35,40 Q45,10 65,30 Q80,0 100,20Z"
+          fill="none" stroke="#C89930" stroke-width="2.5" opacity="0.7"/>
+    <!-- Brain folds -->
+    <path d="M60,70 Q80,55 100,70 Q120,55 140,70" fill="none" stroke="#C89930" stroke-width="1.5" opacity="0.4"/>
+    <path d="M50,100 Q75,85 100,100 Q125,85 150,100 Q165,90 170,100" fill="none" stroke="#C89930" stroke-width="1.5" opacity="0.4"/>
+    <path d="M70,125 Q95,115 120,125 Q145,115 165,125" fill="none" stroke="#C89930" stroke-width="1.5" opacity="0.4"/>
+    <!-- Glow -->
+    <circle cx="100" cy="88" r="30" fill="#C89930" opacity="0.06"/>
+
+    <text x="100" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#C89930">AI Bootcamp</text>
+    <g font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">
+      <text x="0" y="225">▸ LLM APIs &amp; prompting</text>
+      <text x="0" y="243">▸ Embeddings &amp; vector stores</text>
+      <text x="0" y="261">▸ RAG pipelines</text>
+      <text x="0" y="279">▸ Fine-tuning models</text>
+      <text x="0" y="297">▸ Evaluation &amp; deployment</text>
+    </g>
+  </g>
+
+  <text x="450" y="385" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#C89930" letter-spacing="2">ARTIFICIAL INTELLIGENCE BOOTCAMP</text>
+</svg>
