@@ -2,61 +2,98 @@
  * The Data and AI School of London
  * Google Apps Script — Form-to-Spreadsheet handler
  *
- * HOW TO DEPLOY (one-time setup):
- * ─────────────────────────────────────────────────────────────────────────────
- * 1. Open Google Sheets → create a new spreadsheet → name it
- *    "DAIS Website Enquiries" (or anything you like)
+ * TARGET SPREADSHEET (already configured):
+ *   https://docs.google.com/spreadsheets/d/<REDACTED>
  *
- * 2. In the spreadsheet: Extensions → Apps Script
+ * ═══════════════════════════════════════════════════════════════════════════════
+ * ONE-TIME DEPLOYMENT STEPS (takes ~2 minutes):
+ * ═══════════════════════════════════════════════════════════════════════════════
  *
- * 3. Delete any code in the editor and paste ALL of this file.
+ * STEP 1 — Open your spreadsheet:
+ *   https://docs.google.com/spreadsheets/d/<REDACTED>
  *
- * 4. Click "Save" (floppy disk icon), give the project a name.
+ * STEP 2 — Open Apps Script:
+ *   Click  Extensions  →  Apps Script
  *
- * 5. Click "Deploy" → "New deployment":
- *      Type:               Web app
- *      Execute as:         Me  (your Google account)
- *      Who has access:     Anyone
- *    Click "Deploy" → authorise when prompted → copy the Web app URL.
+ * STEP 3 — Paste this code:
+ *   Select all existing code in the editor (Ctrl+A / Cmd+A) and delete it.
+ *   Paste ALL of this file. Click Save (💾).
+ *   Give the project a name, e.g. "DAIS Form Handler".
  *
- * 6. In contact.html AND apply.html find the attribute:
- *      data-spreadsheet="YOUR_APPS_SCRIPT_URL"
- *    Replace  YOUR_APPS_SCRIPT_URL  with the URL you just copied.
+ * STEP 4 — Deploy as a Web App:
+ *   Click  Deploy  →  New deployment
+ *   ┌──────────────────────────────────────┐
+ *   │  Type:            Web app            │
+ *   │  Execute as:      Me                 │
+ *   │  Who has access:  Anyone             │
+ *   └──────────────────────────────────────┘
+ *   Click Deploy → click Authorise → sign in with your Google account
+ *   → Allow → COPY the Web app URL (looks like https://script.google.com/macros/s/…/exec)
  *
- * 7. Commit and push to GitHub — forms are now live and writing to your sheet.
+ * STEP 5 — Activate the forms on the website:
+ *   In contact.html AND apply.html, find:
+ *       data-spreadsheet="YOUR_APPS_SCRIPT_URL"
+ *   Replace  YOUR_APPS_SCRIPT_URL  with the URL you just copied.
+ *   Save both files, commit and push to GitHub.
  *
- * To RE-DEPLOY after editing this script:
- *    Deploy → Manage deployments → Edit → Version: New version → Deploy
- * ─────────────────────────────────────────────────────────────────────────────
+ * DONE — every form submission will appear as a new row in your spreadsheet.
+ *
+ * ─── To re-deploy after editing this script ───────────────────────────────────
+ *   Deploy → Manage deployments → Edit (pencil) → Version: New version → Deploy
+ * ═══════════════════════════════════════════════════════════════════════════════
  */
 
-var SHEET_NAME = "Submissions"; // Tab name — created automatically on first run
+// ── Configuration ──────────────────────────────────────────────────────────────
 
-/**
- * Handles POST requests from the website contact and application forms.
- * Appends one row per submission to the spreadsheet.
- */
+var SPREADSHEET_ID = "<REDACTED>";
+var SHEET_NAME     = "Submissions";
+
+// ── Column headers (written once when the sheet is first used) ─────────────────
+
+var HEADERS = [
+  "Timestamp",
+  "Form Type",
+  "Full Name",
+  "Email",
+  "Phone",
+  "Course / Subject",
+  "Message / Background",
+];
+
+// ── doPost — receives form submissions ─────────────────────────────────────────
+
 function doPost(e) {
   try {
-    var ss    = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
+    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = ss.getSheetByName(SHEET_NAME);
 
-    // Add header row if the sheet is brand new
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow([
-        "Timestamp",
-        "Form",
-        "Name",
-        "Email",
-        "Phone",
-        "Course / Subject",
-        "Message / Background",
-      ]);
-      sheet.getRange(1, 1, 1, 7).setFontWeight("bold").setBackground("#0A2240").setFontColor("#FFFFFF");
-      sheet.setFrozenRows(1);
+    // Create the Submissions tab if it doesn't exist yet
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
     }
 
-    // Parse the submitted data (sent as URL-encoded form data)
+    // Write styled header row on first use
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(HEADERS);
+
+      var headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+      headerRange
+        .setFontWeight("bold")
+        .setBackground("#0A2240")
+        .setFontColor("#FFFFFF")
+        .setHorizontalAlignment("center");
+
+      sheet.setFrozenRows(1);
+      sheet.setColumnWidth(1, 160); // Timestamp
+      sheet.setColumnWidth(2, 140); // Form Type
+      sheet.setColumnWidth(3, 160); // Name
+      sheet.setColumnWidth(4, 220); // Email
+      sheet.setColumnWidth(5, 140); // Phone
+      sheet.setColumnWidth(6, 180); // Course / Subject
+      sheet.setColumnWidth(7, 340); // Message
+    }
+
+    // Read submitted fields
     var p = e.parameter || {};
 
     var timestamp = Utilities.formatDate(
@@ -65,35 +102,42 @@ function doPost(e) {
       "dd/MM/yyyy HH:mm:ss"
     );
 
-    sheet.appendRow([
+    var row = [
       timestamp,
-      p.formType   || "Unknown",
-      p.name       || "",
-      p.email      || "",
-      p.phone      || "",
-      p.subject    || p.course || "",
-      p.message    || p.background || "",
-    ]);
+      p.formType    || "Unknown",
+      p.name        || "",
+      p.email       || "",
+      p.phone       || "",
+      p.subject     || p.course || "",
+      p.message     || p.background || "",
+    ];
 
-    // Auto-resize columns for readability
-    sheet.autoResizeColumns(1, 7);
+    sheet.appendRow(row);
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: "success" }))
-      .setMimeType(ContentService.MimeType.JSON);
+    // Alternate row shading for readability
+    var lastRow = sheet.getLastRow();
+    if (lastRow % 2 === 0) {
+      sheet.getRange(lastRow, 1, 1, HEADERS.length)
+        .setBackground("#EBE4D8");
+    }
+
+    return _json({ result: "success", row: lastRow });
 
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ result: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return _json({ result: "error", message: err.toString() });
   }
 }
 
-/**
- * Handles GET requests — used to verify the deployment is live.
- */
+// ── doGet — health-check endpoint ─────────────────────────────────────────────
+
 function doGet(e) {
+  return _json({ result: "ok", service: "DAIS Form Handler", spreadsheetId: SPREADSHEET_ID });
+}
+
+// ── Helper ─────────────────────────────────────────────────────────────────────
+
+function _json(obj) {
   return ContentService
-    .createTextOutput(JSON.stringify({ result: "ok", service: "DAIS Form Handler" }))
+    .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
