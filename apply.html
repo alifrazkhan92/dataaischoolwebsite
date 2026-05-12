@@ -148,6 +148,10 @@
               placeholder="Tell us a bit about your experience and why you want to join this course."
             ></textarea>
           </div>
+          <!-- Anti-spam honeypot: invisible to real users, bots fill it in -->
+          <div style="position:absolute;left:-9999px;width:0;height:0;overflow:hidden;" aria-hidden="true">
+            <input type="text" name="hp_website" tabindex="-1" autocomplete="off" value="">
+          </div>
           <div class="form-actions">
             <button
               type="submit"

@@ -251,6 +251,19 @@
         return;
       }
 
+      // Honeypot check — if filled, silently fake success (it's a bot)
+      var hp = form.querySelector("[name='hp_website']");
+      if (hp && hp.value.trim() !== "") {
+        form.reset();
+        if (feedback) {
+          feedback.className = "form-feedback success";
+          feedback.textContent = isContact
+            ? "✓ Message received! We'll reply within two working days."
+            : "✓ Application submitted! We'll be in touch within two working days.";
+        }
+        return;
+      }
+
       // Validate required fields
       var invalid = false;
       form.querySelectorAll("[required]").forEach(function (field) {

@@ -5,6 +5,9 @@
  * TARGET SPREADSHEET:
  *   https://docs.google.com/spreadsheets/d/<REDACTED>
  *
+ * ⚠️  SECURITY: Ensure the Google Sheet sharing is set to "Restricted"
+ *     (only people explicitly shared can view it). Go to Share → Settings.
+ *
  * ═══════════════════════════════════════════════════════════════════════════════
  * RE-DEPLOY STEPS (required after every code change):
  * ═══════════════════════════════════════════════════════════════════════════════
@@ -12,12 +15,12 @@
  *  2. Select all code → delete → paste this entire file → Save (💾)
  *  3. Deploy → Manage deployments → Edit (pencil icon)
  *     → Version: "New version" → Deploy
- *  No need to change any other settings or copy a new URL.
  * ═══════════════════════════════════════════════════════════════════════════════
  */
 
 var SPREADSHEET_ID = "<REDACTED>";
 var SHEET_NAME     = "Submissions";
+var RATE_LIMIT     = 30;   // max legitimate submissions per hour across all users
 
 var HEADERS = [
   "Timestamp",
@@ -33,10 +36,46 @@ var HEADERS = [
 
 function doPost(e) {
   try {
-    // Submitted via hidden iframe form POST → standard URL-encoded body
-    // Apps Script exposes these directly as e.parameter
     var p = e.parameter || {};
 
+    // ── 1. Honeypot check ───────────────────────────────────────────────────────
+    // hp_website is a hidden field invisible to real users. Bots fill it in.
+    if (p.hp_website && p.hp_website.trim() !== "") {
+      // Return fake success so bots don't retry
+      return _json({ result: "success" });
+    }
+
+    // ── 2. Rate limiting ────────────────────────────────────────────────────────
+    // Counts total submissions per hour. Resets automatically each new hour.
+    var props   = PropertiesService.getScriptProperties();
+    var hourKey = "count_" + Utilities.formatDate(
+      new Date(), Session.getScriptTimeZone(), "yyyyMMddHH"
+    );
+    var count = parseInt(props.getProperty(hourKey) || "0");
+    if (count >= RATE_LIMIT) {
+      return _json({ result: "error", message: "Too many submissions. Please try again later or call us on +44 207 0990 956." });
+    }
+    props.setProperty(hourKey, String(count + 1));
+
+    // ── 3. Server-side validation ───────────────────────────────────────────────
+    var name  = (p.name  || "").trim();
+    var email = (p.email || "").trim();
+
+    if (!name || !email) {
+      return _json({ result: "error", message: "Name and email are required." });
+    }
+
+    // Basic email format check
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      return _json({ result: "error", message: "Please enter a valid email address." });
+    }
+
+    // Reject suspiciously long fields (prevents payload injection)
+    if (name.length > 200 || email.length > 200) {
+      return _json({ result: "error", message: "Input too long." });
+    }
+
+    // ── 4. Write to spreadsheet ─────────────────────────────────────────────────
     var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
 
@@ -63,24 +102,25 @@ function doPost(e) {
     }
 
     var timestamp = Utilities.formatDate(
-      new Date(),
-      Session.getScriptTimeZone(),
-      "dd/MM/yyyy HH:mm:ss"
+      new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss"
     );
+
+    // Sanitise: strip any HTML tags from free-text fields before storing
+    function stripTags(s) { return String(s || "").replace(/<[^>]*>/g, "").trim(); }
 
     var row = [
       timestamp,
-      p.formType    || "Unknown",
-      p.name        || "",
-      p.email       || "",
-      p.phone       || "",
-      p.subject     || p.course || "",
-      p.message     || p.background || "",
+      stripTags(p.formType)   || "Unknown",
+      stripTags(p.name),
+      stripTags(p.email),
+      stripTags(p.phone),
+      stripTags(p.subject || p.course),
+      stripTags(p.message || p.background),
     ];
 
     sheet.appendRow(row);
 
-    // Alternate row shading
+    // Alternate row shading for readability
     var lastRow = sheet.getLastRow();
     if (lastRow % 2 === 0) {
       sheet.getRange(lastRow, 1, 1, HEADERS.length).setBackground("#EBE4D8");
@@ -89,7 +129,7 @@ function doPost(e) {
     return _json({ result: "success", row: lastRow });
 
   } catch (err) {
-    return _json({ result: "error", message: err.toString() });
+    return _json({ result: "error", message: "Server error. Please call +44 207 0990 956." });
   }
 }
 
