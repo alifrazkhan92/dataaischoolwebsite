@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.dataaischool.com/sitemap.xml
+
+# Block private/admin paths if added in future
+Disallow: /google-apps-script/
