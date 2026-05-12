@@ -222,27 +222,31 @@
     });
   });
 
-  // ─── Form submission → Google Sheets via Apps Script ─────────────────────────
+  // ─── Form submission → Google Sheets via hidden iframe ───────────────────────
+  //
+  // fetch() with no-cors loses the POST body when Google redirects
+  // script.google.com → script.googleusercontent.com (browser converts to GET).
+  // A hidden iframe form submission uses the browser's native POST handling,
+  // which follows redirects correctly and delivers e.parameter to Apps Script.
 
   var forms = document.querySelectorAll(".contact-form, .apply-form");
   forms.forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      var btn      = form.querySelector('button[type="submit"]');
-      var feedback = form.querySelector(".form-feedback");
-      var origText = btn ? btn.textContent.trim() : "Submit";
+      var btn       = form.querySelector('button[type="submit"]');
+      var feedback  = form.querySelector(".form-feedback");
+      var origText  = btn ? btn.textContent.trim() : "Submit";
       var scriptUrl = form.getAttribute("data-spreadsheet") || "";
 
       // Reset feedback
       if (feedback) { feedback.className = "form-feedback"; feedback.textContent = ""; }
 
-      // Guard: script URL not yet set
+      // Guard: URL not configured
       if (!scriptUrl || scriptUrl === "YOUR_APPS_SCRIPT_URL") {
         if (feedback) {
           feedback.className = "form-feedback error";
-          feedback.textContent =
-            "⚠ Form not yet connected to Google Sheets. Follow the setup steps in google-apps-script/Code.gs.";
+          feedback.textContent = "⚠ Form not yet connected to Google Sheets.";
         }
         return;
       }
@@ -264,52 +268,68 @@
         return;
       }
 
-      // Collect form fields into a plain object
+      // Collect values
       var isContact = form.classList.contains("contact-form");
-      var payload = {
-        formType:   isContact ? "Contact Enquiry" : "Course Application",
-        name:       (form.querySelector("[name='name']")        || {}).value || "",
-        email:      (form.querySelector("[name='email']")       || {}).value || "",
-        phone:      (form.querySelector("[name='phone']")       || {}).value || "",
-        subject:    (form.querySelector("[name='subject']")     || {}).value || "",
-        course:     (form.querySelector("[name='course']")      || {}).value || "",
-        message:    (form.querySelector("[name='message']")     || {}).value || "",
-        background: (form.querySelector("[name='background']")  || {}).value || ""
+      var fields = {
+        formType:    isContact ? "Contact Enquiry" : "Course Application",
+        name:        (form.querySelector("[name='name']")        || {}).value || "",
+        email:       (form.querySelector("[name='email']")       || {}).value || "",
+        phone:       (form.querySelector("[name='phone']")       || {}).value || "",
+        subject:     (form.querySelector("[name='subject']")     || {}).value || "",
+        course:      (form.querySelector("[name='course']")      || {}).value || "",
+        message:     (form.querySelector("[name='message']")     || {}).value || "",
+        background:  (form.querySelector("[name='background']")  || {}).value || ""
       };
 
       // Loading state
       if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
 
-      // Send as text/plain JSON — the only body format that survives Google's
-      // no-cors redirect chain (script.google.com → script.googleusercontent.com)
-      fetch(scriptUrl, {
-        method:  "POST",
-        mode:    "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body:    JSON.stringify(payload)
-      })
-        .then(function () {
-          // Response is opaque due to no-cors — data was sent successfully
-          form.reset();
-          if (feedback) {
-            feedback.className = "form-feedback success";
-            feedback.textContent = isContact
-              ? "✓ Message received! We'll reply within two working days."
-              : "✓ Application submitted! We'll be in touch within two working days.";
-          }
-          if (btn) {
-            btn.textContent = "Sent ✓";
-            setTimeout(function () { btn.disabled = false; btn.textContent = origText; }, 5000);
-          }
-        })
-        .catch(function () {
-          if (feedback) {
-            feedback.className = "form-feedback error";
-            feedback.textContent =
-              "✗ Could not send — please try again or call us on +44 207 0990 956.";
-          }
-          if (btn) { btn.disabled = false; btn.textContent = origText; }
-        });
+      // ── Hidden iframe technique ──────────────────────────────────────────────
+      // Bypasses CORS and Google's redirect issue entirely.
+      // The browser's native form POST follows redirects and delivers the body.
+
+      var frameName = "dais-frame-" + Date.now();
+
+      var iframe = document.createElement("iframe");
+      iframe.name = frameName;
+      iframe.style.cssText = "display:none;position:absolute;width:0;height:0;border:0;";
+      document.body.appendChild(iframe);
+
+      var tempForm = document.createElement("form");
+      tempForm.method = "POST";
+      tempForm.action = scriptUrl;
+      tempForm.target = frameName;
+      tempForm.style.display = "none";
+
+      Object.keys(fields).forEach(function (key) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = fields[key];
+        tempForm.appendChild(input);
+      });
+
+      document.body.appendChild(tempForm);
+      tempForm.submit();
+
+      // Can't read iframe response (cross-origin) so show success after delay.
+      // Apps Script typically responds in under 2 seconds.
+      setTimeout(function () {
+        form.reset();
+        if (feedback) {
+          feedback.className = "form-feedback success";
+          feedback.textContent = isContact
+            ? "✓ Message received! We'll reply within two working days."
+            : "✓ Application submitted! We'll be in touch within two working days.";
+        }
+        if (btn) {
+          btn.textContent = "Sent ✓";
+          setTimeout(function () { btn.disabled = false; btn.textContent = origText; }, 4000);
+        }
+        // Cleanup
+        try { document.body.removeChild(iframe); }   catch (ex) {}
+        try { document.body.removeChild(tempForm); } catch (ex) {}
+      }, 2500);
     });
   });
 

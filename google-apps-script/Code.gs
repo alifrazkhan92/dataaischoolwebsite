@@ -33,14 +33,9 @@ var HEADERS = [
 
 function doPost(e) {
   try {
-    // Parse JSON sent as text/plain (survives Google's no-cors redirect chain)
-    var p = {};
-    try {
-      p = JSON.parse(e.postData.contents);
-    } catch (parseErr) {
-      // Fallback: try URL-encoded parameters
-      p = e.parameter || {};
-    }
+    // Submitted via hidden iframe form POST → standard URL-encoded body
+    // Apps Script exposes these directly as e.parameter
+    var p = e.parameter || {};
 
     var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
     var sheet = ss.getSheetByName(SHEET_NAME);
