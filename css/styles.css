@@ -782,6 +782,24 @@ html[data-theme="dark"] .values-list .value-icon {
 }
 .faq-item p a { color: var(--accent); text-decoration: underline; }
 
+/* ─── Blog listing page — constrained width ─────────────────────────────────── */
+.blog-listing {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.blog-listing .page-title,
+.blog-listing .page-intro { max-width: 640px; }
+
+.blog-hero-img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-card);
+}
+.blog-hero-img img { width: 100%; height: auto; display: block; }
+
 /* ─── Blog filter bar ────────────────────────────────────────────────────────── */
 .blog-filter {
   display: flex;
