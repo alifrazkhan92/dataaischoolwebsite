@@ -264,26 +264,29 @@
         return;
       }
 
-      // Collect form fields into URL-encoded params
+      // Collect form fields into a plain object
       var isContact = form.classList.contains("contact-form");
-      var params = new URLSearchParams();
-      params.append("formType", isContact ? "Contact Enquiry" : "Course Application");
-      params.append("name",     (form.querySelector("[name='name']")       || {}).value || "");
-      params.append("email",    (form.querySelector("[name='email']")      || {}).value || "");
-      params.append("phone",    (form.querySelector("[name='phone']")      || {}).value || "");
-      params.append("subject",  (form.querySelector("[name='subject']")    || {}).value || "");
-      params.append("course",   (form.querySelector("[name='course']")     || {}).value || "");
-      params.append("message",  (form.querySelector("[name='message']")    || {}).value || "");
-      params.append("background",(form.querySelector("[name='background']")|| {}).value || "");
+      var payload = {
+        formType:   isContact ? "Contact Enquiry" : "Course Application",
+        name:       (form.querySelector("[name='name']")        || {}).value || "",
+        email:      (form.querySelector("[name='email']")       || {}).value || "",
+        phone:      (form.querySelector("[name='phone']")       || {}).value || "",
+        subject:    (form.querySelector("[name='subject']")     || {}).value || "",
+        course:     (form.querySelector("[name='course']")      || {}).value || "",
+        message:    (form.querySelector("[name='message']")     || {}).value || "",
+        background: (form.querySelector("[name='background']")  || {}).value || ""
+      };
 
       // Loading state
       if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
 
-      // POST to Apps Script with no-cors (response is opaque but data is saved)
+      // Send as text/plain JSON — the only body format that survives Google's
+      // no-cors redirect chain (script.google.com → script.googleusercontent.com)
       fetch(scriptUrl, {
-        method: "POST",
-        mode:   "no-cors",
-        body:   params
+        method:  "POST",
+        mode:    "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body:    JSON.stringify(payload)
       })
         .then(function () {
           // Response is opaque due to no-cors — data was sent successfully
