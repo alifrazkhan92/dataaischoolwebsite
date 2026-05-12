@@ -6,6 +6,10 @@
   --radius: 10px;
   --radius-lg: 18px;
   --transition: 0.2s ease;
+
+  /* Layout — controls max content width and responsive side margins site-wide */
+  --site-width: 1040px;
+  --side-pad: clamp(1.25rem, 5vw, 3.5rem);
 }
 
 /* ─── Light theme: Warm Parchment + Oxford Navy + Academic Gold ──────────────── */
@@ -148,9 +152,9 @@ a:hover { color: var(--accent-hover); }
 }
 
 .header-inner {
-  max-width: 1200px;
+  max-width: var(--site-width);
   margin: 0 auto;
-  padding: 0.875rem 1.5rem;
+  padding: 0.875rem var(--side-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -237,9 +241,9 @@ html[data-theme="dark"] .logo span {
 /* ─── Main content wrapper ───────────────────────────────────────────────────── */
 main {
   flex: 1;
-  max-width: 1200px;
+  max-width: var(--site-width);
   margin: 0 auto;
-  padding: 2.5rem 1.5rem;
+  padding: 2.5rem var(--side-pad);
   width: 100%;
 }
 
@@ -625,9 +629,9 @@ html[data-theme="dark"] .course-card .badge {
   margin-top: auto;
 }
 .footer-inner {
-  max-width: 1200px;
+  max-width: var(--site-width);
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2rem var(--side-pad);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -989,7 +993,7 @@ html[data-theme="dark"] .values-list .value-icon {
   padding: 1rem 1.5rem;
 }
 .cookie-banner-inner {
-  max-width: 900px;
+  max-width: var(--site-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
