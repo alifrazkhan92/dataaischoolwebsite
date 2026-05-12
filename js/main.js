@@ -222,30 +222,27 @@
     });
   });
 
-  // ─── Form submission (AJAX via Formspree) ────────────────────────────────────
+  // ─── Form submission → Google Sheets via Apps Script ─────────────────────────
 
   var forms = document.querySelectorAll(".contact-form, .apply-form");
   forms.forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      var btn = form.querySelector('button[type="submit"]');
+      var btn      = form.querySelector('button[type="submit"]');
       var feedback = form.querySelector(".form-feedback");
-      var originalText = btn ? btn.textContent.trim() : "Submit";
-      var action = form.getAttribute("action") || "";
+      var origText = btn ? btn.textContent.trim() : "Submit";
+      var scriptUrl = form.getAttribute("data-spreadsheet") || "";
 
-      // Clear previous feedback
-      if (feedback) {
-        feedback.className = "form-feedback";
-        feedback.textContent = "";
-      }
+      // Reset feedback
+      if (feedback) { feedback.className = "form-feedback"; feedback.textContent = ""; }
 
-      // Guard: Formspree ID not yet configured
-      if (action.indexOf("YOUR_FORM_ID") !== -1 || action === "#" || action === "") {
+      // Guard: script URL not yet set
+      if (!scriptUrl || scriptUrl === "YOUR_APPS_SCRIPT_URL") {
         if (feedback) {
           feedback.className = "form-feedback error";
           feedback.textContent =
-            "⚠ Form not yet connected. Please set up a Formspree endpoint in the HTML action attribute (see code comment).";
+            "⚠ Form not yet connected to Google Sheets. Follow the setup steps in google-apps-script/Code.gs.";
         }
         return;
       }
@@ -256,9 +253,7 @@
         if (!field.value.trim()) {
           field.style.borderColor = "var(--gold)";
           invalid = true;
-          field.addEventListener("input", function () {
-            field.style.borderColor = "";
-          }, { once: true });
+          field.addEventListener("input", function () { field.style.borderColor = ""; }, { once: true });
         }
       });
       if (invalid) {
@@ -269,51 +264,48 @@
         return;
       }
 
-      // Submit via fetch
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = "Sending…";
-      }
+      // Collect form fields into URL-encoded params
+      var isContact = form.classList.contains("contact-form");
+      var params = new URLSearchParams();
+      params.append("formType", isContact ? "Contact Enquiry" : "Course Application");
+      params.append("name",     (form.querySelector("[name='name']")       || {}).value || "");
+      params.append("email",    (form.querySelector("[name='email']")      || {}).value || "");
+      params.append("phone",    (form.querySelector("[name='phone']")      || {}).value || "");
+      params.append("subject",  (form.querySelector("[name='subject']")    || {}).value || "");
+      params.append("course",   (form.querySelector("[name='course']")     || {}).value || "");
+      params.append("message",  (form.querySelector("[name='message']")    || {}).value || "");
+      params.append("background",(form.querySelector("[name='background']")|| {}).value || "");
 
-      fetch(action, {
+      // Loading state
+      if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
+
+      // POST to Apps Script with no-cors (response is opaque but data is saved)
+      fetch(scriptUrl, {
         method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" }
+        mode:   "no-cors",
+        body:   params
       })
-        .then(function (res) {
-          if (res.ok) {
-            form.reset();
-            if (feedback) {
-              feedback.className = "form-feedback success";
-              feedback.textContent =
-                "✓ Message sent! We'll get back to you within two working days.";
-            }
-            if (btn) {
-              btn.textContent = "Sent ✓";
-              setTimeout(function () {
-                btn.disabled = false;
-                btn.textContent = originalText;
-              }, 4000);
-            }
-          } else {
-            return res.json().then(function (data) {
-              throw new Error(
-                (data.errors && data.errors.map(function (e) { return e.message; }).join(", ")) ||
-                "Submission failed."
-              );
-            });
+        .then(function () {
+          // Response is opaque due to no-cors — data was sent successfully
+          form.reset();
+          if (feedback) {
+            feedback.className = "form-feedback success";
+            feedback.textContent = isContact
+              ? "✓ Message received! We'll reply within two working days."
+              : "✓ Application submitted! We'll be in touch within two working days.";
+          }
+          if (btn) {
+            btn.textContent = "Sent ✓";
+            setTimeout(function () { btn.disabled = false; btn.textContent = origText; }, 5000);
           }
         })
-        .catch(function (err) {
+        .catch(function () {
           if (feedback) {
             feedback.className = "form-feedback error";
             feedback.textContent =
-              "✗ " + (err.message || "Something went wrong. Please try again or call us on +44 207 0990 956.");
+              "✗ Could not send — please try again or call us on +44 207 0990 956.";
           }
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = originalText;
-          }
+          if (btn) { btn.disabled = false; btn.textContent = origText; }
         });
     });
   });
