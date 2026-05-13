@@ -32,7 +32,10 @@
         gap: 2rem;
         margin-bottom: 2.5rem;
         align-items: start;
+        margin-top: 0;
       }
+      .adm-intro-grid .page-title { margin-top: 0; padding-top: 0; }
+      .adm-intro-grid .page-intro { margin-top: 0.5rem; }
       .adm-checklist {
         background: var(--bg-elevated);
         border: 1px solid var(--border);
@@ -347,14 +350,15 @@
     </div>
 
     <main>
-      <h1 class="page-title">NCFE Admission Application</h1>
-      <p class="page-intro">Complete all sections of this form to apply for a regulated qualification. Your application and documents will be stored securely on our encrypted Google Drive.</p>
-
       <div class="adm-intro-grid">
+        <!-- LEFT: heading + all description copy -->
         <div>
+          <h1 class="page-title" style="margin-top:0;padding-top:0">NCFE Admission Application</h1>
+          <p class="page-intro" style="margin-bottom:1rem">Complete all sections of this form to apply for a regulated qualification. Your application and documents will be stored securely on our encrypted Google Drive.</p>
           <p style="color:var(--text-muted);font-size:0.9375rem;line-height:1.7">This is the official admission form for regulated NCFE qualifications delivered by The Data and AI School of London. All fields marked <strong style="color:#c00">*</strong> are required. Your data is processed in accordance with our <a href="privacy-policy.html">Privacy Policy</a> and UK GDPR.</p>
           <p style="color:var(--text-muted);font-size:0.9375rem;line-height:1.7;margin-top:0.75rem">Questions before applying? Call <a href="tel:+442070990956">+44 207 0990 956</a> or <a href="contact.html">send a message</a>.</p>
         </div>
+        <!-- RIGHT: documents checklist (now vertically aligned with heading) -->
         <div class="adm-checklist">
           <h3>Documents needed</h3>
           <ul>
