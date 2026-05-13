@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#0E3268"/>
+    </linearGradient>
+    <clipPath id="circle"><circle cx="100" cy="100" r="100"/></clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+
+  <!-- Subtle pattern -->
+  <g clip-path="url(#circle)" opacity="0.06" stroke="#C89930" stroke-width="0.5" fill="none">
+    <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="55"/>
+    <circle cx="100" cy="100" r="80"/>
+  </g>
+
+  <!-- Body / smart blouse -->
+  <ellipse cx="100" cy="198" rx="62" ry="36" fill="#0A2240"/>
+  <path d="M38,200 Q52,158 84,145 Q100,150 116,145 Q148,158 162,200Z" fill="#0E3268"/>
+  <!-- Collar detail -->
+  <path d="M90,140 Q100,148 110,140 L107,130 Q100,136 93,130Z" fill="#C89930" opacity="0.7"/>
+
+  <!-- Hair — longer, wavy, dark brown, over shoulders -->
+  <ellipse cx="100" cy="78" rx="40" ry="38" fill="#2A1A08"/>
+  <!-- Hair sides flowing down -->
+  <path d="M60,80 Q58,120 62,148 Q70,158 80,155 Q68,130 64,100 Q62,90 60,80Z" fill="#2A1A08"/>
+  <path d="M140,80 Q142,120 138,148 Q130,158 120,155 Q132,130 136,100 Q138,90 140,80Z" fill="#2A1A08"/>
+  <!-- Hair parting highlight -->
+  <path d="M100,46 Q103,62 104,75" fill="none" stroke="#3A2A10" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Neck -->
+  <rect x="91" y="120" width="18" height="22" rx="3" fill="#D4A878"/>
+
+  <!-- Face — slightly younger, rounder -->
+  <ellipse cx="100" cy="97" rx="33" ry="35" fill="#D4A878"/>
+
+  <!-- Eyes -->
+  <ellipse cx="88" cy="94" rx="5" ry="5.5" fill="#1A1008"/>
+  <ellipse cx="112" cy="94" rx="5" ry="5.5" fill="#1A1008"/>
+  <circle cx="89.5" cy="92.5" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="113.5" cy="92.5" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+
+  <!-- Eyebrows — naturally arched -->
+  <path d="M82,85 Q88,81 94,84" fill="none" stroke="#2A1A08" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M106,84 Q112,81 118,85" fill="none" stroke="#2A1A08" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Nose — small and feminine -->
+  <path d="M97,101 Q100,108 103,101" fill="none" stroke="#B8886A" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Bright, youthful smile -->
+  <path d="M88,114 Q100,124 112,114" fill="none" stroke="#1A1008" stroke-width="2.2" stroke-linecap="round"/>
+  <!-- Lip hint -->
+  <path d="M90,114 Q100,117 110,114" fill="#D4886A" opacity="0.25"/>
+
+  <!-- Dimple -->
+  <circle cx="114" cy="116" r="1.5" fill="#C48060" opacity="0.4"/>
+
+  <!-- Small gold earrings -->
+  <circle cx="67" cy="100" r="3" fill="#C89930"/>
+  <circle cx="133" cy="100" r="3" fill="#C89930"/>
+</svg>
