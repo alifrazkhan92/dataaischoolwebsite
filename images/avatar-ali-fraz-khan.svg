@@ -1,69 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0A2240"/>
-      <stop offset="100%" style="stop-color:#0E3268"/>
+    <linearGradient id="bgGradAFK" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d2e54;stop-opacity:1" />
     </linearGradient>
-    <clipPath id="circle"><circle cx="100" cy="100" r="100"/></clipPath>
   </defs>
-  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
-
-  <!-- Subtle pattern -->
-  <g clip-path="url(#circle)" opacity="0.06" stroke="#C89930" stroke-width="0.5" fill="none">
-    <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="55"/>
-    <circle cx="100" cy="100" r="80"/>
-  </g>
-
-  <!-- Body / suit -->
-  <ellipse cx="100" cy="195" rx="58" ry="38" fill="#0A2240"/>
-  <!-- Shirt collar -->
-  <polygon points="86,145 100,158 114,145 108,132 92,132" fill="#F5F0E8"/>
-  <!-- Tie -->
-  <polygon points="100,148 96,158 100,175 104,158" fill="#C89930"/>
-  <!-- Jacket -->
-  <path d="M42,200 Q55,155 86,145 L92,132 Q100,138 100,145 Q100,138 108,132 L114,145 Q145,155 158,200Z" fill="#0D2745"/>
-  <!-- Lapels -->
-  <path d="M92,132 Q100,150 86,145" fill="#1A3A6A"/>
-  <path d="M108,132 Q100,150 114,145" fill="#1A3A6A"/>
-
-  <!-- Neck -->
-  <rect x="90" y="118" width="20" height="18" rx="4" fill="#C8956A"/>
-
-  <!-- Head -->
-  <ellipse cx="100" cy="100" rx="36" ry="38" fill="#C8956A"/>
-
-  <!-- Hair — dark, short professional -->
-  <path d="M64,95 Q64,62 100,62 Q136,62 136,95 Q136,80 128,72 Q118,60 100,60 Q82,60 72,72 Q64,80 64,95Z" fill="#1A1008"/>
-  <!-- Hair sides -->
-  <path d="M64,95 Q64,85 68,78 L68,92 Z" fill="#1A1008"/>
-  <path d="M136,95 Q136,85 132,78 L132,92 Z" fill="#1A1008"/>
-
-  <!-- Eyes -->
-  <ellipse cx="88" cy="98" rx="5.5" ry="5" fill="#1A1008"/>
-  <ellipse cx="112" cy="98" rx="5.5" ry="5" fill="#1A1008"/>
-  <circle cx="89.5" cy="97" r="1.5" fill="#FFFFFF" opacity="0.7"/>
-  <circle cx="113.5" cy="97" r="1.5" fill="#FFFFFF" opacity="0.7"/>
-
-  <!-- Eyebrows -->
-  <path d="M82,90 Q88,86 94,89" fill="none" stroke="#1A1008" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M106,89 Q112,86 118,90" fill="none" stroke="#1A1008" stroke-width="2.5" stroke-linecap="round"/>
-
-  <!-- Nose -->
-  <path d="M97,103 Q100,112 103,103" fill="none" stroke="#B07850" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- Smile -->
-  <path d="M89,116 Q100,124 111,116" fill="none" stroke="#1A1008" stroke-width="2" stroke-linecap="round"/>
-
-  <!-- Short beard hint -->
-  <path d="M82,115 Q90,125 100,126 Q110,125 118,115" fill="none" stroke="#2A1A0A" stroke-width="1" opacity="0.4"/>
-
-  <!-- Glasses -->
-  <rect x="80" y="93" width="16" height="11" rx="4" fill="none" stroke="#C89930" stroke-width="1.5"/>
-  <rect x="104" y="93" width="16" height="11" rx="4" fill="none" stroke="#C89930" stroke-width="1.5"/>
-  <line x1="96" y1="98" x2="104" y2="98" stroke="#C89930" stroke-width="1.5"/>
-  <line x1="64" y1="98" x2="80" y2="98" stroke="#C89930" stroke-width="1"/>
-  <line x1="120" y1="98" x2="136" y2="98" stroke="#C89930" stroke-width="1"/>
-
-  <!-- Gold ring (FHEA) on collar area -->
-  <circle cx="148" cy="160" r="0" fill="none"/>
+  <circle cx="100" cy="100" r="100" fill="url(#bgGradAFK)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="#C89930" stroke-width="3"/>
+  <circle cx="100" cy="100" r="85" fill="none" stroke="#C89930" stroke-width="0.75" stroke-dasharray="4 3"/>
+  <text x="100" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="54" font-weight="700" fill="#C89930" text-anchor="middle" letter-spacing="3">AFK</text>
 </svg>
