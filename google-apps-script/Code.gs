@@ -33,8 +33,30 @@ var HEADERS = [
 ];
 
 // ── doPost — receives form submissions ─────────────────────────────────────────
+//
+// Routes incoming POST requests:
+//   • JSON body with formType = "admission" → Admission.gs → handleAdmissionPost()
+//   • URL-encoded params (existing iframe technique) → contact / enquiry handler below
+//
+// After adding Admission.gs, enable Drive API:
+//   Services (+ icon) → Google Drive API → Add
+// Then: Deploy → Manage deployments → Edit → New version → Deploy  (URL unchanged)
 
 function doPost(e) {
+
+  // ── Route: admission form sends JSON via fetch (no-cors, text/plain body) ────
+  if (e.postData && e.postData.contents) {
+    try {
+      var parsed = JSON.parse(e.postData.contents);
+      if (parsed.formType === 'admission') {
+        return handleAdmissionPost(parsed);   // defined in Admission.gs
+      }
+    } catch (routeErr) {
+      // Not valid JSON — fall through to contact handler
+    }
+  }
+
+  // ── Existing contact / enquiry form handler ───────────────────────────────────
   try {
     var p = e.parameter || {};
 
