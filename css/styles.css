@@ -391,10 +391,6 @@ main {
   border: 1px solid var(--border);
   object-fit: cover;
 }
-@media (max-width: 768px) {
-  .two-col-image { grid-template-columns: 1fr; }
-}
-
 /* ─── Buttons ────────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -719,25 +715,147 @@ html[data-theme="dark"] .values-list .value-icon {
   border: 0;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+/* ─── Responsive — tablet / large mobile (≤768px) ───────────────────────────── */
 @media (max-width: 768px) {
+
+  /* Navigation */
   .menu-toggle { display: block; }
   .nav-main {
     display: none;
     width: 100%;
     flex-direction: column;
     align-items: stretch;
-    padding-top: 1rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--border);
     margin-top: 0.5rem;
   }
   .nav-main.is-open { display: flex; }
-  .nav-main a { padding: 0.625rem 0.75rem; }
+  .nav-main a { padding: 0.7rem 0.75rem; font-size: 1rem; }
   .header-inner { flex-direction: column; align-items: stretch; }
-  .hero { padding: 3rem 0 2rem; }
+
+  /* Hero section */
+  .hero { padding: 2.5rem 0 1.75rem; }
+  .hero h1 { font-size: clamp(1.75rem, 6vw, 2.5rem); }
+  .hero .tagline { font-size: 1rem; margin-bottom: 1.75rem; }
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+  .hero-image {
+    margin-top: 1.75rem;
+    border-radius: var(--radius);
+  }
+  .hero-image img { max-height: 220px; object-fit: cover; }
+
+  /* Section titles */
   .section-title { font-size: 1.5rem; }
+  .section-subtitle { font-size: 0.9375rem; }
+
+  /* Page titles (inner pages) */
   .page-title { font-size: 1.75rem; }
-  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .page-intro { font-size: 1rem; }
+
+  /* Banner images (about, courses pages) */
+  .banner-image { border-radius: var(--radius); }
+  .banner-image img { max-height: 180px; }
+
+  /* Image grids */
+  .image-grid { grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+  .image-grid img { height: 160px; }
+
+  /* Img with caption */
+  .img-with-caption img { max-height: 200px; }
+
+  /* Two-col image */
+  .two-col-image { grid-template-columns: 1fr; }
+
+  /* Course cards */
+  .course-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .course-card { padding: 1.25rem; }
+
+  /* Content sections */
+  .content-section { margin-bottom: 2.5rem; }
+
+  /* Blog listing page */
+  .blog-hero-img img { max-height: 160px; object-fit: cover; }
+  .blog-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .blog-card-img { height: 140px; }
+
+  /* Blog post pages */
+  .blog-post { padding: 0; }
+  .blog-post-header h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
+  .blog-post-header img { max-height: 200px; object-fit: cover; }
+
+  /* Footer */
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .footer-nav { flex-wrap: wrap; gap: 0.25rem 1rem; }
+}
+
+/* ─── Responsive — small mobile (≤480px) ────────────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Hero */
+  .hero { padding: 2rem 0 1.5rem; }
+  .hero h1 { font-size: 1.625rem; letter-spacing: -0.01em; }
+  .hero .tagline { font-size: 0.9375rem; }
+  .hero-image img { max-height: 180px; }
+
+  /* Titles */
+  .page-title { font-size: 1.5rem; }
+  .section-title { font-size: 1.375rem; }
+
+  /* Banners */
+  .banner-image img { max-height: 140px; }
+
+  /* Image grid: single column on small phones */
+  .image-grid { grid-template-columns: 1fr; }
+  .image-grid img { height: 200px; }
+
+  /* Img with caption */
+  .img-with-caption img { max-height: 170px; }
+
+  /* Blog hero */
+  .blog-hero-img img { max-height: 130px; }
+
+  /* Blog grid: single column */
+  .blog-grid { grid-template-columns: 1fr; }
+  .blog-card-img { height: 160px; }
+
+  /* Course grid: single column */
+  .course-grid { grid-template-columns: 1fr; }
+
+  /* Blog post images */
+  .blog-post-header img { max-height: 170px; }
+
+  /* Buttons full-width in hero on smallest screens */
+  .hero-actions .btn { max-width: 100%; }
+
+  /* Blog CTA buttons */
+  .blog-cta .btn {
+    display: block;
+    width: 100%;
+    margin-right: 0 !important;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+
+  /* Values list */
+  .values-list .value-icon { width: 34px; height: 34px; min-width: 34px; font-size: 0.875rem; }
+
+  /* FAQ */
+  .faq-item summary { font-size: 0.875rem; padding: 0.875rem 1rem; }
+
+  /* Forms */
+  .contact-form, .apply-form { max-width: 100%; }
+
+  /* Policy TOC */
+  .policy-toc ol { columns: 1; }
 }
 
 /* ─── FAQ / AEO Section ──────────────────────────────────────────────────────── */
