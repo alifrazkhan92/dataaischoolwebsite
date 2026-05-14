@@ -268,28 +268,194 @@ function _admSaveToSheet(data, folderUrl, filesStr) {
 function _admSendConfirmation(data) {
  try {
  function s(v) { return String(v || '').replace(/<[^>]*>/g, '').trim(); }
- var name = s(data.firstName) + ' ' + s(data.lastName);
- MailApp.sendEmail({
- to: s(data.email),
- subject: 'Application Received, The Data and AI School of London',
- body:
- 'Dear ' + name + ',\n\n' +
+ var firstName = s(data.firstName);
+ var lastName  = s(data.lastName);
+ var fullName  = firstName + ' ' + lastName;
+ var course    = s(data.course);
+ var toEmail   = s(data.email);
+
+ var subject = 'Application Received, The Data and AI School of London';
+
+ // Plain-text fallback
+ var plain =
+ 'Dear ' + fullName + ',\n\n' +
  'Thank you for submitting your application to The Data and AI School of London.\n\n' +
- 'Course applied for:\n ' + s(data.course) + '\n\n' +
+ 'Course applied for: ' + course + '\n\n' +
  'What happens next:\n' +
  ' 1. Our admissions team will review your application within 3 working days.\n' +
  ' 2. You will receive a formal offer letter or a request for further information.\n' +
- ' 3. Once you accept your offer, you will receive enrolment confirmation\n' +
- ' and access details for our online learning platform (VLE).\n\n' +
+ ' 3. Once you accept your offer, you will receive enrolment confirmation and\n' +
+ ' access details for our online learning platform (VLE).\n\n' +
  'Questions? Email info@dataaischool.com or call +44 207 0990 956.\n\n' +
- 'Kind regards,\n\n' +
+ 'Kind regards,\n' +
  'Sheherbano Khan\n' +
  'Registrar & Learner Support Lead\n' +
- 'The Data and AI School of London'
+ 'The Data and AI School of London\n' +
+ 'www.dataaischool.com';
+
+ var html = _admBuildConfirmationHtml(firstName, fullName, course);
+
+ MailApp.sendEmail(toEmail, subject, plain, {
+ htmlBody: html,
+ name: 'The Data and AI School of London',
+ replyTo: 'info@dataaischool.com'
  });
  } catch (err) {
  Logger.log('Confirmation email failed: ' + err.message);
  }
+}
+
+function _admBuildConfirmationHtml(firstName, fullName, course) {
+ var navy   = '#0A2240';
+ var gold   = '#C89930';
+ var goldDk = '#A8690A';
+ var cream  = '#F4F1EA';
+ var text   = '#1F1F1F';
+ var muted  = '#5A5A5A';
+ var green  = '#1B6B3A';
+ var serif  = "Georgia, 'Times New Roman', Times, serif";
+
+ // Course confirmation block
+ var courseBlock = course
+ ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;border-collapse:collapse;background:' + cream + ';border-left:4px solid ' + gold + ';">' +
+ '<tr><td style="padding:16px 20px;font-family:' + serif + ';">' +
+ '<div style="font-size:11px;color:' + goldDk + ';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 8px 0;">Course applied for</div>' +
+ '<div style="font-size:16px;color:' + navy + ';font-weight:700;">' + _admEscape(course) + '</div>' +
+ '</td></tr>' +
+ '</table>'
+ : '';
+
+ // "What happens next" steps
+ function step(num, label, detail) {
+ return '<tr>' +
+ '<td valign="top" style="padding:0 14px 0 0;font-family:' + serif + ';">' +
+ '<div style="width:32px;height:32px;border-radius:50%;background:' + navy + ';text-align:center;line-height:32px;font-size:14px;font-weight:700;color:' + gold + ';font-family:' + serif + ';">' + num + '</div>' +
+ '</td>' +
+ '<td style="padding:0 0 20px 0;font-family:' + serif + ';border-bottom:1px solid #E5DFD3;">' +
+ '<div style="font-size:15px;font-weight:700;color:' + navy + ';margin:4px 0 4px 0;">' + label + '</div>' +
+ '<div style="font-size:14px;color:' + muted + ';line-height:1.6;">' + detail + '</div>' +
+ '</td>' +
+ '</tr>' +
+ '<tr><td colspan="2" style="padding:8px 0;"></td></tr>';
+ }
+
+ var stepsTable =
+ '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;border-collapse:collapse;">' +
+ step('1',
+ 'Application review (within 3 working days)',
+ 'Our admissions team will assess your application and documents.'
+ ) +
+ step('2',
+ 'Formal offer or further information request',
+ 'You will receive either a conditional/unconditional offer letter or a request for any missing documents.'
+ ) +
+ step('3',
+ 'Enrolment confirmation',
+ 'Once you accept your offer, we will send your enrolment confirmation and access details for our online learning platform (VLE).'
+ ) +
+ '</table>';
+
+ return (
+ '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+ '<html xmlns="http://www.w3.org/1999/xhtml">' +
+ '<head>' +
+ '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' +
+ '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
+ '<title>Application received</title>' +
+ '</head>' +
+ '<body style="margin:0;padding:0;background-color:' + cream + ';font-family:' + serif + ';">' +
+
+ '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + cream + '" style="background-color:' + cream + ';">' +
+ '<tr><td align="center" style="padding:32px 16px;">' +
+
+ '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="max-width:600px;background-color:#FFFFFF;border:1px solid #E5DFD3;">' +
+
+ // Header
+ '<tr><td bgcolor="' + navy + '" align="center" style="background-color:' + navy + ';padding:32px 24px;border-bottom:4px solid ' + gold + ';">' +
+ '<div style="font-family:' + serif + ';color:#FFFFFF;font-size:22px;font-weight:700;line-height:1.2;">The Data and AI</div>' +
+ '<div style="font-family:' + serif + ';color:' + gold + ';font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-top:6px;">School of London</div>' +
+ '</td></tr>' +
+
+ // Green confirmation banner
+ '<tr><td bgcolor="' + green + '" align="center" style="background-color:' + green + ';padding:14px 24px;">' +
+ '<div style="font-family:' + serif + ';color:#FFFFFF;font-size:15px;font-weight:600;letter-spacing:0.5px;">&#10003;&nbsp; Application successfully received</div>' +
+ '</td></tr>' +
+
+ // Body
+ '<tr><td style="padding:40px 36px 24px;font-family:' + serif + ';">' +
+
+ '<h1 style="margin:0 0 20px 0;font-family:' + serif + ';font-size:24px;font-weight:700;color:' + navy + ';line-height:1.3;">Thank you for your application</h1>' +
+
+ '<p style="margin:0 0 16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Dear ' + _admEscape(fullName) + ',</p>' +
+
+ '<p style="margin:0 0 16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Thank you for submitting your application to <strong style="color:' + navy + ';">The Data and AI School of London</strong>. We have received your application and supporting documents and will be in touch shortly.</p>' +
+
+ courseBlock +
+
+ '<h2 style="margin:28px 0 16px 0;font-family:' + serif + ';font-size:18px;font-weight:700;color:' + navy + ';">What happens next</h2>' +
+
+ stepsTable +
+
+ '<p style="margin:16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">If you have any questions in the meantime, please do not hesitate to contact us:</p>' +
+
+ // Contact rows
+ '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 20px 0;border-collapse:collapse;">' +
+ '<tr><td style="padding:6px 0;font-family:' + serif + ';font-size:15px;color:' + text + ';">' +
+ '<strong style="color:' + navy + ';">Email:</strong> &nbsp;' +
+ '<a href="mailto:info@dataaischool.com" style="color:' + goldDk + ';text-decoration:none;font-weight:600;">info@dataaischool.com</a>' +
+ '</td></tr>' +
+ '<tr><td style="padding:6px 0;font-family:' + serif + ';font-size:15px;color:' + text + ';">' +
+ '<strong style="color:' + navy + ';">Phone:</strong> &nbsp;' +
+ '<a href="tel:+442070990956" style="color:' + goldDk + ';text-decoration:none;font-weight:600;">+44 207 0990 956</a>' +
+ '</td></tr>' +
+ '</table>' +
+
+ // CTA button
+ '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;border-collapse:collapse;">' +
+ '<tr><td bgcolor="' + navy + '" align="center" style="background-color:' + navy + ';border-radius:4px;">' +
+ '<a href="https://www.dataaischool.com/courses.html" style="display:inline-block;padding:14px 32px;font-family:' + serif + ';font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.5px;">Explore our courses &rarr;</a>' +
+ '</td></tr>' +
+ '</table>' +
+
+ '<p style="margin:24px 0 4px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Kind regards,</p>' +
+ '<p style="margin:0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">' +
+ '<strong style="color:' + navy + ';">Sheherbano Khan</strong><br/>' +
+ '<span style="font-size:14px;color:' + muted + ';">Registrar &amp; Learner Support Lead</span><br/>' +
+ '<span style="font-size:14px;color:' + muted + ';">The Data and AI School of London</span>' +
+ '</p>' +
+
+ '</td></tr>' +
+
+ // Footer
+ '<tr><td bgcolor="' + cream + '" align="center" style="background-color:' + cream + ';padding:20px 36px;border-top:1px solid #E5DFD3;font-family:' + serif + ';">' +
+ '<div style="font-size:13px;color:' + navy + ';line-height:1.6;">' +
+ '<a href="https://www.dataaischool.com" style="color:' + navy + ';text-decoration:none;font-weight:600;">www.dataaischool.com</a>' +
+ ' &nbsp;&#183;&nbsp; ' +
+ '<a href="tel:+442070990956" style="color:' + navy + ';text-decoration:none;">+44 207 0990 956</a>' +
+ ' &nbsp;&#183;&nbsp; ' +
+ '<a href="mailto:info@dataaischool.com" style="color:' + navy + ';text-decoration:none;">info@dataaischool.com</a>' +
+ '</div>' +
+ '<div style="font-size:11px;color:' + muted + ';margin-top:10px;line-height:1.6;">' +
+ 'The Data and AI School of London &nbsp;&#183;&nbsp; ICO Registration <strong>ZC086597</strong>' +
+ '</div>' +
+ '<div style="font-size:11px;color:' + muted + ';margin-top:8px;line-height:1.6;">' +
+ 'This is an automated confirmation of your application submitted on dataaischool.com.' +
+ '</div>' +
+ '</td></tr>' +
+
+ '</table>' +
+
+ '</td></tr>' +
+ '</table>' +
+
+ '</body></html>'
+ );
+}
+
+function _admEscape(s) {
+ return String(s || '')
+ .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+ .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function _admSendAdminAlert(data, folderUrl, savedFiles, ssUrl) {
