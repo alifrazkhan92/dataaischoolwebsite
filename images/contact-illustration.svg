@@ -1,108 +1,108 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0A2240"/>
-      <stop offset="100%" style="stop-color:#0E3268"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#C89930"/>
-      <stop offset="100%" style="stop-color:#E8B030"/>
-    </linearGradient>
-  </defs>
-  <rect width="800" height="400" fill="url(#bg)"/>
-  <rect x="0" y="0" width="800" height="4" fill="url(#gold)"/>
+ <defs>
+ <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+ <stop offset="0%" style="stop-color:#0A2240"/>
+ <stop offset="100%" style="stop-color:#0E3268"/>
+ </linearGradient>
+ <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" style="stop-color:#C89930"/>
+ <stop offset="100%" style="stop-color:#E8B030"/>
+ </linearGradient>
+ </defs>
+ <rect width="800" height="400" fill="url(#bg)"/>
+ <rect x="0" y="0" width="800" height="4" fill="url(#gold)"/>
 
-  <!-- Left: Contact channels illustration -->
-  <g transform="translate(50, 60)">
+ <!-- Left: Contact channels illustration -->
+ <g transform="translate(50, 60)">
 
-    <!-- Phone card -->
-    <rect x="0" y="0" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
-    <rect x="0" y="0" width="4" height="90" rx="2" fill="#C89930"/>
-    <!-- Phone icon -->
-    <g transform="translate(18, 18)">
-      <path d="M0,0 Q0,-5 5,-5 L15,-5 Q20,-5 20,0 L20,40 Q20,45 15,45 L5,45 Q0,45 0,40 Z" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5" transform="translate(0,5)"/>
-      <circle cx="10" cy="43" r="3" fill="#C89930"/>
-      <rect x="4" y="8" width="12" height="25" rx="1" fill="#0D1E35"/>
-    </g>
-    <text x="60" y="35" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Phone</text>
-    <text x="60" y="52" font-family="system-ui,sans-serif" font-size="11" fill="#C89930">+44 207 0990 956</text>
-    <text x="60" y="68" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">Mon–Fri, 9am–6pm</text>
+ <!-- Phone card -->
+ <rect x="0" y="0" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
+ <rect x="0" y="0" width="4" height="90" rx="2" fill="#C89930"/>
+ <!-- Phone icon -->
+ <g transform="translate(18, 18)">
+ <path d="M0,0 Q0,-5 5,-5 L15,-5 Q20,-5 20,0 L20,40 Q20,45 15,45 L5,45 Q0,45 0,40 Z" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5" transform="translate(0,5)"/>
+ <circle cx="10" cy="43" r="3" fill="#C89930"/>
+ <rect x="4" y="8" width="12" height="25" rx="1" fill="#0D1E35"/>
+ </g>
+ <text x="60" y="35" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Phone</text>
+ <text x="60" y="52" font-family="system-ui,sans-serif" font-size="11" fill="#C89930">+44 207 0990 956</text>
+ <text x="60" y="68" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">Mon-Fri, 9am-6pm</text>
 
-    <!-- Email card -->
-    <rect x="0" y="110" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
-    <rect x="0" y="110" width="4" height="90" rx="2" fill="#C89930"/>
-    <!-- Envelope icon -->
-    <g transform="translate(18, 126)">
-      <rect x="0" y="0" width="32" height="22" rx="3" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5"/>
-      <polyline points="0,0 16,13 32,0" fill="none" stroke="#C89930" stroke-width="1.5"/>
-    </g>
-    <text x="60" y="143" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Email</text>
-    <text x="60" y="160" font-family="system-ui,sans-serif" font-size="11" fill="#C89930">info@dataaischool.com</text>
-    <text x="60" y="176" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">We reply within 2 days</text>
+ <!-- Email card -->
+ <rect x="0" y="110" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
+ <rect x="0" y="110" width="4" height="90" rx="2" fill="#C89930"/>
+ <!-- Envelope icon -->
+ <g transform="translate(18, 126)">
+ <rect x="0" y="0" width="32" height="22" rx="3" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5"/>
+ <polyline points="0,0 16,13 32,0" fill="none" stroke="#C89930" stroke-width="1.5"/>
+ </g>
+ <text x="60" y="143" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Email</text>
+ <text x="60" y="160" font-family="system-ui,sans-serif" font-size="11" fill="#C89930">info@dataaischool.com</text>
+ <text x="60" y="176" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">We reply within 2 days</text>
 
-    <!-- Location card -->
-    <rect x="0" y="220" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
-    <rect x="0" y="220" width="4" height="90" rx="2" fill="#C89930"/>
-    <!-- Pin icon -->
-    <g transform="translate(18, 234)">
-      <path d="M16,0 C8,0 0,7 0,16 C0,28 16,44 16,44 C16,44 32,28 32,16 C32,7 24,0 16,0 Z" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5"/>
-      <circle cx="16" cy="16" r="7" fill="#C89930"/>
-    </g>
-    <text x="60" y="251" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Address</text>
-    <text x="60" y="268" font-family="system-ui,sans-serif" font-size="10" fill="#C89930">1 Quality Court</text>
-    <text x="60" y="282" font-family="system-ui,sans-serif" font-size="10" fill="#C89930">Chancery Lane, London</text>
-    <text x="60" y="296" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">WC2A 1HR</text>
-  </g>
+ <!-- Location card -->
+ <rect x="0" y="220" width="200" height="90" rx="10" fill="#112038" stroke="#1E3A5E" stroke-width="1.5"/>
+ <rect x="0" y="220" width="4" height="90" rx="2" fill="#C89930"/>
+ <!-- Pin icon -->
+ <g transform="translate(18, 234)">
+ <path d="M16,0 C8,0 0,7 0,16 C0,28 16,44 16,44 C16,44 32,28 32,16 C32,7 24,0 16,0 Z" fill="#1A3A6A" stroke="#C89930" stroke-width="1.5"/>
+ <circle cx="16" cy="16" r="7" fill="#C89930"/>
+ </g>
+ <text x="60" y="251" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Address</text>
+ <text x="60" y="268" font-family="system-ui,sans-serif" font-size="10" fill="#C89930">1 Quality Court</text>
+ <text x="60" y="282" font-family="system-ui,sans-serif" font-size="10" fill="#C89930">Chancery Lane, London</text>
+ <text x="60" y="296" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">WC2A 1HR</text>
+ </g>
 
-  <!-- Right: Live chat + response illustration -->
-  <g transform="translate(310, 50)">
-    <text x="200" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">Get in touch</text>
-    <rect x="100" y="30" width="200" height="3" rx="2" fill="#C89930"/>
+ <!-- Right: Live chat + response illustration -->
+ <g transform="translate(310, 50)">
+ <text x="200" y="20" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">Get in touch</text>
+ <rect x="100" y="30" width="200" height="3" rx="2" fill="#C89930"/>
 
-    <!-- Chat window -->
-    <rect x="0" y="55" width="420" height="280" rx="12" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
-    <!-- Chat header -->
-    <rect x="0" y="55" width="420" height="44" rx="12" fill="#112038"/>
-    <rect x="0" y="77" width="420" height="22" fill="#112038"/>
-    <circle cx="30" cy="77" r="14" fill="#C89930"/>
-    <text x="30" y="82" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="800" fill="#0A2240">DA</text>
-    <text x="54" y="72" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Data &amp; AI School</text>
-    <text x="54" y="87" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">● Online now</text>
+ <!-- Chat window -->
+ <rect x="0" y="55" width="420" height="280" rx="12" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
+ <!-- Chat header -->
+ <rect x="0" y="55" width="420" height="44" rx="12" fill="#112038"/>
+ <rect x="0" y="77" width="420" height="22" fill="#112038"/>
+ <circle cx="30" cy="77" r="14" fill="#C89930"/>
+ <text x="30" y="82" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="800" fill="#0A2240">DA</text>
+ <text x="54" y="72" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Data &amp; AI School</text>
+ <text x="54" y="87" font-family="system-ui,sans-serif" font-size="10" fill="#6B8FAE">● Online now</text>
 
-    <!-- Chat messages -->
-    <!-- Received message -->
-    <g transform="translate(16, 115)">
-      <rect x="0" y="0" width="240" height="44" rx="8" fill="#1A3055"/>
-      <rect x="0" y="36" width="16" height="16" rx="2" fill="#1A3055" transform="translate(0,4)"/>
-      <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">Hello! How can we help you</text>
-      <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">today? 👋</text>
-      <text x="0" y="56" font-family="system-ui,sans-serif" font-size="9" fill="#6B8FAE">10:32 AM</text>
-    </g>
+ <!-- Chat messages -->
+ <!-- Received message -->
+ <g transform="translate(16, 115)">
+ <rect x="0" y="0" width="240" height="44" rx="8" fill="#1A3055"/>
+ <rect x="0" y="36" width="16" height="16" rx="2" fill="#1A3055" transform="translate(0,4)"/>
+ <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">Hello! How can we help you</text>
+ <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">today? 👋</text>
+ <text x="0" y="56" font-family="system-ui,sans-serif" font-size="9" fill="#6B8FAE">10:32 AM</text>
+ </g>
 
-    <!-- Sent message -->
-    <g transform="translate(148, 185)">
-      <rect x="0" y="0" width="256" height="44" rx="8" fill="#C89930"/>
-      <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#0A2240">I'd like to know more about</text>
-      <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#0A2240">the Data Science course.</text>
-      <text x="256" y="56" text-anchor="end" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">10:33 AM ✓✓</text>
-    </g>
+ <!-- Sent message -->
+ <g transform="translate(148, 185)">
+ <rect x="0" y="0" width="256" height="44" rx="8" fill="#C89930"/>
+ <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#0A2240">I'd like to know more about</text>
+ <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#0A2240">the Data Science course.</text>
+ <text x="256" y="56" text-anchor="end" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">10:33 AM ✓✓</text>
+ </g>
 
-    <!-- Received reply -->
-    <g transform="translate(16, 250)">
-      <rect x="0" y="0" width="300" height="44" rx="8" fill="#1A3055"/>
-      <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">Great choice! Data Science is our</text>
-      <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">most popular bootcamp. 📊</text>
-      <text x="0" y="56" font-family="system-ui,sans-serif" font-size="9" fill="#6B8FAE">10:34 AM</text>
-    </g>
+ <!-- Received reply -->
+ <g transform="translate(16, 250)">
+ <rect x="0" y="0" width="300" height="44" rx="8" fill="#1A3055"/>
+ <text x="12" y="18" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">Great choice! Data Science is our</text>
+ <text x="12" y="33" font-family="system-ui,sans-serif" font-size="11" fill="#FFFFFF">most popular bootcamp. 📊</text>
+ <text x="0" y="56" font-family="system-ui,sans-serif" font-size="9" fill="#6B8FAE">10:34 AM</text>
+ </g>
 
-    <!-- Input bar -->
-    <rect x="0" y="299" width="420" height="36" rx="0" fill="#112038"/>
-    <rect x="0" y="311" width="420" height="44" rx="12" fill="#112038"/>
-    <rect x="10" y="306" width="340" height="24" rx="6" fill="#1A3055"/>
-    <text x="20" y="323" font-family="system-ui,sans-serif" font-size="11" fill="#6B8FAE">Type a message...</text>
-    <rect x="360" y="304" width="46" height="28" rx="6" fill="#C89930"/>
-    <text x="383" y="323" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#0A2240">Send</text>
-  </g>
+ <!-- Input bar -->
+ <rect x="0" y="299" width="420" height="36" rx="0" fill="#112038"/>
+ <rect x="0" y="311" width="420" height="44" rx="12" fill="#112038"/>
+ <rect x="10" y="306" width="340" height="24" rx="6" fill="#1A3055"/>
+ <text x="20" y="323" font-family="system-ui,sans-serif" font-size="11" fill="#6B8FAE">Type a message...</text>
+ <rect x="360" y="304" width="46" height="28" rx="6" fill="#C89930"/>
+ <text x="383" y="323" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#0A2240">Send</text>
+ </g>
 
-  <text x="400" y="388" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#C89930" letter-spacing="2">WE'RE HERE TO HELP</text>
+ <text x="400" y="388" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#C89930" letter-spacing="2">WE'RE HERE TO HELP</text>
 </svg>

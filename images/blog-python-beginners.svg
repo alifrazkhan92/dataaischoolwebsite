@@ -1,119 +1,119 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 360" width="740" height="360">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0A2240"/>
-      <stop offset="100%" style="stop-color:#0E3268"/>
-    </linearGradient>
-    <linearGradient id="screen" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#0D1E35"/>
-      <stop offset="100%" style="stop-color:#091828"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#C89930"/>
-      <stop offset="100%" style="stop-color:#E8B030"/>
-    </linearGradient>
-  </defs>
-  <rect width="740" height="360" fill="url(#bg)"/>
-  <rect x="0" y="0" width="740" height="4" fill="url(#gold)"/>
+ <defs>
+ <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+ <stop offset="0%" style="stop-color:#0A2240"/>
+ <stop offset="100%" style="stop-color:#0E3268"/>
+ </linearGradient>
+ <linearGradient id="screen" x1="0%" y1="0%" x2="0%" y2="100%">
+ <stop offset="0%" style="stop-color:#0D1E35"/>
+ <stop offset="100%" style="stop-color:#091828"/>
+ </linearGradient>
+ <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" style="stop-color:#C89930"/>
+ <stop offset="100%" style="stop-color:#E8B030"/>
+ </linearGradient>
+ </defs>
+ <rect width="740" height="360" fill="url(#bg)"/>
+ <rect x="0" y="0" width="740" height="4" fill="url(#gold)"/>
 
-  <!-- Left: Terminal / REPL window -->
-  <g transform="translate(40, 50)">
-    <rect x="0" y="0" width="340" height="260" rx="10" fill="#0D1820" stroke="#1E3A5E" stroke-width="1.5"/>
-    <!-- Title bar -->
-    <rect x="0" y="0" width="340" height="32" rx="10" fill="#112030"/>
-    <rect x="0" y="16" width="340" height="16" fill="#112030"/>
-    <circle cx="20" cy="16" r="5" fill="#E85050" opacity="0.7"/>
-    <circle cx="36" cy="16" r="5" fill="#E8B030" opacity="0.7"/>
-    <circle cx="52" cy="16" r="5" fill="#50C878" opacity="0.7"/>
-    <text x="170" y="21" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B8FAE">Python 3.12 — REPL</text>
+ <!-- Left: Terminal / REPL window -->
+ <g transform="translate(40, 50)">
+ <rect x="0" y="0" width="340" height="260" rx="10" fill="#0D1820" stroke="#1E3A5E" stroke-width="1.5"/>
+ <!-- Title bar -->
+ <rect x="0" y="0" width="340" height="32" rx="10" fill="#112030"/>
+ <rect x="0" y="16" width="340" height="16" fill="#112030"/>
+ <circle cx="20" cy="16" r="5" fill="#E85050" opacity="0.7"/>
+ <circle cx="36" cy="16" r="5" fill="#E8B030" opacity="0.7"/>
+ <circle cx="52" cy="16" r="5" fill="#50C878" opacity="0.7"/>
+ <text x="170" y="21" text-anchor="middle" font-family="monospace" font-size="10" fill="#6B8FAE">Python 3.12, REPL</text>
 
-    <!-- Terminal content -->
-    <g font-family="monospace" font-size="12">
-      <text x="16" y="60" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <text x="46" y="60" fill="#C89930">print</text>
-      <text x="88" y="60" fill="#FFFFFF">(</text>
-      <text x="94" y="60" fill="#50C878">"Hello, World!"</text>
-      <text x="200" y="60" fill="#FFFFFF">)</text>
+ <!-- Terminal content -->
+ <g font-family="monospace" font-size="12">
+ <text x="16" y="60" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <text x="46" y="60" fill="#C89930">print</text>
+ <text x="88" y="60" fill="#FFFFFF">(</text>
+ <text x="94" y="60" fill="#50C878">"Hello, World!"</text>
+ <text x="200" y="60" fill="#FFFFFF">)</text>
 
-      <text x="16" y="80" fill="#8DA3BE">Hello, World!</text>
+ <text x="16" y="80" fill="#8DA3BE">Hello, World!</text>
 
-      <text x="16" y="105" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <text x="46" y="105" fill="#8DA3BE">name = </text>
-      <text x="102" y="105" fill="#50C878">"Ali"</text>
+ <text x="16" y="105" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <text x="46" y="105" fill="#8DA3BE">name = </text>
+ <text x="102" y="105" fill="#50C878">"Ali"</text>
 
-      <text x="16" y="125" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <text x="46" y="125" fill="#C89930">print</text>
-      <text x="88" y="125" fill="#FFFFFF">(</text>
-      <text x="94" y="125" fill="#50C878">f"Welcome, </text>
-      <text x="178" y="125" fill="#E8B030">{name}</text>
-      <text x="210" y="125" fill="#50C878">!"</text>
-      <text x="228" y="125" fill="#FFFFFF">)</text>
+ <text x="16" y="125" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <text x="46" y="125" fill="#C89930">print</text>
+ <text x="88" y="125" fill="#FFFFFF">(</text>
+ <text x="94" y="125" fill="#50C878">f"Welcome, </text>
+ <text x="178" y="125" fill="#E8B030">{name}</text>
+ <text x="210" y="125" fill="#50C878">!"</text>
+ <text x="228" y="125" fill="#FFFFFF">)</text>
 
-      <text x="16" y="145" fill="#8DA3BE">Welcome, Ali!</text>
+ <text x="16" y="145" fill="#8DA3BE">Welcome, Ali!</text>
 
-      <text x="16" y="170" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <text x="46" y="170" fill="#8DA3BE">numbers = [</text>
-      <text x="128" y="170" fill="#E8B030">1, 2, 3, 4, 5</text>
-      <text x="218" y="170" fill="#8DA3BE">]</text>
+ <text x="16" y="170" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <text x="46" y="170" fill="#8DA3BE">numbers = [</text>
+ <text x="128" y="170" fill="#E8B030">1, 2, 3, 4, 5</text>
+ <text x="218" y="170" fill="#8DA3BE">]</text>
 
-      <text x="16" y="190" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <text x="46" y="190" fill="#C89930">sum</text>
-      <text x="68" y="190" fill="#FFFFFF">(numbers)</text>
+ <text x="16" y="190" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <text x="46" y="190" fill="#C89930">sum</text>
+ <text x="68" y="190" fill="#FFFFFF">(numbers)</text>
 
-      <text x="16" y="210" fill="#E8B030">15</text>
+ <text x="16" y="210" fill="#E8B030">15</text>
 
-      <text x="16" y="235" fill="#6B8FAE">&gt;&gt;&gt; </text>
-      <!-- Cursor -->
-      <rect x="46" y="222" width="8" height="14" fill="#C89930" opacity="0.85"/>
-    </g>
-  </g>
+ <text x="16" y="235" fill="#6B8FAE">&gt;&gt;&gt; </text>
+ <!-- Cursor -->
+ <rect x="46" y="222" width="8" height="14" fill="#C89930" opacity="0.85"/>
+ </g>
+ </g>
 
-  <!-- Right: Learning journey steps -->
-  <g transform="translate(420, 50)">
-    <text x="0" y="20" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">Your learning path</text>
-    <rect x="0" y="30" width="120" height="3" rx="2" fill="#C89930"/>
+ <!-- Right: Learning journey steps -->
+ <g transform="translate(420, 50)">
+ <text x="0" y="20" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">Your learning path</text>
+ <rect x="0" y="30" width="120" height="3" rx="2" fill="#C89930"/>
 
-    <!-- Step 1 -->
-    <g transform="translate(0, 50)">
-      <circle cx="20" cy="20" r="20" fill="#C89930"/>
-      <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#0A2240">1</text>
-      <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Syntax &amp; types</text>
-      <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">Variables, loops, functions</text>
-      <line x1="20" y1="40" x2="20" y2="65" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
-    </g>
+ <!-- Step 1 -->
+ <g transform="translate(0, 50)">
+ <circle cx="20" cy="20" r="20" fill="#C89930"/>
+ <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#0A2240">1</text>
+ <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Syntax &amp; types</text>
+ <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">Variables, loops, functions</text>
+ <line x1="20" y1="40" x2="20" y2="65" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
+ </g>
 
-    <!-- Step 2 -->
-    <g transform="translate(0, 125)">
-      <circle cx="20" cy="20" r="20" fill="#1A3A6A" stroke="#C89930" stroke-width="2"/>
-      <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#C89930">2</text>
-      <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">OOP &amp; modules</text>
-      <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">Classes, packages, imports</text>
-      <line x1="20" y1="40" x2="20" y2="65" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
-    </g>
+ <!-- Step 2 -->
+ <g transform="translate(0, 125)">
+ <circle cx="20" cy="20" r="20" fill="#1A3A6A" stroke="#C89930" stroke-width="2"/>
+ <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#C89930">2</text>
+ <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">OOP &amp; modules</text>
+ <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">Classes, packages, imports</text>
+ <line x1="20" y1="40" x2="20" y2="65" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
+ </g>
 
-    <!-- Step 3 -->
-    <g transform="translate(0, 200)">
-      <circle cx="20" cy="20" r="20" fill="#1A3A6A" stroke="#C89930" stroke-width="2"/>
-      <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#C89930">3</text>
-      <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">APIs &amp; data</text>
-      <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">HTTP, JSON, file I/O</text>
-    </g>
+ <!-- Step 3 -->
+ <g transform="translate(0, 200)">
+ <circle cx="20" cy="20" r="20" fill="#1A3A6A" stroke="#C89930" stroke-width="2"/>
+ <text x="20" y="26" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" font-weight="800" fill="#C89930">3</text>
+ <text x="52" y="15" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">APIs &amp; data</text>
+ <text x="52" y="30" font-family="system-ui,sans-serif" font-size="10" fill="#8DA3BE">HTTP, JSON, file I/O</text>
+ </g>
 
-    <!-- Weeks badge -->
-    <g transform="translate(0, 258)">
-      <rect x="0" y="0" width="250" height="36" rx="8" fill="#C89930"/>
-      <text x="125" y="23" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#0A2240">Job-ready in 8 weeks</text>
-    </g>
-  </g>
+ <!-- Weeks badge -->
+ <g transform="translate(0, 258)">
+ <rect x="0" y="0" width="250" height="36" rx="8" fill="#C89930"/>
+ <text x="125" y="23" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#0A2240">Job-ready in 8 weeks</text>
+ </g>
+ </g>
 
-  <!-- Coffee cup decoration -->
-  <g transform="translate(52, 315)" opacity="0.7">
-    <rect x="0" y="0" width="28" height="22" rx="3" fill="#1A3055"/>
-    <path d="M28,5 Q38,5 38,13 Q38,21 28,21" fill="none" stroke="#1A3055" stroke-width="3.5"/>
-    <path d="M9,0 Q11,-6 9,-12" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.6"/>
-    <path x="16" y="0" d="M16,0 Q18,-6 16,-12" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.6"/>
-    <text x="14" y="15" text-anchor="middle" font-family="monospace" font-size="8" fill="#C89930">☕</text>
-  </g>
+ <!-- Coffee cup decoration -->
+ <g transform="translate(52, 315)" opacity="0.7">
+ <rect x="0" y="0" width="28" height="22" rx="3" fill="#1A3055"/>
+ <path d="M28,5 Q38,5 38,13 Q38,21 28,21" fill="none" stroke="#1A3055" stroke-width="3.5"/>
+ <path d="M9,0 Q11,-6 9,-12" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.6"/>
+ <path x="16" y="0" d="M16,0 Q18,-6 16,-12" fill="none" stroke="#6B8FAE" stroke-width="1.5" opacity="0.6"/>
+ <text x="14" y="15" text-anchor="middle" font-family="monospace" font-size="8" fill="#C89930">☕</text>
+ </g>
 
-  <text x="370" y="348" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">PYTHON FOR BEGINNERS — START HERE</text>
+ <text x="370" y="348" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">PYTHON FOR BEGINNERS, START HERE</text>
 </svg>

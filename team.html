@@ -1,252 +1,252 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Our Team | The Data and AI School of London</title>
-    <meta name="description" content="Meet the team behind The Data and AI School of London — Ali Fraz Khan FHEA (CEO/Principal), Khadija Khan (Lead IQA) and Sheherbano Khan (Registrar).">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.dataaischool.com/team.html">
-    <!-- Security headers (defence in depth — primary CSP/HSTS should be set via host) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Our Team | The Data and AI School of London">
-    <meta property="og:description" content="Meet the expert team delivering NCFE-regulated AI and data science qualifications across the UK.">
-    <meta property="og:url" content="https://www.dataaischool.com/team.html">
-    <meta property="og:site_name" content="The Data and AI School of London">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Our Team | The Data and AI School of London">
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <!-- Google Fonts loaded conditionally after cookie consent -->
-    <link rel="stylesheet" href="css/styles.css" />
-    <style>
-      .team-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-top: 2.5rem;
-      }
-      .team-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-card);
-        transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
-        position: relative;
-      }
-      .team-card::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--accent), var(--gold));
-        opacity: 0;
-        transition: opacity var(--transition);
-      }
-      .team-card:hover { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-3px); }
-      .team-card:hover::before { opacity: 1; }
-      .team-avatar {
-        width: 100%;
-        background: var(--bg-elevated);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem 2rem 0;
-      }
-      .team-avatar img { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
-      .team-body { padding: 1.5rem; text-align: center; }
-      .team-name { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem; letter-spacing: -0.01em; }
-      .team-role { font-size: 0.875rem; font-weight: 600; color: var(--gold); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
-      .team-quals { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem; }
-      .team-bio { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; text-align: left; }
-      .team-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-top: 1.25rem; }
-      .team-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 20px; background: var(--accent-muted); color: var(--accent); border: 1px solid var(--border); font-family: var(--font-mono); }
-      .team-contact { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.875rem; }
-      .team-contact a { color: var(--accent); }
-      @media (max-width: 480px) { .team-grid { grid-template-columns: 1fr; } }
-    </style>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "AboutPage",
-      "name": "Our Team — The Data and AI School of London",
-      "url": "https://www.dataaischool.com/team.html",
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
-          { "@type": "ListItem", "position": 2, "name": "About", "item": "https://www.dataaischool.com/about.html" },
-          { "@type": "ListItem", "position": 3, "name": "Our Team", "item": "https://www.dataaischool.com/team.html" }
-        ]
-      },
-      "mainEntity": [
-        {
-          "@type": "Person",
-          "name": "Ali Fraz Khan",
-          "honorificSuffix": "FHEA",
-          "jobTitle": "CEO, Principal and Head of Centre",
-          "description": "Senior lecturer in Computing with over eight years' experience in UK Higher Education. Microsoft Certified Trainer and Fellow of Advance HE.",
-          "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" },
-          "hasCredential": [
-            { "@type": "EducationalOccupationalCredential", "credentialCategory": "Fellowship", "recognizedBy": { "@type": "Organization", "name": "Advance HE" }, "name": "FHEA" },
-            { "@type": "EducationalOccupationalCredential", "name": "PgCert Higher Education", "recognizedBy": { "@type": "Organization", "name": "University of Strathclyde" } },
-            { "@type": "EducationalOccupationalCredential", "name": "Microsoft Certified Trainer (MCT)" }
-          ],
-          "url": "https://www.dataaischool.com/team.html"
-        },
-        {
-          "@type": "Person",
-          "name": "Khadija Khan",
-          "jobTitle": "Internal Verifier and Lead Internal Quality Assurer",
-          "description": "Lead IQA responsible for assessment quality, standardisation, and direct claim status across all NCFE qualifications.",
-          "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" }
-        },
-        {
-          "@type": "Person",
-          "name": "Sheherbano Khan",
-          "jobTitle": "Registrar, Examinations Officer and Learner Support Lead",
-          "description": "Responsible for learner registration, NCFE portal administration, examinations logistics, and learner support services.",
-          "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" }
-        }
-      ]
-    }
-    </script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="index.html" class="logo">The Data and AI <span>School of London</span></a>
-        <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
-        <nav id="nav-main">
-          <ul class="nav-main">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="courses.html">Courses</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="apply.html">Apply</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li class="nav-theme-wrap">
-              <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme (dark / light / system)">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="4"/>
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                </svg>
-                <span class="theme-toggle-label">Light</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+ <head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Our Team | The Data and AI School of London</title>
+ <meta name="description" content="Meet the team behind The Data and AI School of London, Ali Fraz Khan FHEA (CEO/Principal), Khadija Khan (Lead IQA) and Sheherbano Khan (Registrar).">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://www.dataaischool.com/team.html">
+ <!-- Security headers (defence in depth, primary CSP/HSTS should be set via host) -->
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
+ <meta http-equiv="X-Content-Type-Options" content="nosniff">
+ <meta name="referrer" content="strict-origin-when-cross-origin">
+ <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+ <meta property="og:type" content="website">
+ <meta property="og:title" content="Our Team | The Data and AI School of London">
+ <meta property="og:description" content="Meet the expert team delivering NCFE-regulated AI and data science qualifications across the UK.">
+ <meta property="og:url" content="https://www.dataaischool.com/team.html">
+ <meta property="og:site_name" content="The Data and AI School of London">
+ <meta name="twitter:card" content="summary">
+ <meta name="twitter:title" content="Our Team | The Data and AI School of London">
+ <link rel="icon" type="image/png" href="favicon.png" />
+ <!-- Google Fonts loaded conditionally after cookie consent -->
+ <link rel="stylesheet" href="css/styles.css" />
+ <style>
+ .team-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+ gap: 2rem;
+ margin-top: 2.5rem;
+ }
+ .team-card {
+ background: var(--bg-card);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-lg);
+ overflow: hidden;
+ box-shadow: var(--shadow-card);
+ transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+ position: relative;
+ }
+ .team-card::before {
+ content: "";
+ position: absolute;
+ top: 0; left: 0; right: 0;
+ height: 4px;
+ background: linear-gradient(90deg, var(--accent), var(--gold));
+ opacity: 0;
+ transition: opacity var(--transition);
+ }
+ .team-card:hover { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-3px); }
+ .team-card:hover::before { opacity: 1; }
+ .team-avatar {
+ width: 100%;
+ background: var(--bg-elevated);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: 2rem 2rem 0;
+ }
+ .team-avatar img { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--gold); object-fit: cover; }
+ .team-body { padding: 1.5rem; text-align: center; }
+ .team-name { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem; letter-spacing: -0.01em; }
+ .team-role { font-size: 0.875rem; font-weight: 600; color: var(--gold); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em; }
+ .team-quals { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem; }
+ .team-bio { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; text-align: left; }
+ .team-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-top: 1.25rem; }
+ .team-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 20px; background: var(--accent-muted); color: var(--accent); border: 1px solid var(--border); font-family: var(--font-mono); }
+ .team-contact { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.875rem; }
+ .team-contact a { color: var(--accent); }
+ @media (max-width: 480px) { .team-grid { grid-template-columns: 1fr; } }
+ </style>
+ <script type="application/ld+json">
+ {
+ "@context": "https://schema.org",
+ "@type": "AboutPage",
+ "name": "Our Team, The Data and AI School of London",
+ "url": "https://www.dataaischool.com/team.html",
+ "breadcrumb": {
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+ { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
+ { "@type": "ListItem", "position": 2, "name": "About", "item": "https://www.dataaischool.com/about.html" },
+ { "@type": "ListItem", "position": 3, "name": "Our Team", "item": "https://www.dataaischool.com/team.html" }
+ ]
+ },
+ "mainEntity": [
+ {
+ "@type": "Person",
+ "name": "Ali Fraz Khan",
+ "honorificSuffix": "FHEA",
+ "jobTitle": "CEO, Principal and Head of Centre",
+ "description": "Senior lecturer in Computing with over eight years' experience in UK Higher Education. Microsoft Certified Trainer and Fellow of Advance HE.",
+ "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" },
+ "hasCredential": [
+ { "@type": "EducationalOccupationalCredential", "credentialCategory": "Fellowship", "recognizedBy": { "@type": "Organization", "name": "Advance HE" }, "name": "FHEA" },
+ { "@type": "EducationalOccupationalCredential", "name": "PgCert Higher Education", "recognizedBy": { "@type": "Organization", "name": "University of Strathclyde" } },
+ { "@type": "EducationalOccupationalCredential", "name": "Microsoft Certified Trainer (MCT)" }
+ ],
+ "url": "https://www.dataaischool.com/team.html"
+ },
+ {
+ "@type": "Person",
+ "name": "Khadija Khan",
+ "jobTitle": "Internal Verifier and Lead Internal Quality Assurer",
+ "description": "Lead IQA responsible for assessment quality, standardisation, and direct claim status across all NCFE qualifications.",
+ "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" }
+ },
+ {
+ "@type": "Person",
+ "name": "Sheherbano Khan",
+ "jobTitle": "Registrar, Examinations Officer and Learner Support Lead",
+ "description": "Responsible for learner registration, NCFE portal administration, examinations logistics, and learner support services.",
+ "worksFor": { "@type": "EducationalOrganization", "@id": "https://www.dataaischool.com/#organisation" }
+ }
+ ]
+ }
+ </script>
+ </head>
+ <body>
+ <header class="site-header">
+ <div class="header-inner">
+ <a href="index.html" class="logo">The Data and AI <span>School of London</span></a>
+ <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
+ <nav id="nav-main">
+ <ul class="nav-main">
+ <li><a href="index.html">Home</a></li>
+ <li><a href="about.html">About</a></li>
+ <li><a href="courses.html">Courses</a></li>
+ <li><a href="blog.html">Blog</a></li>
+ <li><a href="apply.html">Apply</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ <li class="nav-theme-wrap">
+ <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme (dark / light / system)">
+ <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+ <circle cx="12" cy="12" r="4"/>
+ <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+ </svg>
+ <span class="theme-toggle-label">Light</span>
+ </button>
+ </li>
+ </ul>
+ </nav>
+ </div>
+ </header>
 
-    <main>
-      <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
-        <a href="index.html">Home</a> &rsaquo; <a href="about.html">About</a> &rsaquo; <span>Our Team</span>
-      </nav>
+ <main>
+ <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
+ <a href="index.html">Home</a> &rsaquo; <a href="about.html">About</a> &rsaquo; <span>Our Team</span>
+ </nav>
 
-      <h1 class="page-title">Our Team</h1>
-      <p class="page-intro">Three dedicated professionals committed to delivering high-quality, regulated AI and data science education across the UK.</p>
+ <h1 class="page-title">Our Team</h1>
+ <p class="page-intro">Three dedicated professionals committed to delivering high-quality, regulated AI and data science education across the UK.</p>
 
-      <div class="team-grid">
+ <div class="team-grid">
 
-        <!-- Ali Fraz Khan -->
-        <div class="team-card">
-          <div class="team-avatar">
-            <img src="images/avatar-ali-fraz-khan.svg" alt="Ali Fraz Khan FHEA — CEO and Principal" width="140" height="140" loading="eager"/>
-          </div>
-          <div class="team-body">
-            <p class="team-name">Ali Fraz Khan</p>
-            <p class="team-role">CEO &amp; Principal · Head of Centre</p>
-            <p class="team-quals">FHEA · PgCert HE · MCT · AZ-204 · AZ-400 · AZ-104</p>
-            <p class="team-bio">Ali is a Senior Lecturer in Computing with over eight years' experience in UK Higher Education. A Fellow of Advance HE and Microsoft Certified Trainer, he leads the school's academic delivery, quality assurance, safeguarding, and compliance. He is also the school's Data Protection Officer and Prevent Lead.</p>
-            <p class="team-bio" style="margin-top:0.75rem">His teaching connects live industry experience — Azure, DevOps, AI engineering — directly to learner outcomes, ensuring every programme reflects what employers actually need.</p>
-            <div class="team-tags">
-              <span class="team-tag">Designated Safeguarding Lead</span>
-              <span class="team-tag">Data Protection Officer</span>
-              <span class="team-tag">Prevent Lead</span>
-              <span class="team-tag">Compliance Manager</span>
-            </div>
-            <div class="team-contact">
-              <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
-            </div>
-          </div>
-        </div>
+ <!-- Ali Fraz Khan -->
+ <div class="team-card">
+ <div class="team-avatar">
+ <img src="images/avatar-ali-fraz-khan.svg" alt="Ali Fraz Khan FHEA, CEO and Principal" width="140" height="140" loading="eager"/>
+ </div>
+ <div class="team-body">
+ <p class="team-name">Ali Fraz Khan</p>
+ <p class="team-role">CEO &amp; Principal · Head of Centre</p>
+ <p class="team-quals">FHEA · PgCert HE · MCT · AZ-204 · AZ-400 · AZ-104</p>
+ <p class="team-bio">Ali is a Senior Lecturer in Computing with over eight years' experience in UK Higher Education. A Fellow of Advance HE and Microsoft Certified Trainer, he leads the school's academic delivery, quality assurance, safeguarding, and compliance. He is also the school's Data Protection Officer and Prevent Lead.</p>
+ <p class="team-bio" style="margin-top:0.75rem">His teaching connects live industry experience, Azure, DevOps, AI engineering, directly to learner outcomes, ensuring every programme reflects what employers actually need.</p>
+ <div class="team-tags">
+ <span class="team-tag">Designated Safeguarding Lead</span>
+ <span class="team-tag">Data Protection Officer</span>
+ <span class="team-tag">Prevent Lead</span>
+ <span class="team-tag">Compliance Manager</span>
+ </div>
+ <div class="team-contact">
+ <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
+ </div>
+ </div>
+ </div>
 
-        <!-- Khadija Khan -->
-        <div class="team-card">
-          <div class="team-avatar">
-            <img src="images/avatar-khadija-khan.svg" alt="Khadija Khan — Lead IQA and Internal Verifier" width="140" height="140" loading="lazy"/>
-          </div>
-          <div class="team-body">
-            <p class="team-name">Khadija Khan</p>
-            <p class="team-role">Lead IQA &amp; Internal Verifier</p>
-            <p class="team-quals">Lead Internal Quality Assurer · Access Arrangements Coordinator</p>
-            <p class="team-bio">Khadija leads all internal quality assurance activity across the school's NCFE qualifications. She designs and maintains the IQA strategy, conducts sampling of every assessor each term, chairs all standardisation meetings, and maintains direct claim status across all programmes.</p>
-            <p class="team-bio" style="margin-top:0.75rem">She is the primary contact for NCFE's External Quality Assurer during EQA visits, and reviews all recognition of prior learning and reasonable adjustment applications.</p>
-            <div class="team-tags">
-              <span class="team-tag">IQA Strategy</span>
-              <span class="team-tag">Standardisation Lead</span>
-              <span class="team-tag">Direct Claim Status</span>
-              <span class="team-tag">RPL Decisions</span>
-            </div>
-            <div class="team-contact">
-              <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
-            </div>
-          </div>
-        </div>
+ <!-- Khadija Khan -->
+ <div class="team-card">
+ <div class="team-avatar">
+ <img src="images/avatar-khadija-khan.svg" alt="Khadija Khan, Lead IQA and Internal Verifier" width="140" height="140" loading="lazy"/>
+ </div>
+ <div class="team-body">
+ <p class="team-name">Khadija Khan</p>
+ <p class="team-role">Lead IQA &amp; Internal Verifier</p>
+ <p class="team-quals">Lead Internal Quality Assurer · Access Arrangements Coordinator</p>
+ <p class="team-bio">Khadija leads all internal quality assurance activity across the school's NCFE qualifications. She designs and maintains the IQA strategy, conducts sampling of every assessor each term, chairs all standardisation meetings, and maintains direct claim status across all programmes.</p>
+ <p class="team-bio" style="margin-top:0.75rem">She is the primary contact for NCFE's External Quality Assurer during EQA visits, and reviews all recognition of prior learning and reasonable adjustment applications.</p>
+ <div class="team-tags">
+ <span class="team-tag">IQA Strategy</span>
+ <span class="team-tag">Standardisation Lead</span>
+ <span class="team-tag">Direct Claim Status</span>
+ <span class="team-tag">RPL Decisions</span>
+ </div>
+ <div class="team-contact">
+ <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
+ </div>
+ </div>
+ </div>
 
-        <!-- Sheherbano Khan -->
-        <div class="team-card">
-          <div class="team-avatar">
-            <img src="images/avatar-sheherbano-khan.svg" alt="Sheherbano Khan — Registrar and Learner Support Lead" width="140" height="140" loading="lazy"/>
-          </div>
-          <div class="team-body">
-            <p class="team-name">Sheherbano Khan</p>
-            <p class="team-role">Registrar &amp; Examinations Officer</p>
-            <p class="team-quals">Learner Support Lead · Marketing Lead · Work Placement Coordinator</p>
-            <p class="team-bio">Sheherbano manages all aspects of learner registration, NCFE Portal administration, and certification claims. She is the first point of contact for learners on all administrative, support, and technical matters, and oversees the school's examination logistics.</p>
-            <p class="team-bio" style="margin-top:0.75rem">She monitors learner engagement through weekly VLE analytics, coordinates all IAG sessions, and manages the school's marketing communications and work placement programme.</p>
-            <div class="team-tags">
-              <span class="team-tag">NCFE Portal</span>
-              <span class="team-tag">Learner Support</span>
-              <span class="team-tag">Examinations</span>
-              <span class="team-tag">Marketing Lead</span>
-            </div>
-            <div class="team-contact">
-              <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
-            </div>
-          </div>
-        </div>
+ <!-- Sheherbano Khan -->
+ <div class="team-card">
+ <div class="team-avatar">
+ <img src="images/avatar-sheherbano-khan.svg" alt="Sheherbano Khan, Registrar and Learner Support Lead" width="140" height="140" loading="lazy"/>
+ </div>
+ <div class="team-body">
+ <p class="team-name">Sheherbano Khan</p>
+ <p class="team-role">Registrar &amp; Examinations Officer</p>
+ <p class="team-quals">Learner Support Lead · Marketing Lead · Work Placement Coordinator</p>
+ <p class="team-bio">Sheherbano manages all aspects of learner registration, NCFE Portal administration, and certification claims. She is the first point of contact for learners on all administrative, support, and technical matters, and oversees the school's examination logistics.</p>
+ <p class="team-bio" style="margin-top:0.75rem">She monitors learner engagement through weekly VLE analytics, coordinates all IAG sessions, and manages the school's marketing communications and work placement programme.</p>
+ <div class="team-tags">
+ <span class="team-tag">NCFE Portal</span>
+ <span class="team-tag">Learner Support</span>
+ <span class="team-tag">Examinations</span>
+ <span class="team-tag">Marketing Lead</span>
+ </div>
+ <div class="team-contact">
+ <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>
+ </div>
+ </div>
+ </div>
 
-      </div>
+ </div>
 
-      <section class="content-section" style="margin-top:3rem">
-        <h2>Work with us</h2>
-        <p>We are a growing team. If you are an experienced data scientist, AI engineer, or computing educator interested in associate tutoring or assessment roles, we would love to hear from you.</p>
-        <p style="margin-top:0.75rem"><a href="contact.html" class="btn btn-primary" style="display:inline-flex;margin-top:0.5rem">Get in touch</a></p>
-      </section>
-    </main>
+ <section class="content-section" style="margin-top:3rem">
+ <h2>Work with us</h2>
+ <p>We are a growing team. If you are an experienced data scientist, AI engineer, or computing educator interested in associate tutoring or assessment roles, we would love to hear from you.</p>
+ <p style="margin-top:0.75rem"><a href="contact.html" class="btn btn-primary" style="display:inline-flex;margin-top:0.5rem">Get in touch</a></p>
+ </section>
+ </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
-        <ul class="footer-nav">
-          <li><a href="about.html">About</a></li>
-          <li><a href="team.html" aria-current="page">Team</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="apply.html">Apply</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="complaints.html">Complaints</a></li>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
-        </ul>
-      </div>
-    </footer>
-    <script src="js/main.js"></script>
-  </body>
+ <footer class="site-footer">
+ <div class="footer-inner">
+ <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
+ <ul class="footer-nav">
+ <li><a href="about.html">About</a></li>
+ <li><a href="team.html" aria-current="page">Team</a></li>
+ <li><a href="courses.html">Courses</a></li>
+ <li><a href="blog.html">Blog</a></li>
+ <li><a href="apply.html">Apply</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ <li><a href="complaints.html">Complaints</a></li>
+ <li><a href="privacy-policy.html">Privacy Policy</a></li>
+ <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
+ </ul>
+ </div>
+ </footer>
+ <script src="js/main.js"></script>
+ </body>
 </html>

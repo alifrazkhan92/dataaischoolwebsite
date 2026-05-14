@@ -1,91 +1,91 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 360" width="740" height="360">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0A2240"/>
-      <stop offset="100%" style="stop-color:#0E3268"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#C89930"/>
-      <stop offset="100%" style="stop-color:#E8B030"/>
-    </linearGradient>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 Z" fill="#C89930"/>
-    </marker>
-  </defs>
-  <rect width="740" height="360" fill="url(#bg)"/>
-  <rect x="0" y="0" width="740" height="4" fill="url(#gold)"/>
+ <defs>
+ <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+ <stop offset="0%" style="stop-color:#0A2240"/>
+ <stop offset="100%" style="stop-color:#0E3268"/>
+ </linearGradient>
+ <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+ <stop offset="0%" style="stop-color:#C89930"/>
+ <stop offset="100%" style="stop-color:#E8B030"/>
+ </linearGradient>
+ <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+ <path d="M0,0 L0,6 L8,3 Z" fill="#C89930"/>
+ </marker>
+ </defs>
+ <rect width="740" height="360" fill="url(#bg)"/>
+ <rect x="0" y="0" width="740" height="4" fill="url(#gold)"/>
 
-  <!-- Heading -->
-  <text x="370" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">The Agent Loop</text>
-  <text x="370" y="60" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">How an AI agent thinks and acts autonomously</text>
+ <!-- Heading -->
+ <text x="370" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="800" fill="#FFFFFF">The Agent Loop</text>
+ <text x="370" y="60" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">How an AI agent thinks and acts autonomously</text>
 
-  <!-- Central large circular arrow loop -->
-  <!-- Large arc going clockwise -->
-  <circle cx="370" cy="200" r="110" fill="none" stroke="#1A3A6A" stroke-width="2" stroke-dasharray="8,4"/>
+ <!-- Central large circular arrow loop -->
+ <!-- Large arc going clockwise -->
+ <circle cx="370" cy="200" r="110" fill="none" stroke="#1A3A6A" stroke-width="2" stroke-dasharray="8,4"/>
 
-  <!-- PLAN node (top) -->
-  <g transform="translate(320, 75)">
-    <circle cx="50" cy="30" r="42" fill="#C89930"/>
-    <circle cx="50" cy="30" r="36" fill="#A8690A"/>
-    <text x="50" y="24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">PLAN</text>
-    <text x="50" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#F5EEE0">Break goal</text>
-    <text x="50" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#F5EEE0">into steps</text>
-  </g>
+ <!-- PLAN node (top) -->
+ <g transform="translate(320, 75)">
+ <circle cx="50" cy="30" r="42" fill="#C89930"/>
+ <circle cx="50" cy="30" r="36" fill="#A8690A"/>
+ <text x="50" y="24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">PLAN</text>
+ <text x="50" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#F5EEE0">Break goal</text>
+ <text x="50" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#F5EEE0">into steps</text>
+ </g>
 
-  <!-- ACT node (right) -->
-  <g transform="translate(450, 160)">
-    <circle cx="42" cy="42" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
-    <text x="42" y="36" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">ACT</text>
-    <text x="42" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Use tools</text>
-    <text x="42" y="62" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">&amp; execute</text>
-  </g>
+ <!-- ACT node (right) -->
+ <g transform="translate(450, 160)">
+ <circle cx="42" cy="42" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
+ <text x="42" y="36" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">ACT</text>
+ <text x="42" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Use tools</text>
+ <text x="42" y="62" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">&amp; execute</text>
+ </g>
 
-  <!-- OBSERVE node (bottom) -->
-  <g transform="translate(300, 255)">
-    <circle cx="50" cy="30" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
-    <text x="50" y="24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">OBSERVE</text>
-    <text x="50" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Read tool</text>
-    <text x="50" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">results</text>
-  </g>
+ <!-- OBSERVE node (bottom) -->
+ <g transform="translate(300, 255)">
+ <circle cx="50" cy="30" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
+ <text x="50" y="24" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">OBSERVE</text>
+ <text x="50" y="40" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Read tool</text>
+ <text x="50" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">results</text>
+ </g>
 
-  <!-- REFLECT node (left) -->
-  <g transform="translate(178, 160)">
-    <circle cx="42" cy="42" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
-    <text x="42" y="36" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">REFLECT</text>
-    <text x="42" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Adapt &amp;</text>
-    <text x="42" y="62" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">replan</text>
-  </g>
+ <!-- REFLECT node (left) -->
+ <g transform="translate(178, 160)">
+ <circle cx="42" cy="42" r="42" fill="#1A4A8A" stroke="#C89930" stroke-width="2.5"/>
+ <text x="42" y="36" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">REFLECT</text>
+ <text x="42" y="51" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Adapt &amp;</text>
+ <text x="42" y="62" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">replan</text>
+ </g>
 
-  <!-- Arrows between nodes (clockwise) -->
-  <!-- PLAN → ACT -->
-  <path d="M392,115 Q450,120 480,168" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <!-- ACT → OBSERVE -->
-  <path d="M488,210 Q495,255 452,283" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <!-- OBSERVE → REFLECT -->
-  <path d="M305,290 Q258,295 228,258" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
-  <!-- REFLECT → PLAN -->
-  <path d="M224,164 Q222,120 330,110" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
+ <!-- Arrows between nodes (clockwise) -->
+ <!-- PLAN → ACT -->
+ <path d="M392,115 Q450,120 480,168" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
+ <!-- ACT → OBSERVE -->
+ <path d="M488,210 Q495,255 452,283" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
+ <!-- OBSERVE → REFLECT -->
+ <path d="M305,290 Q258,295 228,258" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
+ <!-- REFLECT → PLAN -->
+ <path d="M224,164 Q222,120 330,110" fill="none" stroke="#C89930" stroke-width="2.5" marker-end="url(#arrow)"/>
 
-  <!-- Centre: Goal label -->
-  <circle cx="370" cy="200" r="32" fill="#0A2240" stroke="#C89930" stroke-width="2"/>
-  <text x="370" y="196" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#C89930">GOAL</text>
-  <text x="370" y="210" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">achieved</text>
+ <!-- Centre: Goal label -->
+ <circle cx="370" cy="200" r="32" fill="#0A2240" stroke="#C89930" stroke-width="2"/>
+ <text x="370" y="196" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#C89930">GOAL</text>
+ <text x="370" y="210" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">achieved</text>
 
-  <!-- Right side: tools list -->
-  <g transform="translate(570, 90)">
-    <text x="0" y="0" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#C89930">Tools available</text>
-    <g font-family="monospace" font-size="10" fill="#8DA3BE">
-      <text x="0" y="20">🔍 Web search</text>
-      <text x="0" y="38">&lt;/&gt; Code executor</text>
-      <text x="0" y="56">🗄️ Vector store</text>
-      <text x="0" y="74">📧 Email / API</text>
-      <text x="0" y="92">📁 File system</text>
-      <text x="0" y="110">🤖 Sub-agents</text>
-    </g>
-    <rect x="0" y="125" width="140" height="38" rx="6" fill="#C89930"/>
-    <text x="70" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#0A2240">vs a chatbot:</text>
-    <text x="70" y="155" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#0A2240">One prompt → Many actions</text>
-  </g>
+ <!-- Right side: tools list -->
+ <g transform="translate(570, 90)">
+ <text x="0" y="0" font-family="system-ui,sans-serif" font-size="11" font-weight="700" fill="#C89930">Tools available</text>
+ <g font-family="monospace" font-size="10" fill="#8DA3BE">
+ <text x="0" y="20">🔍 Web search</text>
+ <text x="0" y="38">&lt;/&gt; Code executor</text>
+ <text x="0" y="56">🗄️ Vector store</text>
+ <text x="0" y="74">📧 Email / API</text>
+ <text x="0" y="92">📁 File system</text>
+ <text x="0" y="110">🤖 Sub-agents</text>
+ </g>
+ <rect x="0" y="125" width="140" height="38" rx="6" fill="#C89930"/>
+ <text x="70" y="140" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="700" fill="#0A2240">vs a chatbot:</text>
+ <text x="70" y="155" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" fill="#0A2240">One prompt → Many actions</text>
+ </g>
 
-  <text x="370" y="348" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">AGENTIC AI — THE PLAN→ACT→OBSERVE LOOP</text>
+ <text x="370" y="348" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#C89930" letter-spacing="2">AGENTIC AI, THE PLAN→ACT→OBSERVE LOOP</text>
 </svg>

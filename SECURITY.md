@@ -35,27 +35,27 @@ runs as the script owner (the school's Google account).
 
 Defence-in-depth layers in place:
 
-1. **HTTPS-only** — enforced by GitHub Pages
-2. **Honeypot field** (`hp_website`) — invisible to humans, populated
-   by bots, silently dropped server-side
-3. **Rate limiting** — 30 contact submissions/hour and 10 admissions/hour
-   across all clients, tracked in `PropertiesService`
-4. **Server-side validation** — required fields, email format, length
-   caps on every text field
-5. **Server-side file validation** for admissions — MIME allowlist
-   (JPG/PNG/WebP/PDF), extension must match MIME, max 12 MB per file,
-   base64 character validation
-6. **HTML sanitisation** — all stored text is run through a tag-stripper
-   before being written to the spreadsheet
-7. **HTML email escaping** — all user-controlled values are HTML-escaped
-   before being injected into the auto-reply template
-8. **Script properties** — sensitive identifiers (SPREADSHEET_ID) are
-   stored in Apps Script's Script Properties, not committed to the repo
-9. **CSP + security meta tags** — every page includes a Content-Security-Policy,
-   referrer policy, and Permissions-Policy meta tag
-10. **Restricted Google resources** — destination spreadsheets and the
-    DAIS Admissions Drive folder are set to "Restricted" (not public,
-    not findable by link)
+1. **HTTPS-only**, enforced by GitHub Pages
+2. **Honeypot field** (`hp_website`), invisible to humans, populated
+ by bots, silently dropped server-side
+3. **Rate limiting**, 30 contact submissions/hour and 10 admissions/hour
+ across all clients, tracked in `PropertiesService`
+4. **Server-side validation**, required fields, email format, length
+ caps on every text field
+5. **Server-side file validation** for admissions, MIME allowlist
+ (JPG/PNG/WebP/PDF), extension must match MIME, max 12 MB per file,
+ base64 character validation
+6. **HTML sanitisation**, all stored text is run through a tag-stripper
+ before being written to the spreadsheet
+7. **HTML email escaping**, all user-controlled values are HTML-escaped
+ before being injected into the auto-reply template
+8. **Script properties**, sensitive identifiers (SPREADSHEET_ID) are
+ stored in Apps Script's Script Properties, not committed to the repo
+9. **CSP + security meta tags**, every page includes a Content-Security-Policy,
+ referrer policy, and Permissions-Policy meta tag
+10. **Restricted Google resources**, destination spreadsheets and the
+ DAIS Admissions Drive folder are set to "Restricted" (not public,
+ not findable by link)
 
 ---
 
@@ -87,10 +87,10 @@ by NCFE and Ofsted. It must:
 - Be retained only for the period required by the awarding organisation
 
 The admission form also collects:
-- **National Insurance number** (optional) — used only for qualification
-  registration with the awarding body
-- **Date of birth** — used to verify the 16+ enrolment requirement and for
-  ULN matching
+- **National Insurance number** (optional), used only for qualification
+ registration with the awarding body
+- **Date of birth**, used to verify the 16+ enrolment requirement and for
+ ULN matching
 
 ---
 
@@ -103,7 +103,7 @@ The admission form also collects:
 
 `.gitignore` covers `.env*` files and common secret patterns.
 The Google Apps Script deployment URL **is** visible in the client-side
-HTML — this is unavoidable for browser-to-Apps-Script POSTs — but is
+HTML, this is unavoidable for browser-to-Apps-Script POSTs, but is
 protected by the defence-in-depth layers above.
 
 ---

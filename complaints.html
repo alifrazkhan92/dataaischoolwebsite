@@ -1,251 +1,251 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complaints & Appeals Procedure | The Data and AI School of London</title>
-    <meta name="description" content="The Data and AI School of London complaints and appeals procedure. How to raise a concern, the stages of review, timescales, and how to escalate to NCFE.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.dataaischool.com/complaints.html">
-    <!-- Security headers (defence in depth — primary CSP/HSTS should be set via host) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Complaints & Appeals | The Data and AI School of London">
-    <meta property="og:url" content="https://www.dataaischool.com/complaints.html">
-    <meta property="og:site_name" content="The Data and AI School of London">
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <style>
-      .procedure-step {
-        display: flex;
-        gap: 1.5rem;
-        padding: 1.5rem 0;
-        border-bottom: 1px solid var(--border);
-        align-items: flex-start;
-      }
-      .procedure-step:last-child { border-bottom: none; }
-      .step-number {
-        width: 48px; height: 48px; min-width: 48px;
-        border-radius: 50%;
-        background: var(--accent);
-        color: var(--on-accent);
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 1.125rem;
-        flex-shrink: 0;
-      }
-      .step-number.gold { background: var(--gold); color: var(--on-gold); }
-      .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-primary); }
-      .step-content p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 0.5rem; }
-      .step-content p:last-child { margin-bottom: 0; }
-      .step-timeframe {
-        display: inline-block;
-        font-size: 0.75rem; font-weight: 700;
-        background: var(--gold-muted); color: var(--gold);
-        border: 1px solid rgba(168,105,10,0.2);
-        border-radius: 20px; padding: 0.15rem 0.6rem;
-        font-family: var(--font-mono);
-        margin-bottom: 0.5rem;
-      }
-      .info-box {
-        background: var(--bg-elevated);
-        border-left: 4px solid var(--gold);
-        border-radius: 0 var(--radius) var(--radius) 0;
-        padding: 1rem 1.25rem;
-        margin: 1.5rem 0;
-        font-size: 0.9375rem;
-        color: var(--text-muted);
-        line-height: 1.65;
-      }
-      .info-box strong { color: var(--text-primary); }
-      @media (max-width: 480px) {
-        .procedure-step { flex-direction: column; gap: 0.75rem; }
-        .step-number { width: 38px; height: 38px; min-width: 38px; font-size: 1rem; }
-      }
-    </style>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Complaints and Appeals Procedure — The Data and AI School of London",
-      "url": "https://www.dataaischool.com/complaints.html",
-      "description": "Formal complaints and appeals procedure for learners and staff of The Data and AI School of London, including escalation to NCFE.",
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Complaints & Appeals", "item": "https://www.dataaischool.com/complaints.html" }
-        ]
-      }
-    }
-    </script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="index.html" class="logo">The Data and AI <span>School of London</span></a>
-        <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
-        <nav id="nav-main">
-          <ul class="nav-main">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="courses.html">Courses</a></li>
-            <li><a href="blog.html">Blog</a></li>
-            <li><a href="apply.html">Apply</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li class="nav-theme-wrap">
-              <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme (dark / light / system)">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="4"/>
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                </svg>
-                <span class="theme-toggle-label">Light</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+ <head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Complaints & Appeals Procedure | The Data and AI School of London</title>
+ <meta name="description" content="The Data and AI School of London complaints and appeals procedure. How to raise a concern, the stages of review, timescales, and how to escalate to NCFE.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://www.dataaischool.com/complaints.html">
+ <!-- Security headers (defence in depth, primary CSP/HSTS should be set via host) -->
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
+ <meta http-equiv="X-Content-Type-Options" content="nosniff">
+ <meta name="referrer" content="strict-origin-when-cross-origin">
+ <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+ <meta property="og:type" content="website">
+ <meta property="og:title" content="Complaints & Appeals | The Data and AI School of London">
+ <meta property="og:url" content="https://www.dataaischool.com/complaints.html">
+ <meta property="og:site_name" content="The Data and AI School of London">
+ <link rel="icon" type="image/png" href="favicon.png" />
+ <link rel="stylesheet" href="css/styles.css" />
+ <style>
+ .procedure-step {
+ display: flex;
+ gap: 1.5rem;
+ padding: 1.5rem 0;
+ border-bottom: 1px solid var(--border);
+ align-items: flex-start;
+ }
+ .procedure-step:last-child { border-bottom: none; }
+ .step-number {
+ width: 48px; height: 48px; min-width: 48px;
+ border-radius: 50%;
+ background: var(--accent);
+ color: var(--on-accent);
+ display: flex; align-items: center; justify-content: center;
+ font-weight: 800; font-size: 1.125rem;
+ flex-shrink: 0;
+ }
+ .step-number.gold { background: var(--gold); color: var(--on-gold); }
+ .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-primary); }
+ .step-content p { font-size: 0.9375rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 0.5rem; }
+ .step-content p:last-child { margin-bottom: 0; }
+ .step-timeframe {
+ display: inline-block;
+ font-size: 0.75rem; font-weight: 700;
+ background: var(--gold-muted); color: var(--gold);
+ border: 1px solid rgba(168,105,10,0.2);
+ border-radius: 20px; padding: 0.15rem 0.6rem;
+ font-family: var(--font-mono);
+ margin-bottom: 0.5rem;
+ }
+ .info-box {
+ background: var(--bg-elevated);
+ border-left: 4px solid var(--gold);
+ border-radius: 0 var(--radius) var(--radius) 0;
+ padding: 1rem 1.25rem;
+ margin: 1.5rem 0;
+ font-size: 0.9375rem;
+ color: var(--text-muted);
+ line-height: 1.65;
+ }
+ .info-box strong { color: var(--text-primary); }
+ @media (max-width: 480px) {
+ .procedure-step { flex-direction: column; gap: 0.75rem; }
+ .step-number { width: 38px; height: 38px; min-width: 38px; font-size: 1rem; }
+ }
+ </style>
+ <script type="application/ld+json">
+ {
+ "@context": "https://schema.org",
+ "@type": "WebPage",
+ "name": "Complaints and Appeals Procedure, The Data and AI School of London",
+ "url": "https://www.dataaischool.com/complaints.html",
+ "description": "Formal complaints and appeals procedure for learners and staff of The Data and AI School of London, including escalation to NCFE.",
+ "breadcrumb": {
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+ { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
+ { "@type": "ListItem", "position": 2, "name": "Complaints & Appeals", "item": "https://www.dataaischool.com/complaints.html" }
+ ]
+ }
+ }
+ </script>
+ </head>
+ <body>
+ <header class="site-header">
+ <div class="header-inner">
+ <a href="index.html" class="logo">The Data and AI <span>School of London</span></a>
+ <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
+ <nav id="nav-main">
+ <ul class="nav-main">
+ <li><a href="index.html">Home</a></li>
+ <li><a href="about.html">About</a></li>
+ <li><a href="courses.html">Courses</a></li>
+ <li><a href="blog.html">Blog</a></li>
+ <li><a href="apply.html">Apply</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ <li class="nav-theme-wrap">
+ <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme (dark / light / system)">
+ <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+ <circle cx="12" cy="12" r="4"/>
+ <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+ </svg>
+ <span class="theme-toggle-label">Light</span>
+ </button>
+ </li>
+ </ul>
+ </nav>
+ </div>
+ </header>
 
-    <main>
-      <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
-        <a href="index.html">Home</a> &rsaquo; <span>Complaints &amp; Appeals</span>
-      </nav>
+ <main>
+ <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
+ <a href="index.html">Home</a> &rsaquo; <span>Complaints &amp; Appeals</span>
+ </nav>
 
-      <h1 class="page-title">Complaints &amp; Appeals Procedure</h1>
-      <p class="page-intro">We are committed to resolving all concerns fairly and promptly. This procedure applies to learners, prospective learners, parents/guardians, and any other person who wishes to raise a concern about the Data and AI School of London.</p>
+ <h1 class="page-title">Complaints &amp; Appeals Procedure</h1>
+ <p class="page-intro">We are committed to resolving all concerns fairly and promptly. This procedure applies to learners, prospective learners, parents/guardians, and any other person who wishes to raise a concern about the Data and AI School of London.</p>
 
-      <div class="policy-meta" style="background:var(--bg-elevated);border-left:4px solid var(--gold);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:2rem;font-size:0.875rem;color:var(--text-muted);line-height:1.7">
-        <p><strong>Document reference:</strong> DAIS-POL-012 &nbsp;|&nbsp; <strong>Version:</strong> 1.0 &nbsp;|&nbsp; <strong>Date:</strong> April 2026 &nbsp;|&nbsp; <strong>Review:</strong> April 2027</p>
-        <p><strong>Complaints contact:</strong> <a href="mailto:info@dataaischool.com" style="color:var(--accent)">info@dataaischool.com</a> &nbsp;|&nbsp; <strong>Phone:</strong> <a href="tel:+442070990956" style="color:var(--accent)">+44 207 0990 956</a></p>
-      </div>
+ <div class="policy-meta" style="background:var(--bg-elevated);border-left:4px solid var(--gold);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:2rem;font-size:0.875rem;color:var(--text-muted);line-height:1.7">
+ <p><strong>Document reference:</strong> DAIS-POL-012 &nbsp;|&nbsp; <strong>Version:</strong> 1.0 &nbsp;|&nbsp; <strong>Date:</strong> April 2026 &nbsp;|&nbsp; <strong>Review:</strong> April 2027</p>
+ <p><strong>Complaints contact:</strong> <a href="mailto:info@dataaischool.com" style="color:var(--accent)">info@dataaischool.com</a> &nbsp;|&nbsp; <strong>Phone:</strong> <a href="tel:+442070990956" style="color:var(--accent)">+44 207 0990 956</a></p>
+ </div>
 
-      <!-- Complaints procedure -->
-      <section class="content-section">
-        <h2>Complaints Procedure</h2>
-        <p>A complaint is any expression of dissatisfaction about the school's services, staff, delivery, or administration that requires a response. We treat all complaints seriously and confidentially.</p>
+ <!-- Complaints procedure -->
+ <section class="content-section">
+ <h2>Complaints Procedure</h2>
+ <p>A complaint is any expression of dissatisfaction about the school's services, staff, delivery, or administration that requires a response. We treat all complaints seriously and confidentially.</p>
 
-        <div class="info-box">
-          <strong>Before raising a formal complaint:</strong> Many concerns can be resolved quickly by contacting us directly. Call <a href="tel:+442070990956" style="color:var(--accent)">+44 207 0990 956</a> or email <a href="mailto:info@dataaischool.com" style="color:var(--accent)">info@dataaischool.com</a> and we will do our best to resolve the matter informally within two working days.
-        </div>
+ <div class="info-box">
+ <strong>Before raising a formal complaint:</strong> Many concerns can be resolved quickly by contacting us directly. Call <a href="tel:+442070990956" style="color:var(--accent)">+44 207 0990 956</a> or email <a href="mailto:info@dataaischool.com" style="color:var(--accent)">info@dataaischool.com</a> and we will do our best to resolve the matter informally within two working days.
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <span class="step-timeframe">Within 5 working days of the issue</span>
-            <h3>Stage 1 — Informal Resolution</h3>
-            <p>Contact Sheherbano Khan (Registrar and Learner Support Lead) by email at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a> or by telephone on <a href="tel:+442070990956">+44 207 0990 956</a>. Describe the nature of your concern clearly.</p>
-            <p>We will acknowledge your contact within <strong>2 working days</strong> and aim to resolve the matter within <strong>5 working days</strong>. If we need more time, we will tell you and give a revised date.</p>
-          </div>
-        </div>
+ <div class="procedure-step">
+ <div class="step-number">1</div>
+ <div class="step-content">
+ <span class="step-timeframe">Within 5 working days of the issue</span>
+ <h3>Stage 1, Informal Resolution</h3>
+ <p>Contact Sheherbano Khan (Registrar and Learner Support Lead) by email at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a> or by telephone on <a href="tel:+442070990956">+44 207 0990 956</a>. Describe the nature of your concern clearly.</p>
+ <p>We will acknowledge your contact within <strong>2 working days</strong> and aim to resolve the matter within <strong>5 working days</strong>. If we need more time, we will tell you and give a revised date.</p>
+ </div>
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <span class="step-timeframe">Within 10 working days of Stage 1 response</span>
-            <h3>Stage 2 — Formal Written Complaint</h3>
-            <p>If you are not satisfied with the Stage 1 outcome, you may escalate your complaint in writing to the Head of Centre (Ali Fraz Khan) at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>. Mark your email "Formal Complaint — Stage 2".</p>
-            <p>Your written complaint should include: your full name and contact details, a clear description of the issue, the outcome you are seeking, and a copy of any relevant correspondence from Stage 1.</p>
-            <p>We will acknowledge receipt within <strong>3 working days</strong> and provide a full written response within <strong>15 working days</strong>.</p>
-          </div>
-        </div>
+ <div class="procedure-step">
+ <div class="step-number">2</div>
+ <div class="step-content">
+ <span class="step-timeframe">Within 10 working days of Stage 1 response</span>
+ <h3>Stage 2, Formal Written Complaint</h3>
+ <p>If you are not satisfied with the Stage 1 outcome, you may escalate your complaint in writing to the Head of Centre (Ali Fraz Khan) at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>. Mark your email "Formal Complaint, Stage 2".</p>
+ <p>Your written complaint should include: your full name and contact details, a clear description of the issue, the outcome you are seeking, and a copy of any relevant correspondence from Stage 1.</p>
+ <p>We will acknowledge receipt within <strong>3 working days</strong> and provide a full written response within <strong>15 working days</strong>.</p>
+ </div>
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number gold">3</div>
-          <div class="step-content">
-            <span class="step-timeframe">After Stage 2 response</span>
-            <h3>Stage 3 — Escalation to NCFE</h3>
-            <p>If you remain dissatisfied after exhausting our internal complaints procedure, you may escalate your complaint directly to <strong>NCFE</strong>, our awarding organisation and regulatory body.</p>
-            <p><strong>NCFE Complaints:</strong> <a href="https://www.ncfe.org.uk" target="_blank" rel="noopener">www.ncfe.org.uk</a><br/>
-            <strong>Address:</strong> Q6, Quorum Business Park, Benton Lane, Newcastle upon Tyne, NE12 8BT<br/>
-            <strong>Phone:</strong> 0191 239 8000</p>
-            <p>NCFE will only consider complaints that have first been through our internal procedure. Please include your Stage 2 response when contacting NCFE.</p>
-          </div>
-        </div>
-      </section>
+ <div class="procedure-step">
+ <div class="step-number gold">3</div>
+ <div class="step-content">
+ <span class="step-timeframe">After Stage 2 response</span>
+ <h3>Stage 3, Escalation to NCFE</h3>
+ <p>If you remain dissatisfied after exhausting our internal complaints procedure, you may escalate your complaint directly to <strong>NCFE</strong>, our awarding organisation and regulatory body.</p>
+ <p><strong>NCFE Complaints:</strong> <a href="https://www.ncfe.org.uk" target="_blank" rel="noopener">www.ncfe.org.uk</a><br/>
+ <strong>Address:</strong> Q6, Quorum Business Park, Benton Lane, Newcastle upon Tyne, NE12 8BT<br/>
+ <strong>Phone:</strong> 0191 239 8000</p>
+ <p>NCFE will only consider complaints that have first been through our internal procedure. Please include your Stage 2 response when contacting NCFE.</p>
+ </div>
+ </div>
+ </section>
 
-      <!-- Appeals procedure -->
-      <section class="content-section">
-        <h2>Assessment Appeals Procedure</h2>
-        <p>An appeal is a formal challenge to an assessment decision — for example, if you believe your work has been assessed inaccurately or that the assessment process was not followed correctly.</p>
+ <!-- Appeals procedure -->
+ <section class="content-section">
+ <h2>Assessment Appeals Procedure</h2>
+ <p>An appeal is a formal challenge to an assessment decision, for example, if you believe your work has been assessed inaccurately or that the assessment process was not followed correctly.</p>
 
-        <div class="info-box">
-          <strong>Important:</strong> An appeal challenges the <em>process</em> of assessment, not simply disagreement with a grade. If you feel your work was marked unfairly, you must first request feedback from your assessor before submitting a formal appeal.
-        </div>
+ <div class="info-box">
+ <strong>Important:</strong> An appeal challenges the <em>process</em> of assessment, not simply disagreement with a grade. If you feel your work was marked unfairly, you must first request feedback from your assessor before submitting a formal appeal.
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <span class="step-timeframe">Within 10 working days of the assessment decision</span>
-            <h3>Stage 1 — Request for Feedback and Review</h3>
-            <p>Request written feedback from your assessor via the VLE messaging system. If after receiving feedback you believe the decision is incorrect, contact the Lead IQA (Khadija Khan) at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a> to request an internal review.</p>
-            <p>The Lead IQA will review the assessment against the qualification specification and provide a written decision within <strong>10 working days</strong>.</p>
-          </div>
-        </div>
+ <div class="procedure-step">
+ <div class="step-number">1</div>
+ <div class="step-content">
+ <span class="step-timeframe">Within 10 working days of the assessment decision</span>
+ <h3>Stage 1, Request for Feedback and Review</h3>
+ <p>Request written feedback from your assessor via the VLE messaging system. If after receiving feedback you believe the decision is incorrect, contact the Lead IQA (Khadija Khan) at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a> to request an internal review.</p>
+ <p>The Lead IQA will review the assessment against the qualification specification and provide a written decision within <strong>10 working days</strong>.</p>
+ </div>
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <span class="step-timeframe">Within 10 working days of Stage 1 decision</span>
-            <h3>Stage 2 — Formal Appeal to Head of Centre</h3>
-            <p>If you are not satisfied with the Lead IQA's decision, you may submit a formal written appeal to the Head of Centre at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>. Mark your email "Formal Assessment Appeal — Stage 2".</p>
-            <p>Your appeal must state clearly: the unit or assessment in question, the grounds for your appeal, and the specific outcome you are requesting. The Head of Centre will provide a written decision within <strong>15 working days</strong>. This decision is final at the school level.</p>
-          </div>
-        </div>
+ <div class="procedure-step">
+ <div class="step-number">2</div>
+ <div class="step-content">
+ <span class="step-timeframe">Within 10 working days of Stage 1 decision</span>
+ <h3>Stage 2, Formal Appeal to Head of Centre</h3>
+ <p>If you are not satisfied with the Lead IQA's decision, you may submit a formal written appeal to the Head of Centre at <a href="mailto:info@dataaischool.com">info@dataaischool.com</a>. Mark your email "Formal Assessment Appeal, Stage 2".</p>
+ <p>Your appeal must state clearly: the unit or assessment in question, the grounds for your appeal, and the specific outcome you are requesting. The Head of Centre will provide a written decision within <strong>15 working days</strong>. This decision is final at the school level.</p>
+ </div>
+ </div>
 
-        <div class="procedure-step">
-          <div class="step-number gold">3</div>
-          <div class="step-content">
-            <span class="step-timeframe">After Stage 2 — within NCFE's deadlines</span>
-            <h3>Stage 3 — NCFE Appeals Process</h3>
-            <p>If you remain dissatisfied after our internal appeal procedure, you may appeal directly to <strong>NCFE</strong> under their published appeals procedure. NCFE's decision is final and binding.</p>
-            <p>Details of NCFE's appeals process are available at <a href="https://www.ncfe.org.uk" target="_blank" rel="noopener">www.ncfe.org.uk</a>. NCFE will require evidence that our internal procedure has been exhausted.</p>
-          </div>
-        </div>
-      </section>
+ <div class="procedure-step">
+ <div class="step-number gold">3</div>
+ <div class="step-content">
+ <span class="step-timeframe">After Stage 2, within NCFE's deadlines</span>
+ <h3>Stage 3, NCFE Appeals Process</h3>
+ <p>If you remain dissatisfied after our internal appeal procedure, you may appeal directly to <strong>NCFE</strong> under their published appeals procedure. NCFE's decision is final and binding.</p>
+ <p>Details of NCFE's appeals process are available at <a href="https://www.ncfe.org.uk" target="_blank" rel="noopener">www.ncfe.org.uk</a>. NCFE will require evidence that our internal procedure has been exhausted.</p>
+ </div>
+ </div>
+ </section>
 
-      <!-- Confidentiality and records -->
-      <section class="content-section">
-        <h2>Confidentiality &amp; Record Keeping</h2>
-        <p>All complaints and appeals are treated in strict confidence. Records of all complaints and appeals — including correspondence, decisions, and outcomes — are retained for a minimum of three years from the date of resolution, in accordance with our Data Protection Policy (DAIS-POL-006).</p>
-        <p>We will not victimise or disadvantage any learner for raising a genuine complaint or appeal in good faith.</p>
-      </section>
+ <!-- Confidentiality and records -->
+ <section class="content-section">
+ <h2>Confidentiality &amp; Record Keeping</h2>
+ <p>All complaints and appeals are treated in strict confidence. Records of all complaints and appeals, including correspondence, decisions, and outcomes, are retained for a minimum of three years from the date of resolution, in accordance with our Data Protection Policy (DAIS-POL-006).</p>
+ <p>We will not victimise or disadvantage any learner for raising a genuine complaint or appeal in good faith.</p>
+ </section>
 
-      <!-- Unreasonable complaints -->
-      <section class="content-section">
-        <h2>Unreasonable Complaints</h2>
-        <p>We reserve the right to decline to process a complaint or appeal that is vexatious, repetitive, or abusive. Where this is necessary, we will write to the complainant to explain our decision.</p>
-      </section>
+ <!-- Unreasonable complaints -->
+ <section class="content-section">
+ <h2>Unreasonable Complaints</h2>
+ <p>We reserve the right to decline to process a complaint or appeal that is vexatious, repetitive, or abusive. Where this is necessary, we will write to the complainant to explain our decision.</p>
+ </section>
 
-      <!-- Contact -->
-      <section class="content-section">
-        <h2>Contact us about a concern</h2>
-        <p>If you are unsure whether to raise a complaint or an appeal, or you would like to discuss a concern informally before committing to the formal process, please contact us — we are here to help.</p>
-        <div style="margin-top:1.25rem;display:flex;gap:1rem;flex-wrap:wrap">
-          <a href="contact.html" class="btn btn-primary">Send a message</a>
-          <a href="tel:+442070990956" class="btn btn-secondary">Call +44 207 0990 956</a>
-        </div>
-      </section>
-    </main>
+ <!-- Contact -->
+ <section class="content-section">
+ <h2>Contact us about a concern</h2>
+ <p>If you are unsure whether to raise a complaint or an appeal, or you would like to discuss a concern informally before committing to the formal process, please contact us, we are here to help.</p>
+ <div style="margin-top:1.25rem;display:flex;gap:1rem;flex-wrap:wrap">
+ <a href="contact.html" class="btn btn-primary">Send a message</a>
+ <a href="tel:+442070990956" class="btn btn-secondary">Call +44 207 0990 956</a>
+ </div>
+ </section>
+ </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
-        <ul class="footer-nav">
-          <li><a href="about.html">About</a></li>
-          <li><a href="team.html">Team</a></li>
-          <li><a href="courses.html">Courses</a></li>
-          <li><a href="blog.html">Blog</a></li>
-          <li><a href="apply.html">Apply</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="complaints.html" aria-current="page">Complaints</a></li>
-          <li><a href="privacy-policy.html">Privacy Policy</a></li>
-          <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
-        </ul>
-      </div>
-    </footer>
-    <script src="js/main.js"></script>
-  </body>
+ <footer class="site-footer">
+ <div class="footer-inner">
+ <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
+ <ul class="footer-nav">
+ <li><a href="about.html">About</a></li>
+ <li><a href="team.html">Team</a></li>
+ <li><a href="courses.html">Courses</a></li>
+ <li><a href="blog.html">Blog</a></li>
+ <li><a href="apply.html">Apply</a></li>
+ <li><a href="contact.html">Contact</a></li>
+ <li><a href="complaints.html" aria-current="page">Complaints</a></li>
+ <li><a href="privacy-policy.html">Privacy Policy</a></li>
+ <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
+ </ul>
+ </div>
+ </footer>
+ <script src="js/main.js"></script>
+ </body>
 </html>

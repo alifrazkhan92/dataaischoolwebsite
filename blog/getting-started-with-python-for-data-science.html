@@ -1,227 +1,227 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Getting Started with Python for Data Science in 2026 | DAIS London</title>
-    <meta name="description" content="A complete beginner's guide to Python for Data Science in 2026. Learn which tools to use, how to write your first data pipeline, and how to get job-ready fast.">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html">
-    <!-- Security headers (defence in depth — primary CSP/HSTS should be set via host) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
-    <meta property="og:type" content="article">
-    <meta property="og:title" content="Getting Started with Python for Data Science in 2026">
-    <meta property="og:description" content="A complete beginner's guide to Python for Data Science. Tools, pipelines, and how to get job-ready fast.">
-    <meta property="og:url" content="https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html">
-    <meta property="og:image" content="https://www.dataaischool.com/images/course-python.svg">
-    <meta property="og:site_name" content="The Data and AI School of London">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Getting Started with Python for Data Science in 2026">
-    <meta name="twitter:description" content="A complete beginner's guide to Python for Data Science. Tools, pipelines, and how to get job-ready fast.">
-    <link rel="icon" type="image/png" href="../favicon.png" />
-    <link rel="stylesheet" href="../css/styles.css" />
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": "Getting Started with Python for Data Science in 2026",
-      "description": "A complete beginner's guide to Python for Data Science in 2026 — tools, pipelines, and how to get job-ready fast.",
-      "image": "https://www.dataaischool.com/images/course-python.svg",
-      "datePublished": "2026-05-13",
-      "dateModified": "2026-05-13",
-      "author": {
-        "@type": "Person",
-        "name": "Ali Fraz Khan",
-        "honorificSuffix": "FHEA",
-        "jobTitle": "CEO and Principal",
-        "worksFor": { "@type": "Organization", "name": "The Data and AI School of London" }
-      },
-      "publisher": {
-        "@type": "EducationalOrganization",
-        "@id": "https://www.dataaischool.com/#organisation",
-        "name": "The Data and AI School of London",
-        "logo": { "@type": "ImageObject", "url": "https://www.dataaischool.com/favicon.png" }
-      },
-      "mainEntityOfPage": "https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html",
-      "keywords": ["Python for data science", "learn Python UK", "data science beginner", "Python bootcamp"],
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
-          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.dataaischool.com/blog.html" },
-          { "@type": "ListItem", "position": 3, "name": "Getting Started with Python for Data Science in 2026", "item": "https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html" }
-        ]
-      }
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Do I need a maths degree to learn Python for Data Science?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. While statistics helps, you do not need a maths degree. Most data science work requires practical reasoning and problem-solving skills that you build through practice, not advanced academic maths." }
-        },
-        {
-          "@type": "Question",
-          "name": "How long does it take to learn Python for Data Science?",
-          "acceptedAnswer": { "@type": "Answer", "text": "With focused, structured study — such as a bootcamp — most beginners are writing functional data pipelines within 8–10 weeks. Getting job-ready typically takes 3–6 months of consistent practice." }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the best Python library for data science?",
-          "acceptedAnswer": { "@type": "Answer", "text": "The core stack is pandas for data manipulation, NumPy for numerical computing, Matplotlib or Seaborn for visualisation, and scikit-learn for machine learning. These four libraries cover the vast majority of real-world data science tasks." }
-        }
-      ]
-    }
-    </script>
-  </head>
-  <body>
-    <header class="site-header">
-      <div class="header-inner">
-        <a href="../index.html" class="logo">The Data and AI <span>School of London</span></a>
-        <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
-        <nav id="nav-main">
-          <ul class="nav-main">
-            <li><a href="../index.html">Home</a></li>
-            <li><a href="../about.html">About</a></li>
-            <li><a href="../courses.html">Courses</a></li>
-            <li><a href="../blog.html" aria-current="page">Blog</a></li>
-            <li><a href="../apply.html">Apply</a></li>
-            <li><a href="../contact.html">Contact</a></li>
-            <li class="nav-theme-wrap">
-              <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="4"/>
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                </svg>
-                <span class="theme-toggle-label">Light</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+ <head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Getting Started with Python for Data Science in 2026 | DAIS London</title>
+ <meta name="description" content="A complete beginner's guide to Python for Data Science in 2026. Learn which tools to use, how to write your first data pipeline, and how to get job-ready fast.">
+ <meta name="robots" content="index, follow">
+ <link rel="canonical" href="https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html">
+ <!-- Security headers (defence in depth, primary CSP/HSTS should be set via host) -->
+ <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://script.google.com https://script.googleusercontent.com https://embed.tawk.to https://*.tawk.to https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; frame-src https://script.google.com https://script.googleusercontent.com https://*.tawk.to; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.tawk.to wss://*.tawk.to; form-action 'self' https://script.google.com; base-uri 'self'; object-src 'none';">
+ <meta http-equiv="X-Content-Type-Options" content="nosniff">
+ <meta name="referrer" content="strict-origin-when-cross-origin">
+ <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+ <meta property="og:type" content="article">
+ <meta property="og:title" content="Getting Started with Python for Data Science in 2026">
+ <meta property="og:description" content="A complete beginner's guide to Python for Data Science. Tools, pipelines, and how to get job-ready fast.">
+ <meta property="og:url" content="https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html">
+ <meta property="og:image" content="https://www.dataaischool.com/images/course-python.svg">
+ <meta property="og:site_name" content="The Data and AI School of London">
+ <meta name="twitter:card" content="summary_large_image">
+ <meta name="twitter:title" content="Getting Started with Python for Data Science in 2026">
+ <meta name="twitter:description" content="A complete beginner's guide to Python for Data Science. Tools, pipelines, and how to get job-ready fast.">
+ <link rel="icon" type="image/png" href="../favicon.png" />
+ <link rel="stylesheet" href="../css/styles.css" />
+ <script type="application/ld+json">
+ {
+ "@context": "https://schema.org",
+ "@type": "Article",
+ "headline": "Getting Started with Python for Data Science in 2026",
+ "description": "A complete beginner's guide to Python for Data Science in 2026, tools, pipelines, and how to get job-ready fast.",
+ "image": "https://www.dataaischool.com/images/course-python.svg",
+ "datePublished": "2026-05-13",
+ "dateModified": "2026-05-13",
+ "author": {
+ "@type": "Person",
+ "name": "Ali Fraz Khan",
+ "honorificSuffix": "FHEA",
+ "jobTitle": "CEO and Principal",
+ "worksFor": { "@type": "Organization", "name": "The Data and AI School of London" }
+ },
+ "publisher": {
+ "@type": "EducationalOrganization",
+ "@id": "https://www.dataaischool.com/#organisation",
+ "name": "The Data and AI School of London",
+ "logo": { "@type": "ImageObject", "url": "https://www.dataaischool.com/favicon.png" }
+ },
+ "mainEntityOfPage": "https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html",
+ "keywords": ["Python for data science", "learn Python UK", "data science beginner", "Python bootcamp"],
+ "breadcrumb": {
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+ { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.dataaischool.com/" },
+ { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.dataaischool.com/blog.html" },
+ { "@type": "ListItem", "position": 3, "name": "Getting Started with Python for Data Science in 2026", "item": "https://www.dataaischool.com/blog/getting-started-with-python-for-data-science.html" }
+ ]
+ }
+ }
+ </script>
+ <script type="application/ld+json">
+ {
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+ {
+ "@type": "Question",
+ "name": "Do I need a maths degree to learn Python for Data Science?",
+ "acceptedAnswer": { "@type": "Answer", "text": "No. While statistics helps, you do not need a maths degree. Most data science work requires practical reasoning and problem-solving skills that you build through practice, not advanced academic maths." }
+ },
+ {
+ "@type": "Question",
+ "name": "How long does it take to learn Python for Data Science?",
+ "acceptedAnswer": { "@type": "Answer", "text": "With focused, structured study, such as a bootcamp, most beginners are writing functional data pipelines within 8 to 10 weeks. Getting job-ready typically takes 3 to 6 months of consistent practice." }
+ },
+ {
+ "@type": "Question",
+ "name": "What is the best Python library for data science?",
+ "acceptedAnswer": { "@type": "Answer", "text": "The core stack is pandas for data manipulation, NumPy for numerical computing, Matplotlib or Seaborn for visualisation, and scikit-learn for machine learning. These four libraries cover the vast majority of real-world data science tasks." }
+ }
+ ]
+ }
+ </script>
+ </head>
+ <body>
+ <header class="site-header">
+ <div class="header-inner">
+ <a href="../index.html" class="logo">The Data and AI <span>School of London</span></a>
+ <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>
+ <nav id="nav-main">
+ <ul class="nav-main">
+ <li><a href="../index.html">Home</a></li>
+ <li><a href="../about.html">About</a></li>
+ <li><a href="../courses.html">Courses</a></li>
+ <li><a href="../blog.html" aria-current="page">Blog</a></li>
+ <li><a href="../apply.html">Apply</a></li>
+ <li><a href="../contact.html">Contact</a></li>
+ <li class="nav-theme-wrap">
+ <button type="button" class="theme-toggle" aria-label="Theme: light" title="Toggle theme">
+ <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+ <circle cx="12" cy="12" r="4"/>
+ <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+ </svg>
+ <span class="theme-toggle-label">Light</span>
+ </button>
+ </li>
+ </ul>
+ </nav>
+ </div>
+ </header>
 
-    <main>
-      <article class="blog-post">
+ <main>
+ <article class="blog-post">
 
-        <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
-          <a href="../index.html">Home</a> &rsaquo;
-          <a href="../blog.html">Blog</a> &rsaquo;
-          <span>Getting Started with Python for Data Science</span>
-        </nav>
+ <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
+ <a href="../index.html">Home</a> &rsaquo;
+ <a href="../blog.html">Blog</a> &rsaquo;
+ <span>Getting Started with Python for Data Science</span>
+ </nav>
 
-        <header class="blog-post-header">
-          <div class="blog-card-meta">
-            <span class="blog-tag">Python</span>
-            <time class="blog-date" datetime="2026-05-13">13 May 2026</time>
-            <span class="blog-read-time">5 min read</span>
-          </div>
-          <h1>Getting Started with Python for Data Science in 2026</h1>
-          <div class="blog-post-meta">
-            <span class="blog-author">By <strong>Ali Fraz Khan, FHEA</strong> — CEO &amp; Principal, The Data and AI School of London</span>
-          </div>
-          <img src="../images/blog-python-beginners.svg" alt="Python for Data Science — beginner's guide" width="740" height="360" style="width:100%;height:auto;border-radius:var(--radius-lg);margin-bottom:1.5rem;" loading="eager"/>
-        </header>
+ <header class="blog-post-header">
+ <div class="blog-card-meta">
+ <span class="blog-tag">Python</span>
+ <time class="blog-date" datetime="2026-05-13">13 May 2026</time>
+ <span class="blog-read-time">5 min read</span>
+ </div>
+ <h1>Getting Started with Python for Data Science in 2026</h1>
+ <div class="blog-post-meta">
+ <span class="blog-author">By <strong>Ali Fraz Khan, FHEA</strong>, CEO &amp; Principal, The Data and AI School of London</span>
+ </div>
+ <img src="../images/blog-python-beginners.svg" alt="Python for Data Science, beginner's guide" width="740" height="360" style="width:100%;height:auto;border-radius:var(--radius-lg);margin-bottom:1.5rem;" loading="eager"/>
+ </header>
 
-        <div class="blog-post-body">
-          <p>Python is the most widely used programming language in data science, machine learning, and AI. If you want to work with data professionally in the UK — whether as a data analyst, data scientist, or AI engineer — Python is not optional. It is the starting point for everything.</p>
+ <div class="blog-post-body">
+ <p>Python is the most widely used programming language in data science, machine learning, and AI. If you want to work with data professionally in the UK, whether as a data analyst, data scientist, or AI engineer, Python is not optional. It is the starting point for everything.</p>
 
-          <p>But where do you actually begin? This guide gives you the honest, practical answer.</p>
+ <p>But where do you actually begin? This guide gives you the honest, practical answer.</p>
 
-          <h2>Why Python dominates Data Science</h2>
-          <p>Python became the standard language for data science for three reasons: its syntax is readable enough to learn quickly, its ecosystem of libraries is unmatched, and its community is enormous. Whether you're cleaning a spreadsheet, training a machine learning model, or building an AI application, there's a Python library for it.</p>
+ <h2>Why Python dominates Data Science</h2>
+ <p>Python became the standard language for data science for three reasons: its syntax is readable enough to learn quickly, its ecosystem of libraries is unmatched, and its community is enormous. Whether you're cleaning a spreadsheet, training a machine learning model, or building an AI application, there's a Python library for it.</p>
 
-          <blockquote>According to the Stack Overflow Developer Survey 2025, Python is the most used programming language for the fourth consecutive year — and the most wanted by developers who don't yet use it.</blockquote>
+ <blockquote>According to the Stack Overflow Developer Survey 2025, Python is the most used programming language for the fourth consecutive year, and the most wanted by developers who don't yet use it.</blockquote>
 
-          <h2>The core Python Data Science stack</h2>
-          <p>You do not need to learn every Python library. Focus on these four first:</p>
-          <ul>
-            <li><strong>pandas</strong> — loading, cleaning and manipulating data in tabular form (think Excel, but programmable)</li>
-            <li><strong>NumPy</strong> — numerical computing, arrays, and mathematical operations</li>
-            <li><strong>Matplotlib / Seaborn</strong> — data visualisation: charts, graphs, and dashboards</li>
-            <li><strong>scikit-learn</strong> — machine learning: classification, regression, clustering, and model evaluation</li>
-          </ul>
-          <p>These four cover approximately 80% of what a working data scientist does day-to-day.</p>
+ <h2>The core Python Data Science stack</h2>
+ <p>You do not need to learn every Python library. Focus on these four first:</p>
+ <ul>
+ <li><strong>pandas</strong>, loading, cleaning and manipulating data in tabular form (think Excel, but programmable)</li>
+ <li><strong>NumPy</strong>, numerical computing, arrays, and mathematical operations</li>
+ <li><strong>Matplotlib / Seaborn</strong>, data visualisation: charts, graphs, and dashboards</li>
+ <li><strong>scikit-learn</strong>, machine learning: classification, regression, clustering, and model evaluation</li>
+ </ul>
+ <p>These four cover approximately 80% of what a working data scientist does day-to-day.</p>
 
-          <h2>Setting up your environment</h2>
-          <p>The fastest way to get started without configuration headaches:</p>
-          <ol>
-            <li>Install <strong>Anaconda</strong> — it includes Python, Jupyter notebooks, and all the core data science libraries pre-installed</li>
-            <li>Open <strong>Jupyter Lab</strong> — an interactive notebook environment where you write code and see results immediately</li>
-            <li>Alternatively, use <strong>Google Colab</strong> — free, runs in the browser, no installation required</li>
-          </ol>
+ <h2>Setting up your environment</h2>
+ <p>The fastest way to get started without configuration headaches:</p>
+ <ol>
+ <li>Install <strong>Anaconda</strong>, it includes Python, Jupyter notebooks, and all the core data science libraries pre-installed</li>
+ <li>Open <strong>Jupyter Lab</strong>, an interactive notebook environment where you write code and see results immediately</li>
+ <li>Alternatively, use <strong>Google Colab</strong>, free, runs in the browser, no installation required</li>
+ </ol>
 
-          <h2>Your first data pipeline in 5 steps</h2>
-          <p>A data pipeline is a sequence of steps that takes raw data and produces a result. Here is the basic pattern you'll use repeatedly in your career:</p>
-          <ol>
-            <li><strong>Load</strong> — import data from a CSV, database, or API using pandas</li>
-            <li><strong>Explore</strong> — understand the shape, types, and distribution of your data</li>
-            <li><strong>Clean</strong> — handle missing values, fix data types, remove duplicates</li>
-            <li><strong>Analyse or model</strong> — compute statistics or train a machine learning model</li>
-            <li><strong>Communicate</strong> — visualise results or export them for a stakeholder</li>
-          </ol>
+ <h2>Your first data pipeline in 5 steps</h2>
+ <p>A data pipeline is a sequence of steps that takes raw data and produces a result. Here is the basic pattern you'll use repeatedly in your career:</p>
+ <ol>
+ <li><strong>Load</strong>, import data from a CSV, database, or API using pandas</li>
+ <li><strong>Explore</strong>, understand the shape, types, and distribution of your data</li>
+ <li><strong>Clean</strong>, handle missing values, fix data types, remove duplicates</li>
+ <li><strong>Analyse or model</strong>, compute statistics or train a machine learning model</li>
+ <li><strong>Communicate</strong>, visualise results or export them for a stakeholder</li>
+ </ol>
 
-          <h2>Common mistakes beginners make</h2>
-          <ul>
-            <li><strong>Trying to learn everything at once.</strong> Pick a project, build it, and learn what you need along the way.</li>
-            <li><strong>Skipping the fundamentals.</strong> Variables, loops, functions, and classes in pure Python must be solid before you add pandas and scikit-learn on top.</li>
-            <li><strong>Ignoring version control.</strong> Learn Git from day one. Every data science job expects it.</li>
-            <li><strong>Treating tutorials as learning.</strong> Reading code is not the same as writing it. Close the tutorial and build something yourself.</li>
-          </ul>
+ <h2>Common mistakes beginners make</h2>
+ <ul>
+ <li><strong>Trying to learn everything at once.</strong> Pick a project, build it, and learn what you need along the way.</li>
+ <li><strong>Skipping the fundamentals.</strong> Variables, loops, functions, and classes in pure Python must be solid before you add pandas and scikit-learn on top.</li>
+ <li><strong>Ignoring version control.</strong> Learn Git from day one. Every data science job expects it.</li>
+ <li><strong>Treating tutorials as learning.</strong> Reading code is not the same as writing it. Close the tutorial and build something yourself.</li>
+ </ul>
 
-          <h2>How long will it take?</h2>
-          <p>With a structured programme — such as our <a href="../courses.html#python">Python Language Bootcamp</a> followed by our <a href="../courses.html#data-science">Data Science Bootcamp</a> — most students are writing functional pipelines within 8–10 weeks and portfolio-ready within 3–4 months. Self-study without structure typically takes two to three times longer.</p>
+ <h2>How long will it take?</h2>
+ <p>With a structured programme, such as our <a href="../courses.html#python">Python Language Bootcamp</a> followed by our <a href="../courses.html#data-science">Data Science Bootcamp</a>, most students are writing functional pipelines within 8 to 10 weeks and portfolio-ready within 3 to 4 months. Self-study without structure typically takes two to three times longer.</p>
 
-          <h2>Frequently asked questions</h2>
-          <div class="faq-list" style="margin-top:1rem">
-            <details class="faq-item">
-              <summary>Do I need a maths degree to learn Python for Data Science?</summary>
-              <p>No. While statistics helps, you do not need a maths degree. Most data science work requires practical reasoning and problem-solving skills that you build through practice, not advanced academic maths.</p>
-            </details>
-            <details class="faq-item">
-              <summary>How long does it take to learn Python for Data Science?</summary>
-              <p>With focused, structured study — such as a bootcamp — most beginners are writing functional data pipelines within 8–10 weeks. Getting job-ready typically takes 3–6 months of consistent practice.</p>
-            </details>
-            <details class="faq-item">
-              <summary>What is the best Python library for data science?</summary>
-              <p>The core stack is pandas, NumPy, Matplotlib/Seaborn, and scikit-learn. These four libraries cover the vast majority of real-world data science tasks.</p>
-            </details>
-          </div>
-        </div>
+ <h2>Frequently asked questions</h2>
+ <div class="faq-list" style="margin-top:1rem">
+ <details class="faq-item">
+ <summary>Do I need a maths degree to learn Python for Data Science?</summary>
+ <p>No. While statistics helps, you do not need a maths degree. Most data science work requires practical reasoning and problem-solving skills that you build through practice, not advanced academic maths.</p>
+ </details>
+ <details class="faq-item">
+ <summary>How long does it take to learn Python for Data Science?</summary>
+ <p>With focused, structured study, such as a bootcamp, most beginners are writing functional data pipelines within 8 to 10 weeks. Getting job-ready typically takes 3 to 6 months of consistent practice.</p>
+ </details>
+ <details class="faq-item">
+ <summary>What is the best Python library for data science?</summary>
+ <p>The core stack is pandas, NumPy, Matplotlib/Seaborn, and scikit-learn. These four libraries cover the vast majority of real-world data science tasks.</p>
+ </details>
+ </div>
+ </div>
 
-        <div class="blog-cta">
-          <h3>Ready to start your Python journey?</h3>
-          <p>Our Python Language Bootcamp takes you from zero to production-ready in 8 weeks — entirely online, NCFE-regulated, and designed for working professionals.</p>
-          <a href="../courses.html#python" class="btn btn-primary" style="margin-right:0.75rem">View the course</a>
-          <a href="../apply.html" class="btn btn-secondary">Apply now</a>
-        </div>
+ <div class="blog-cta">
+ <h3>Ready to start your Python journey?</h3>
+ <p>Our Python Language Bootcamp takes you from zero to production-ready in 8 weeks, entirely online, NCFE-regulated, and designed for working professionals.</p>
+ <a href="../courses.html#python" class="btn btn-primary" style="margin-right:0.75rem">View the course</a>
+ <a href="../apply.html" class="btn btn-secondary">Apply now</a>
+ </div>
 
-      </article>
-    </main>
+ </article>
+ </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
-        <ul class="footer-nav">
-          <li><a href="../about.html">About</a></li>
-          <li><a href="../team.html">Team</a></li>
-          <li><a href="../courses.html">Courses</a></li>
-          <li><a href="../blog.html">Blog</a></li>
-          <li><a href="../apply.html">Apply</a></li>
-          <li><a href="../contact.html">Contact</a></li>
-          <li><a href="../complaints.html">Complaints</a></li>
-          <li><a href="../privacy-policy.html">Privacy Policy</a></li>
-          <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
-        </ul>
-      </div>
-    </footer>
-    <script src="../js/main.js"></script>
-  </body>
+ <footer class="site-footer">
+ <div class="footer-inner">
+ <p>© The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
+ <ul class="footer-nav">
+ <li><a href="../about.html">About</a></li>
+ <li><a href="../team.html">Team</a></li>
+ <li><a href="../courses.html">Courses</a></li>
+ <li><a href="../blog.html">Blog</a></li>
+ <li><a href="../apply.html">Apply</a></li>
+ <li><a href="../contact.html">Contact</a></li>
+ <li><a href="../complaints.html">Complaints</a></li>
+ <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+ <li><button type="button" class="footer-cookie-btn" id="open-cookie-settings">Cookie Settings</button></li>
+ </ul>
+ </div>
+ </footer>
+ <script src="../js/main.js"></script>
+ </body>
 </html>

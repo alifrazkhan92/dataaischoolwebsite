@@ -1,97 +1,97 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0A2240"/>
-      <stop offset="100%" style="stop-color:#0E3268"/>
-    </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" style="stop-color:#A8690A"/>
-      <stop offset="100%" style="stop-color:#E8B030"/>
-    </linearGradient>
-    <linearGradient id="barGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" style="stop-color:#C89930" stop-opacity="0.6"/>
-      <stop offset="100%" style="stop-color:#E8B030"/>
-    </linearGradient>
-  </defs>
-  <rect width="900" height="400" fill="url(#bg)"/>
+ <defs>
+ <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+ <stop offset="0%" style="stop-color:#0A2240"/>
+ <stop offset="100%" style="stop-color:#0E3268"/>
+ </linearGradient>
+ <linearGradient id="goldGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+ <stop offset="0%" style="stop-color:#A8690A"/>
+ <stop offset="100%" style="stop-color:#E8B030"/>
+ </linearGradient>
+ <linearGradient id="barGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+ <stop offset="0%" style="stop-color:#C89930" stop-opacity="0.6"/>
+ <stop offset="100%" style="stop-color:#E8B030"/>
+ </linearGradient>
+ </defs>
+ <rect width="900" height="400" fill="url(#bg)"/>
 
-  <!-- Background concentric arcs - aspiration / growth -->
-  <g fill="none" stroke="#1A4A8A" stroke-width="1" opacity="0.2">
-    <circle cx="450" cy="420" r="150"/><circle cx="450" cy="420" r="220"/>
-    <circle cx="450" cy="420" r="290"/><circle cx="450" cy="420" r="360"/>
-    <circle cx="450" cy="420" r="430"/>
-  </g>
+ <!-- Background concentric arcs - aspiration / growth -->
+ <g fill="none" stroke="#1A4A8A" stroke-width="1" opacity="0.2">
+ <circle cx="450" cy="420" r="150"/><circle cx="450" cy="420" r="220"/>
+ <circle cx="450" cy="420" r="290"/><circle cx="450" cy="420" r="360"/>
+ <circle cx="450" cy="420" r="430"/>
+ </g>
 
-  <!-- Upward growth chart - main visual -->
-  <g transform="translate(120, 50)">
-    <!-- Axes -->
-    <line x1="50" y1="300" x2="620" y2="300" stroke="#1E3A5E" stroke-width="2"/>
-    <line x1="50" y1="20" x2="50" y2="300" stroke="#1E3A5E" stroke-width="2"/>
+ <!-- Upward growth chart - main visual -->
+ <g transform="translate(120, 50)">
+ <!-- Axes -->
+ <line x1="50" y1="300" x2="620" y2="300" stroke="#1E3A5E" stroke-width="2"/>
+ <line x1="50" y1="20" x2="50" y2="300" stroke="#1E3A5E" stroke-width="2"/>
 
-    <!-- Axis labels -->
-    <text x="335" y="326" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">Year 1 → Year 3</text>
-    <text x="28" y="165" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE" transform="rotate(-90,28,165)">Learners</text>
+ <!-- Axis labels -->
+ <text x="335" y="326" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">Year 1 → Year 3</text>
+ <text x="28" y="165" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE" transform="rotate(-90,28,165)">Learners</text>
 
-    <!-- Grid lines -->
-    <g stroke="#1E3A5E" stroke-width="0.5" opacity="0.4">
-      <line x1="50" y1="225" x2="620" y2="225"/>
-      <line x1="50" y1="150" x2="620" y2="150"/>
-      <line x1="50" y1="75" x2="620" y2="75"/>
-    </g>
+ <!-- Grid lines -->
+ <g stroke="#1E3A5E" stroke-width="0.5" opacity="0.4">
+ <line x1="50" y1="225" x2="620" y2="225"/>
+ <line x1="50" y1="150" x2="620" y2="150"/>
+ <line x1="50" y1="75" x2="620" y2="75"/>
+ </g>
 
-    <!-- Bar chart - growing -->
-    <rect x="80" y="210" width="80" height="90" fill="url(#barGrad)" rx="4"/>
-    <rect x="240" y="140" width="80" height="160" fill="url(#barGrad)" rx="4"/>
-    <rect x="400" y="60" width="80" height="240" fill="url(#barGrad)" rx="4"/>
+ <!-- Bar chart - growing -->
+ <rect x="80" y="210" width="80" height="90" fill="url(#barGrad)" rx="4"/>
+ <rect x="240" y="140" width="80" height="160" fill="url(#barGrad)" rx="4"/>
+ <rect x="400" y="60" width="80" height="240" fill="url(#barGrad)" rx="4"/>
 
-    <!-- Bar labels -->
-    <text x="120" y="205" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">25</text>
-    <text x="280" y="135" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">80</text>
-    <text x="440" y="55" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">150</text>
+ <!-- Bar labels -->
+ <text x="120" y="205" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">25</text>
+ <text x="280" y="135" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">80</text>
+ <text x="440" y="55" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#E8B030">150</text>
 
-    <!-- X axis labels -->
-    <text x="120" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2026–27</text>
-    <text x="280" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2027–28</text>
-    <text x="440" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2028–29</text>
+ <!-- X axis labels -->
+ <text x="120" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2026 to 27</text>
+ <text x="280" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2027 to 28</text>
+ <text x="440" y="318" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" fill="#8DA3BE">2028 to 29</text>
 
-    <!-- Trend line -->
-    <polyline points="120,255 280,185 440,105" fill="none" stroke="#E8B030" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="120" cy="255" r="6" fill="#E8B030"/>
-    <circle cx="280" cy="185" r="6" fill="#E8B030"/>
-    <circle cx="440" cy="105" r="6" fill="#E8B030"/>
+ <!-- Trend line -->
+ <polyline points="120,255 280,185 440,105" fill="none" stroke="#E8B030" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+ <circle cx="120" cy="255" r="6" fill="#E8B030"/>
+ <circle cx="280" cy="185" r="6" fill="#E8B030"/>
+ <circle cx="440" cy="105" r="6" fill="#E8B030"/>
 
-    <!-- Arrow continuing upward -->
-    <line x1="440" y1="105" x2="540" y2="45" stroke="#E8B030" stroke-width="2" stroke-dasharray="6,4"/>
-    <polygon points="540,35 548,55 532,55" fill="#E8B030"/>
-  </g>
+ <!-- Arrow continuing upward -->
+ <line x1="440" y1="105" x2="540" y2="45" stroke="#E8B030" stroke-width="2" stroke-dasharray="6,4"/>
+ <polygon points="540,35 548,55 532,55" fill="#E8B030"/>
+ </g>
 
-  <!-- Right panel: key milestones -->
-  <g transform="translate(700, 60)">
-    <text x="0" y="20" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#C89930">Key Milestones</text>
-    <!-- Milestone items -->
-    <circle cx="8" cy="50" r="8" fill="#C89930"/>
-    <text x="22" y="46" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2026</text>
-    <text x="22" y="58" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Launch · 25 learners</text>
+ <!-- Right panel: key milestones -->
+ <g transform="translate(700, 60)">
+ <text x="0" y="20" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#C89930">Key Milestones</text>
+ <!-- Milestone items -->
+ <circle cx="8" cy="50" r="8" fill="#C89930"/>
+ <text x="22" y="46" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2026</text>
+ <text x="22" y="58" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Launch · 25 learners</text>
 
-    <line x1="8" y1="58" x2="8" y2="88" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
+ <line x1="8" y1="58" x2="8" y2="88" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
 
-    <circle cx="8" cy="98" r="8" fill="#1A4A8A" stroke="#C89930" stroke-width="1.5"/>
-    <text x="22" y="94" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2027</text>
-    <text x="22" y="106" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Growth · 80 learners</text>
+ <circle cx="8" cy="98" r="8" fill="#1A4A8A" stroke="#C89930" stroke-width="1.5"/>
+ <text x="22" y="94" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2027</text>
+ <text x="22" y="106" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Growth · 80 learners</text>
 
-    <line x1="8" y1="106" x2="8" y2="136" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
+ <line x1="8" y1="106" x2="8" y2="136" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
 
-    <circle cx="8" cy="146" r="8" fill="#1A4A8A" stroke="#C89930" stroke-width="1.5"/>
-    <text x="22" y="142" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2029</text>
-    <text x="22" y="154" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Scale · 150 learners</text>
+ <circle cx="8" cy="146" r="8" fill="#1A4A8A" stroke="#C89930" stroke-width="1.5"/>
+ <text x="22" y="142" font-family="system-ui,sans-serif" font-size="10" fill="#FFFFFF" font-weight="700">2029</text>
+ <text x="22" y="154" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">Scale · 150 learners</text>
 
-    <line x1="8" y1="154" x2="8" y2="184" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
+ <line x1="8" y1="154" x2="8" y2="184" stroke="#1E3A5E" stroke-width="1.5" stroke-dasharray="3,2"/>
 
-    <circle cx="8" cy="194" r="8" fill="#C89930" opacity="0.5"/>
-    <text x="22" y="190" font-family="system-ui,sans-serif" font-size="10" fill="#C89930" font-weight="700">Future</text>
-    <text x="22" y="202" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">UK's leading AI school</text>
-  </g>
+ <circle cx="8" cy="194" r="8" fill="#C89930" opacity="0.5"/>
+ <text x="22" y="190" font-family="system-ui,sans-serif" font-size="10" fill="#C89930" font-weight="700">Future</text>
+ <text x="22" y="202" font-family="system-ui,sans-serif" font-size="9" fill="#8DA3BE">UK's leading AI school</text>
+ </g>
 
-  <!-- Title at bottom -->
-  <text x="450" y="375" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#C89930" letter-spacing="2">OUR GROWTH VISION 2026–2029</text>
+ <!-- Title at bottom -->
+ <text x="450" y="375" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#C89930" letter-spacing="2">OUR GROWTH VISION 2026 to 2029</text>
 </svg>
