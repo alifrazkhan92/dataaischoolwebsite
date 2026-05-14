@@ -21,3 +21,7 @@ client_secret*.json
 .idea/
 .vscode/
 *.swp
+
+# Google Apps Script source — managed inside the Apps Script IDE.
+# Keep locally for reference but do not expose backend logic in the public repo.
+google-apps-script/
