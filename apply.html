@@ -1035,7 +1035,9 @@
     // ═══════════════════════════════════════════════════════════════════
     // DAIS Admission Form — JavaScript
     // Handles file uploads (drag-drop + click), validation, base64
-    // encoding, and submission via fetch (no-cors JSON).
+    // encoding, and submission via a hidden iframe + form POST
+    // (same proven technique as the contact form — fetch + no-cors
+    // does not work for Apps Script because the redirect drops the body).
     // ═══════════════════════════════════════════════════════════════════
 
     (function () {
@@ -1400,53 +1402,95 @@
         document.getElementById('adm-submit').disabled = true;
 
         try {
-          // Read photo
+          // Read all files as base64
           var photoFile = document.getElementById('photo-input').files[0];
-          if (photoFile) data.photo = await fileToBase64(photoFile);
+          var idFile    = document.getElementById('id-input').files[0];
+          var qualFile  = document.getElementById('qual-input').files[0];
 
-          // Read ID document
-          var idFile = document.getElementById('id-input').files[0];
-          if (idFile) data.idDocument = await fileToBase64(idFile);
+          var photo = photoFile ? await fileToBase64(photoFile) : null;
+          var idDoc = idFile    ? await fileToBase64(idFile)    : null;
+          var qual  = qualFile  ? await fileToBase64(qualFile)  : null;
 
-          // Read qualification certificate
-          var qualFile = document.getElementById('qual-input').files[0];
-          if (qualFile) data.qualCertificate = await fileToBase64(qualFile);
-
-          // Read additional documents
-          data.additionalDocs = [];
+          var extras = [];
           var extraInputs = document.querySelectorAll('.extra-doc-input');
           for (var i = 0; i < extraInputs.length; i++) {
             if (extraInputs[i].files && extraInputs[i].files[0]) {
-              data.additionalDocs.push(await fileToBase64(extraInputs[i].files[0]));
+              extras.push(await fileToBase64(extraInputs[i].files[0]));
             }
           }
 
-          // Total size sanity check
-          var totalBytes = [data.photo, data.idDocument, data.qualCertificate]
-            .filter(Boolean)
-            .concat(data.additionalDocs)
-            .reduce(function(s, f) { return s + (f ? (f.data ? f.data.length * 0.75 : 0) : 0); }, 0);
-
+          // Total size check (post-base64)
+          var totalBytes = [photo, idDoc, qual].filter(Boolean).concat(extras)
+            .reduce(function(s, f) { return s + (f && f.data ? f.data.length * 0.75 : 0); }, 0);
           if (totalBytes > 40 * 1024 * 1024) {
             hideLoading();
             document.getElementById('adm-submit').disabled = false;
-            showBanner('Total upload size is too large (over 40 MB). Please reduce file sizes and try again.');
+            showBanner('Total upload size is over 40 MB. Please reduce file sizes and try again.');
             return;
           }
 
-          // Submit via fetch (no-cors, JSON body as text/plain to avoid preflight)
-          await fetch(SCRIPT_URL, {
-            method:  'POST',
-            mode:    'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body:    JSON.stringify(data)
-          });
+          // ── Submit via hidden iframe + form (same proven technique as contact form) ──
+          // Apps Script POST + redirect strips fetch() bodies in no-cors mode,
+          // so we use a native form POST which handles redirects correctly.
+          var frameName = 'adm_frame_' + Date.now();
+          var iframe = document.createElement('iframe');
+          iframe.name = frameName;
+          iframe.style.display = 'none';
+          document.body.appendChild(iframe);
 
-          hideLoading();
-          document.getElementById('admission-form').style.display = 'none';
-          var success = document.getElementById('adm-success');
-          success.classList.add('visible');
-          success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          var form = document.createElement('form');
+          form.method = 'POST';
+          form.action = SCRIPT_URL;
+          form.target = frameName;
+          form.enctype = 'application/x-www-form-urlencoded';
+          form.style.display = 'none';
+
+          function addField(name, value) {
+            var inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = name;
+            inp.value = (value == null ? '' : String(value));
+            form.appendChild(inp);
+          }
+
+          // All text fields
+          Object.keys(data).forEach(function (k) { addField(k, data[k]); });
+
+          // Files — each as 4 flat fields (prefix_data / _name / _mime / _ext)
+          function addFile(prefix, f) {
+            if (!f) return;
+            addField(prefix + '_data', f.data);
+            addField(prefix + '_name', f.name);
+            addField(prefix + '_mime', f.mimeType);
+            addField(prefix + '_ext',  f.ext);
+          }
+          addFile('photo', photo);
+          addFile('id',    idDoc);
+          addFile('qual',  qual);
+          extras.forEach(function (f, idx) { addFile('doc' + (idx + 1), f); });
+
+          document.body.appendChild(form);
+
+          // Wait for the iframe to finish loading (or 30s) before declaring success
+          var done = false;
+          var onLoad = function () {
+            if (done) return;
+            done = true;
+            hideLoading();
+            document.getElementById('admission-form').style.display = 'none';
+            var success = document.getElementById('adm-success');
+            success.classList.add('visible');
+            success.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Clean up after a short delay
+            setTimeout(function () {
+              try { form.remove(); iframe.remove(); } catch (e) {}
+            }, 1000);
+          };
+          iframe.addEventListener('load', onLoad);
+          // Safety net: even if load doesn't fire (rare), show success after 30s
+          setTimeout(onLoad, 30000);
+
+          form.submit();
 
         } catch (err) {
           hideLoading();

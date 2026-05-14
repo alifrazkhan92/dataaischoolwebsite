@@ -29,27 +29,23 @@ var HEADERS = [
 function doPost(e) {
 
   // Guard: doPost requires an HTTP POST. Editor Run button passes no event.
-  if (!e || !e.postData) {
+  if (!e) {
     Logger.log('doPost was run from the editor — it requires an HTTP POST request.');
     return ContentService.createTextOutput(
       'doPost requires an HTTP POST. Use the live form on apply.html instead.'
     );
   }
 
-  // Route admission form (JSON body) → Admission.gs
-  try {
-    var parsed = JSON.parse(e.postData.contents);
-    if (parsed && parsed.formType === 'admission') {
-      return handleAdmissionPost(parsed);
-    }
-  } catch (routeErr) {
-    // Not JSON — fall through to contact handler
+  var p = e.parameter || {};
+
+  // Route admission form → Admission.gs (uses URL-encoded form via iframe technique)
+  if (p.formType === 'admission') {
+    Logger.log('Routing to handleAdmissionPost for ' + (p.email || '(no email)'));
+    return handleAdmissionPost(p);
   }
 
   // ── Contact / enquiry form handler ──────────────────────────────────────────
   try {
-    var p = e.parameter || {};
-
     if (p.hp_website && p.hp_website.trim() !== "") {
       return _json({ result: "success" });
     }
