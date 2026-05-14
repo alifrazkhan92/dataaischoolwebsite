@@ -38,11 +38,17 @@ function doPost(e) {
 
   var p = e.parameter || {};
 
+  // Debug: log every parameter key received — helps catch routing failures
+  Logger.log('doPost received parameters: ' + Object.keys(p).slice(0, 60).join(', '));
+  Logger.log('formType value: "' + p.formType + '"  (type=' + typeof p.formType + ')');
+
   // Route admission form → Admission.gs (uses URL-encoded form via iframe technique)
   if (p.formType === 'admission') {
-    Logger.log('Routing to handleAdmissionPost for ' + (p.email || '(no email)'));
+    Logger.log('→ Routing to handleAdmissionPost');
     return handleAdmissionPost(p);
   }
+
+  Logger.log('→ Falling through to contact handler (formType is not "admission")');
 
   // ── Contact / enquiry form handler ──────────────────────────────────────────
   try {

@@ -341,14 +341,66 @@ function _admValidate(d, photo, idDoc) {
   return { ok: true };
 }
 
-// ── Utility to surface the admissions spreadsheet URL on demand ──────────────
-// Run this from the Apps Script editor to see where admissions are being saved.
+// ─────────────────────────────────────────────────────────────────────────────
+// MANUAL SETUP — run this ONCE from the Apps Script editor.
+//
+// Select 'setupAdmissionsInfrastructure' from the dropdown → ▶ Run.
+// Authorise when prompted (Drive + Sheets + Mail). After it succeeds:
+//   • A "DAIS Admissions" folder will exist in your My Drive root
+//   • A "DAIS Admissions Database" spreadsheet will exist with headers
+//   • Logger shows both URLs
+// Then submit a real form and everything will save into these locations.
+// ─────────────────────────────────────────────────────────────────────────────
 
-function showAdmissionsSpreadsheetUrl() {
+function setupAdmissionsInfrastructure() {
+  Logger.log('═══════════════════════════════════════════════');
+  Logger.log('SETUP: creating Drive folder + Admissions spreadsheet');
+
+  // 1. Drive folder
+  var rootIter = DriveApp.getFoldersByName(ADMISSIONS_ROOT_FOLDER);
+  var root;
+  if (rootIter.hasNext()) {
+    root = rootIter.next();
+    Logger.log('Folder already exists: ' + root.getUrl());
+  } else {
+    root = DriveApp.createFolder(ADMISSIONS_ROOT_FOLDER);
+    Logger.log('✓ Created Drive folder: ' + root.getUrl());
+  }
+
+  // Year subfolder
+  var yr     = new Date().getFullYear().toString();
+  var yrIter = root.getFoldersByName(yr);
+  var yrFol;
+  if (yrIter.hasNext()) {
+    yrFol = yrIter.next();
+    Logger.log('Year subfolder already exists: ' + yrFol.getUrl());
+  } else {
+    yrFol = root.createFolder(yr);
+    Logger.log('✓ Created year subfolder: ' + yrFol.getUrl());
+  }
+
+  // 2. Spreadsheet (auto-creates and stores ID in Script Properties)
   var ss = _admGetSpreadsheet();
-  var url = ss.getUrl();
-  Logger.log('Admissions spreadsheet: ' + url);
-  return url;
+  Logger.log('✓ Admissions spreadsheet: ' + ss.getUrl());
+
+  // Ensure the Admissions tab + headers exist
+  var sheet = ss.getSheetByName(ADMISSIONS_SHEET_NAME);
+  if (!sheet) {
+    _admSaveToSheet({}, '(setup)', '(setup)');  // creates the sheet + headers
+    var newSheet = ss.getSheetByName(ADMISSIONS_SHEET_NAME);
+    newSheet.deleteRow(2);  // remove the dummy row
+    Logger.log('✓ Created Admissions tab with headers');
+  } else {
+    Logger.log('Admissions tab already exists');
+  }
+
+  Logger.log('═══════════════════════════════════════════════');
+  Logger.log('SETUP COMPLETE');
+  Logger.log('Drive folder:  ' + root.getUrl());
+  Logger.log('Spreadsheet:   ' + ss.getUrl());
+  Logger.log('═══════════════════════════════════════════════');
+
+  return { folder: root.getUrl(), spreadsheet: ss.getUrl() };
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
