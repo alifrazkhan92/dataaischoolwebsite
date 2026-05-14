@@ -42,13 +42,21 @@ function doPost(e) {
   Logger.log('doPost received parameters: ' + Object.keys(p).slice(0, 60).join(', '));
   Logger.log('formType value: "' + p.formType + '"  (type=' + typeof p.formType + ')');
 
-  // Route admission form → Admission.gs (uses URL-encoded form via iframe technique)
+  // Primary routing: explicit formType field
   if (p.formType === 'admission') {
-    Logger.log('→ Routing to handleAdmissionPost');
+    Logger.log('→ Routing to handleAdmissionPost (formType match)');
     return handleAdmissionPost(p);
   }
 
-  Logger.log('→ Falling through to contact handler (formType is not "admission")');
+  // Fallback: signature-based detection. Admission forms always have these
+  // five fields together; the contact form never does. This catches the case
+  // where formType somehow gets dropped in transit.
+  if (p.firstName && p.lastName && p.dob && p.course && p.ethnicity) {
+    Logger.log('→ Routing to handleAdmissionPost (signature match, formType="' + p.formType + '")');
+    return handleAdmissionPost(p);
+  }
+
+  Logger.log('→ Falling through to contact handler');
 
   // ── Contact / enquiry form handler ──────────────────────────────────────────
   try {
