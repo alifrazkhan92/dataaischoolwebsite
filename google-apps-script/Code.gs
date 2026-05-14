@@ -15,9 +15,24 @@
  *     To authorise Drive, open the deployment URL in a browser (calls doGet).
  */
 
-var SPREADSHEET_ID = "<REDACTED>";
-var SHEET_NAME     = "Submissions";
-var RATE_LIMIT     = 30;
+// ─────────────────────────────────────────────────────────────────────────────
+// SECURITY: SPREADSHEET_ID is loaded from Script Properties at runtime so the
+// ID is NOT committed to the public source repository.
+//
+// One-time setup:
+//   Apps Script editor → Project Settings (⚙️) → Script Properties
+//   Add a property:  Name = SPREADSHEET_ID  Value = <your sheet id>
+// ─────────────────────────────────────────────────────────────────────────────
+function SPREADSHEET_ID() {
+  var id = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!id) {
+    throw new Error('SPREADSHEET_ID is not set. Add it in Project Settings → Script Properties.');
+  }
+  return id;
+}
+
+var SHEET_NAME = "Submissions";
+var RATE_LIMIT = 30;
 
 var HEADERS = [
   "Timestamp", "Form Type", "Full Name",
@@ -62,11 +77,21 @@ function doPost(e) {
 
     var name  = (p.name  || "").trim();
     var email = (p.email || "").trim();
+    var phone = (p.phone || "").trim();
+    var msg   = (p.message || p.background || "").trim();
+    var subj  = (p.subject || p.course      || "").trim();
+
     if (!name || !email) return _json({ result: "error", message: "Name and email are required." });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return _json({ result: "error", message: "Please enter a valid email address." });
-    if (name.length > 200 || email.length > 200) return _json({ result: "error", message: "Input too long." });
 
-    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+    // Length caps per field — defence against payload abuse
+    if (name.length  > 100)  return _json({ result: "error", message: "Name too long."     });
+    if (email.length > 200)  return _json({ result: "error", message: "Email too long."    });
+    if (phone.length > 40)   return _json({ result: "error", message: "Phone too long."    });
+    if (subj.length  > 200)  return _json({ result: "error", message: "Subject too long."  });
+    if (msg.length   > 5000) return _json({ result: "error", message: "Message too long."  });
+
+    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID());
     var sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
 

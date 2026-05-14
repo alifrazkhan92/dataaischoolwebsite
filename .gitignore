@@ -1,4 +1,23 @@
+# OS
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
+
+# Environment / secrets — never commit
 .env
 .env.local
+.env.*.local
+*.pem
+*.key
+*-key.json
+*-credentials.json
+credentials.json
+service-account*.json
+client_secret*.json
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp

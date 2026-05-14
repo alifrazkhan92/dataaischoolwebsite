@@ -93,16 +93,60 @@ function handleAdmissionPost(data) {
   }
 }
 
-// ── Extract a file from flat URL-encoded fields ──────────────────────────────
+// ── Extract & validate a file from flat URL-encoded fields ───────────────────
+//
+// SECURITY: Server-side validation independent of what the client claims.
+//  • Max size 12 MB after base64 decode (~16 MB encoded)
+//  • MIME must be in allowlist: image/jpeg, image/png, image/webp, application/pdf
+//  • Extension must match MIME (defence in depth)
+//  • Base64 must be valid characters only
+
+var ADM_FILE_MAX_BYTES = 12 * 1024 * 1024;  // 12 MB hard cap
+var ADM_ALLOWED_MIME = {
+  'image/jpeg':       ['jpg', 'jpeg'],
+  'image/png':        ['png'],
+  'image/webp':       ['webp'],
+  'application/pdf':  ['pdf']
+};
 
 function _admExtractFile(data, prefix) {
   var b64 = data[prefix + '_data'];
   if (!b64 || String(b64).length < 10) return null;
+
+  var b64Str = String(b64);
+  var mime   = String(data[prefix + '_mime'] || '').toLowerCase().trim();
+  var ext    = String(data[prefix + '_ext']  || '').toLowerCase().trim().replace(/^\./, '');
+  var name   = String(data[prefix + '_name'] || '');
+
+  // Base64 charset check — only A-Z, a-z, 0-9, +, /, = allowed
+  if (!/^[A-Za-z0-9+/=]+$/.test(b64Str.replace(/\s/g, ''))) {
+    throw new Error('Invalid file data for ' + prefix + ' (not base64).');
+  }
+
+  // Decoded size check (base64 is ~4/3 of binary)
+  var approxBytes = Math.floor(b64Str.length * 0.75);
+  if (approxBytes > ADM_FILE_MAX_BYTES) {
+    throw new Error(prefix + ' file is too large (' + Math.round(approxBytes / 1024 / 1024) + ' MB). Maximum is 12 MB per file.');
+  }
+
+  // MIME allowlist
+  if (!ADM_ALLOWED_MIME[mime]) {
+    throw new Error('Unsupported file type for ' + prefix + ': ' + (mime || 'unknown') + '. Allowed: JPG, PNG, WebP, PDF.');
+  }
+
+  // Extension must match MIME
+  if (ext && ADM_ALLOWED_MIME[mime].indexOf(ext) === -1) {
+    throw new Error('File extension "' + ext + '" does not match its content type "' + mime + '" for ' + prefix + '.');
+  }
+
+  // Sanitise filename for logging — no path traversal, no control chars
+  name = name.replace(/[\\\/\x00-\x1f]/g, '').substring(0, 120);
+
   return {
-    data:     String(b64),
-    name:     String(data[prefix + '_name'] || ''),
-    mimeType: String(data[prefix + '_mime'] || 'application/octet-stream'),
-    ext:      String(data[prefix + '_ext']  || '')
+    data:     b64Str,
+    name:     name,
+    mimeType: mime,
+    ext:      ext
   };
 }
 
