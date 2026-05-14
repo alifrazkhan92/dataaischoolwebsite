@@ -2,55 +2,52 @@
  * The Data and AI School of London
  * Google Apps Script — NCFE Admission Form Handler
  *
- * ═══════════════════════════════════════════════════════════════════════
- * SETUP (one-time):
- * ═══════════════════════════════════════════════════════════════════════
- *  1. Apps Script editor → ＋ Add a service → Google Drive API → Add
- *  2. Paste this file as Admission.gs (＋ → Script → name it Admission)
- *  3. Code.gs must include the routing in doPost (already there)
- *  4. Deploy → Manage deployments → Edit (✏️) → New version → Deploy
- *     ✓ The URL does NOT change.
- * ═══════════════════════════════════════════════════════════════════════
+ * Stores admissions to a SEPARATE Google Sheet (not the contact form one).
+ * The spreadsheet is auto-created on first submission and its ID is saved
+ * to Script Properties so subsequent runs reuse it.
  *
- * Drive folder structure created automatically:
+ * Drive folder structure:
  *   My Drive/
  *   └── DAIS Admissions/
  *       └── 2026/
- *           └── Khan, Ali Fraz — 01-01-1990/
- *               ├── Khan_AliFraz_01-01-1990_Photo.jpg
- *               ├── Khan_AliFraz_01-01-1990_ID_Document.pdf
- *               ├── Khan_AliFraz_01-01-1990_Qualification_Certificate.pdf
- *               └── Khan_AliFraz_01-01-1990_Document_1.pdf
- *
- * Input format: flat key=value pairs from URL-encoded form POST.
- * Files arrive as `<prefix>_data` (base64), `<prefix>_name`, `<prefix>_mime`, `<prefix>_ext`.
+ *           └── Khan, Ali Fraz — 2026-01-01/
+ *               ├── Khan_AliFraz_2026-01-01_Photo.jpg
+ *               ├── Khan_AliFraz_2026-01-01_ID_Document.pdf
+ *               └── ...
  */
 
-var ADMISSIONS_ROOT_FOLDER = 'DAIS Admissions';
-var ADMISSIONS_SHEET_NAME  = 'Admissions';
+var ADMISSIONS_ROOT_FOLDER  = 'DAIS Admissions';
+var ADMISSIONS_SHEET_NAME   = 'Admissions';
+var ADMISSIONS_SS_NAME      = 'DAIS Admissions Database';
+var ADMISSIONS_SS_PROP_KEY  = 'ADMISSIONS_SPREADSHEET_ID';
 
 // ── Entry point — called from Code.gs doPost routing ─────────────────────────
 
 function handleAdmissionPost(data) {
   try {
-    Logger.log('handleAdmissionPost: received submission from ' + (data.email || '(no email)'));
+    Logger.log('═══════════════════════════════════════════════');
+    Logger.log('handleAdmissionPost START');
+    Logger.log('Received ' + Object.keys(data).length + ' parameters');
+    Logger.log('Key fields: firstName=' + data.firstName + ', lastName=' + data.lastName +
+               ', dob=' + data.dob + ', email=' + data.email + ', course=' + data.course);
 
-    // 1. Honeypot — silent success for bots
+    // 1. Honeypot — silent ok
     if (data.hp_website && String(data.hp_website).trim() !== '') {
-      Logger.log('Honeypot triggered — silent ok');
+      Logger.log('Honeypot triggered — returning silent ok');
       return _admJson({ result: 'ok' });
     }
 
-    // 2. Rate limit (10 admissions per hour)
+    // 2. Rate limit (10 per hour)
     var props   = PropertiesService.getScriptProperties();
     var hourKey = 'adm_' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMddHH');
     var count   = parseInt(props.getProperty(hourKey) || '0', 10);
     if (count >= 10) {
+      Logger.log('Rate limit exceeded');
       return _admJson({ result: 'error', message: 'Submission limit reached. Please call +44 207 0990 956.' });
     }
     props.setProperty(hourKey, String(count + 1));
 
-    // 3. Reconstruct file objects from flat parameters
+    // 3. Extract files from flat parameters
     var photo  = _admExtractFile(data, 'photo');
     var idDoc  = _admExtractFile(data, 'id');
     var qual   = _admExtractFile(data, 'qual');
@@ -59,59 +56,74 @@ function handleAdmissionPost(data) {
       var f = _admExtractFile(data, 'doc' + i);
       if (f) extras.push(f);
     }
+    Logger.log('Files extracted — photo=' + !!photo + ' (' + (photo ? Math.round(photo.data.length / 1024) + 'KB' : 'n/a') + ')' +
+               ', id=' + !!idDoc + ' (' + (idDoc ? Math.round(idDoc.data.length / 1024) + 'KB' : 'n/a') + ')' +
+               ', qual=' + !!qual +
+               ', extras=' + extras.length);
 
-    // 4. Validate required fields
+    // 4. Validate
     var v = _admValidate(data, photo, idDoc);
     if (!v.ok) {
-      Logger.log('Validation failed: ' + v.message);
+      Logger.log('VALIDATION FAILED: ' + v.message);
       return _admJson({ result: 'error', message: v.message });
     }
+    Logger.log('Validation OK');
 
-    // 5. Create applicant folder
+    // 5. Create Drive folder
+    Logger.log('Creating Drive folder for ' + data.firstName + ' ' + data.lastName + '...');
     var applicantFolder = _admCreateFolder(data.firstName, data.lastName, data.dob);
     var folderUrl       = applicantFolder.getUrl();
-    Logger.log('Created folder: ' + folderUrl);
+    Logger.log('Folder created: ' + folderUrl);
 
-    // 6. Save files
+    // 6. Save files to Drive
     var savedFiles = [];
-
     if (photo) {
       var pf = _admSaveFile(applicantFolder, photo, data.firstName, data.lastName, data.dob, 'Photo');
       savedFiles.push('Photo → ' + pf.getName());
+      Logger.log('  ✓ Photo saved: ' + pf.getName());
     }
     if (idDoc) {
       var idf = _admSaveFile(applicantFolder, idDoc, data.firstName, data.lastName, data.dob, 'ID_Document');
       savedFiles.push('ID → ' + idf.getName());
+      Logger.log('  ✓ ID saved: ' + idf.getName());
     }
     if (qual) {
       var qf = _admSaveFile(applicantFolder, qual, data.firstName, data.lastName, data.dob, 'Qualification_Certificate');
       savedFiles.push('Qualification → ' + qf.getName());
+      Logger.log('  ✓ Qualification saved: ' + qf.getName());
     }
     extras.forEach(function (doc, i) {
       var df = _admSaveFile(applicantFolder, doc, data.firstName, data.lastName, data.dob, 'Document_' + (i + 1));
       savedFiles.push('Document ' + (i + 1) + ' → ' + df.getName());
+      Logger.log('  ✓ Document ' + (i + 1) + ' saved: ' + df.getName());
     });
-    Logger.log('Saved ' + savedFiles.length + ' files');
+    Logger.log('Total files saved: ' + savedFiles.length);
 
-    // 7. Log to sheet
-    _admSaveToSheet(data, folderUrl, savedFiles.join(' | '));
+    // 7. Log to Sheet (separate admissions spreadsheet)
+    Logger.log('Logging to admissions spreadsheet...');
+    var ssUrl = _admSaveToSheet(data, folderUrl, savedFiles.join(' | '));
+    Logger.log('Sheet row appended');
 
-    // 8. Send emails
+    // 8. Emails
     _admSendConfirmation(data);
-    _admSendAdminAlert(data, folderUrl, savedFiles);
+    _admSendAdminAlert(data, folderUrl, savedFiles, ssUrl);
 
+    Logger.log('handleAdmissionPost SUCCESS');
+    Logger.log('═══════════════════════════════════════════════');
     return _admJson({ result: 'ok' });
 
   } catch (err) {
-    Logger.log('Admission error: ' + err.message + '\n' + err.stack);
+    Logger.log('!!! ADMISSION ERROR: ' + err.message);
+    Logger.log('!!! STACK: ' + (err.stack || '(no stack)'));
+    Logger.log('═══════════════════════════════════════════════');
     return _admJson({
       result: 'error',
-      message: 'A server error occurred. Please email info@dataaischool.com or call +44 207 0990 956.'
+      message: 'Server error: ' + err.message + ' — please email info@dataaischool.com.'
     });
   }
 }
 
-// ── Extract a file object from flat parameters ───────────────────────────────
+// ── Extract a file from flat URL-encoded fields ──────────────────────────────
 
 function _admExtractFile(data, prefix) {
   var b64 = data[prefix + '_data'];
@@ -124,7 +136,29 @@ function _admExtractFile(data, prefix) {
   };
 }
 
-// ── Create applicant folder ──────────────────────────────────────────────────
+// ── Get (or auto-create) the dedicated admissions spreadsheet ─────────────────
+
+function _admGetSpreadsheet() {
+  var props = PropertiesService.getScriptProperties();
+  var id    = props.getProperty(ADMISSIONS_SS_PROP_KEY);
+
+  if (id) {
+    try {
+      var existing = SpreadsheetApp.openById(id);
+      return existing;
+    } catch (openErr) {
+      Logger.log('Stored admissions spreadsheet ID is invalid — creating new');
+    }
+  }
+
+  // Create a fresh spreadsheet in the script owner's Drive
+  var ss = SpreadsheetApp.create(ADMISSIONS_SS_NAME);
+  props.setProperty(ADMISSIONS_SS_PROP_KEY, ss.getId());
+  Logger.log('🆕 Created admissions spreadsheet: ' + ss.getUrl());
+  return ss;
+}
+
+// ── Drive folder for applicant ───────────────────────────────────────────────
 
 function _admCreateFolder(firstName, lastName, dob) {
   var rootIter = DriveApp.getFoldersByName(ADMISSIONS_ROOT_FOLDER);
@@ -159,14 +193,19 @@ function _admSaveFile(folder, fileObj, firstName, lastName, dob, label) {
   return folder.createFile(blob);
 }
 
-// ── Save to Sheet ────────────────────────────────────────────────────────────
+// ── Save to admissions spreadsheet ───────────────────────────────────────────
 
 function _admSaveToSheet(data, folderUrl, filesStr) {
-  var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var ss    = _admGetSpreadsheet();
   var sheet = ss.getSheetByName(ADMISSIONS_SHEET_NAME);
 
   if (!sheet) {
-    sheet = ss.insertSheet(ADMISSIONS_SHEET_NAME);
+    // First-time setup: use first sheet (rename it) or create
+    sheet = ss.getSheets()[0];
+    if (sheet.getName() !== ADMISSIONS_SHEET_NAME) {
+      sheet.setName(ADMISSIONS_SHEET_NAME);
+    }
+
     var hdrs = [
       'Timestamp', 'Status',
       'Title', 'First Name', 'Middle Name(s)', 'Last Name', 'Date of Birth',
@@ -207,9 +246,10 @@ function _admSaveToSheet(data, folderUrl, filesStr) {
 
   var lr = sheet.getLastRow();
   if (lr % 2 === 0) sheet.getRange(lr, 1, 1, 38).setBackground('#EBE4D8');
+  return ss.getUrl();
 }
 
-// ── Confirmation email to applicant ──────────────────────────────────────────
+// ── Emails ────────────────────────────────────────────────────────────────────
 
 function _admSendConfirmation(data) {
   try {
@@ -224,25 +264,21 @@ function _admSendConfirmation(data) {
         'Course applied for:\n  ' + s(data.course) + '\n\n' +
         'What happens next:\n' +
         '  1. Our admissions team will review your application within 3 working days.\n' +
-        '  2. You will receive a formal offer letter or a request for further information by email.\n' +
-        '  3. Once you accept your offer, you will receive your enrolment confirmation\n' +
+        '  2. You will receive a formal offer letter or a request for further information.\n' +
+        '  3. Once you accept your offer, you will receive enrolment confirmation\n' +
         '     and access details for our online learning platform (VLE).\n\n' +
-        'Questions? Contact us:\n  Email: info@dataaischool.com\n  Phone: +44 207 0990 956\n\n' +
+        'Questions? Email info@dataaischool.com or call +44 207 0990 956.\n\n' +
         'Kind regards,\n\n' +
         'Sheherbano Khan\n' +
         'Registrar & Learner Support Lead\n' +
-        'The Data and AI School of London\n' +
-        'www.dataaischool.com\n' +
-        '+44 207 0990 956'
+        'The Data and AI School of London'
     });
   } catch (err) {
     Logger.log('Confirmation email failed: ' + err.message);
   }
 }
 
-// ── Admin notification ───────────────────────────────────────────────────────
-
-function _admSendAdminAlert(data, folderUrl, savedFiles) {
+function _admSendAdminAlert(data, folderUrl, savedFiles, ssUrl) {
   try {
     function s(v) { return String(v || '').replace(/<[^>]*>/g, '').trim(); }
     var name = s(data.firstName) + ' ' + s(data.lastName);
@@ -250,7 +286,7 @@ function _admSendAdminAlert(data, folderUrl, savedFiles) {
       to:      'info@dataaischool.com',
       subject: 'New Admission Application: ' + name + ' — ' + s(data.course),
       body:
-        'A new admission application has been submitted.\n\n' +
+        'New admission application received.\n\n' +
         'Name:            ' + name + '\n' +
         'DOB:             ' + s(data.dob) + '\n' +
         'Email:           ' + s(data.email) + '\n' +
@@ -261,7 +297,7 @@ function _admSendAdminAlert(data, folderUrl, savedFiles) {
         'Files saved to Drive:\n' +
         savedFiles.map(function(f) { return '  • ' + f; }).join('\n') + '\n\n' +
         'Drive folder:\n  ' + folderUrl + '\n\n' +
-        'Admissions spreadsheet:\n  https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID + '/'
+        'Admissions spreadsheet:\n  ' + ssUrl
     });
   } catch (err) {
     Logger.log('Admin alert failed: ' + err.message);
@@ -303,6 +339,16 @@ function _admValidate(d, photo, idDoc) {
   if (!photo) return { ok: false, message: 'A passport-size photograph is required.' };
   if (!idDoc) return { ok: false, message: 'Proof of identity is required.' };
   return { ok: true };
+}
+
+// ── Utility to surface the admissions spreadsheet URL on demand ──────────────
+// Run this from the Apps Script editor to see where admissions are being saved.
+
+function showAdmissionsSpreadsheetUrl() {
+  var ss = _admGetSpreadsheet();
+  var url = ss.getUrl();
+  Logger.log('Admissions spreadsheet: ' + url);
+  return url;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
