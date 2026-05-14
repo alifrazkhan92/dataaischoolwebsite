@@ -229,7 +229,7 @@
  // A hidden iframe form submission uses the browser's native POST handling,
  // which follows redirects correctly and delivers e.parameter to Apps Script.
 
- var forms = document.querySelectorAll(".contact-form, .apply-form");
+ var forms = document.querySelectorAll(".contact-form");
  forms.forEach(function (form) {
  form.addEventListener("submit", function (e) {
  e.preventDefault();
