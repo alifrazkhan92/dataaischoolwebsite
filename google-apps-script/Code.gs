@@ -123,13 +123,14 @@ function _sendEnquiryAutoReply(d) {
   if (!d.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) return;
   try {
     var firstName = (d.name || '').split(' ')[0] || 'there';
+    var subject   = "We've received your enquiry — The Data and AI School of London";
 
-    // Plain-text fallback for clients that block HTML
+    // Plain-text fallback
     var plain =
       'Hi ' + firstName + ',\n\n' +
-      'Thank you for getting in touch with The Data and AI School of London.\n\n' +
-      'We have received your message and a member of our team will respond within ' +
-      '2 working days.\n\n' +
+      'Thank you for getting in touch with The Data and AI School of London.\n' +
+      'We have received your message and a member of our team will respond ' +
+      'within 2 working days.\n\n' +
       (d.subject ? 'Your enquiry was about: ' + d.subject + '\n' : '') +
       (d.message ? 'A copy of your message:\n"' + d.message + '"\n\n' : '\n') +
       'If your enquiry is urgent, call us on +44 207 0990 956.\n\n' +
@@ -137,84 +138,11 @@ function _sendEnquiryAutoReply(d) {
       'The Data and AI School of London\n' +
       'www.dataaischool.com';
 
-    // Branded HTML body — Oxford Navy + Academic Gold theme
-    var html =
-      '<!doctype html><html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Georgia,\'Times New Roman\',serif;color:#1f1f1f;">' +
-        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f1ea;padding:32px 16px;">' +
-          '<tr><td align="center">' +
-            '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(10,34,64,0.08);">' +
+    // Branded HTML — table-based for maximum email client compatibility
+    var html = _buildEnquiryHtml(firstName, d.subject, d.message);
 
-              // Header
-              '<tr><td style="background:#0A2240;padding:28px 32px;text-align:center;border-bottom:3px solid #C89930;">' +
-                '<div style="color:#ffffff;font-size:20px;font-weight:700;letter-spacing:0.02em;font-family:Georgia,\'Times New Roman\',serif;">The Data and AI</div>' +
-                '<div style="color:#C89930;font-size:14px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;margin-top:4px;font-family:Georgia,\'Times New Roman\',serif;">School of London</div>' +
-              '</td></tr>' +
-
-              // Body
-              '<tr><td style="padding:36px 36px 12px;">' +
-                '<h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#0A2240;font-family:Georgia,\'Times New Roman\',serif;">Thank you for your enquiry</h1>' +
-                '<p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:#3a3a3a;">Hi ' + _escape(firstName) + ',</p>' +
-                '<p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:#3a3a3a;">Thank you for getting in touch with The Data and AI School of London. We have received your message and a member of our team will respond within <strong style="color:#0A2240;">2 working days</strong>.</p>' +
-
-                (d.subject ?
-                  '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:24px 0;background:#f4f1ea;border-left:4px solid #C89930;border-radius:4px;">' +
-                    '<tr><td style="padding:14px 18px;">' +
-                      '<div style="font-size:12px;color:#a8690a;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">Your enquiry</div>' +
-                      '<div style="font-size:14px;color:#1f1f1f;font-weight:600;">' + _escape(d.subject) + '</div>' +
-                      (d.message ? '<div style="font-size:14px;color:#5a5a5a;line-height:1.6;margin-top:10px;font-style:italic;">&ldquo;' + _escape(d.message) + '&rdquo;</div>' : '') +
-                    '</td></tr>' +
-                  '</table>'
-                : '') +
-
-                '<p style="margin:16px 0;font-size:15px;line-height:1.65;color:#3a3a3a;">If your enquiry is urgent, you can reach us directly:</p>' +
-
-                // Contact card
-                '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 24px;">' +
-                  '<tr>' +
-                    '<td width="50%" style="padding:6px 0;font-size:14px;color:#3a3a3a;">' +
-                      '<strong style="color:#0A2240;">Phone:</strong> <a href="tel:+442070990956" style="color:#C89930;text-decoration:none;">+44 207 0990 956</a>' +
-                    '</td>' +
-                    '<td width="50%" style="padding:6px 0;font-size:14px;color:#3a3a3a;">' +
-                      '<strong style="color:#0A2240;">Email:</strong> <a href="mailto:info@dataaischool.com" style="color:#C89930;text-decoration:none;">info@dataaischool.com</a>' +
-                    '</td>' +
-                  '</tr>' +
-                '</table>' +
-
-                // CTA
-                '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0 12px;">' +
-                  '<tr><td style="background:#0A2240;border-radius:4px;">' +
-                    '<a href="https://www.dataaischool.com/courses.html" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:700;color:#ffffff;text-decoration:none;font-family:Georgia,\'Times New Roman\',serif;letter-spacing:0.02em;">View our courses →</a>' +
-                  '</td></tr>' +
-                '</table>' +
-
-                '<p style="margin:24px 0 0;font-size:15px;line-height:1.65;color:#3a3a3a;">Kind regards,<br/>' +
-                  '<strong style="color:#0A2240;">The Data and AI School of London</strong>' +
-                '</p>' +
-              '</td></tr>' +
-
-              // Footer
-              '<tr><td style="background:#f4f1ea;padding:20px 36px;border-top:1px solid #e5dfd3;text-align:center;font-family:Georgia,\'Times New Roman\',serif;">' +
-                '<div style="font-size:12px;color:#7a7468;line-height:1.65;">' +
-                  '<a href="https://www.dataaischool.com" style="color:#0A2240;text-decoration:none;font-weight:600;">www.dataaischool.com</a>' +
-                  ' &nbsp;&middot;&nbsp; <a href="tel:+442070990956" style="color:#7a7468;text-decoration:none;">+44 207 0990 956</a>' +
-                '</div>' +
-                '<div style="font-size:11px;color:#9a9387;margin-top:8px;">' +
-                  'The Data and AI School of London &middot; ICO Registration <strong>ZC086597</strong>' +
-                '</div>' +
-                '<div style="font-size:11px;color:#9a9387;margin-top:8px;line-height:1.6;">' +
-                  'This is an automated confirmation. You are receiving it because you submitted an enquiry on dataaischool.com.' +
-                '</div>' +
-              '</td></tr>' +
-
-            '</table>' +
-          '</td></tr>' +
-        '</table>' +
-      '</body></html>';
-
-    MailApp.sendEmail({
-      to:       d.email,
-      subject:  'We\'ve received your enquiry — The Data and AI School of London',
-      body:     plain,
+    // Use the 4-argument signature — most reliable for HTML emails
+    MailApp.sendEmail(d.email, subject, plain, {
       htmlBody: html,
       name:     'The Data and AI School of London',
       replyTo:  'info@dataaischool.com'
@@ -222,6 +150,110 @@ function _sendEnquiryAutoReply(d) {
   } catch (err) {
     Logger.log('Auto-reply failed: ' + err.message);
   }
+}
+
+function _buildEnquiryHtml(firstName, enquirySubject, enquiryMessage) {
+  var navy    = '#0A2240';
+  var gold    = '#C89930';
+  var goldDk  = '#A8690A';
+  var cream   = '#F4F1EA';
+  var text    = '#1F1F1F';
+  var muted   = '#5A5A5A';
+  var serif   = "Georgia, 'Times New Roman', Times, serif";
+
+  var enquiryBlock = '';
+  if (enquirySubject || enquiryMessage) {
+    enquiryBlock =
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;border-collapse:collapse;background:' + cream + ';border-left:4px solid ' + gold + ';">' +
+        '<tr><td style="padding:16px 20px;font-family:' + serif + ';">' +
+          '<div style="font-size:11px;color:' + goldDk + ';font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 8px 0;">Your enquiry</div>' +
+          (enquirySubject ? '<div style="font-size:15px;color:' + text + ';font-weight:700;margin:0 0 8px 0;">' + _escape(enquirySubject) + '</div>' : '') +
+          (enquiryMessage ? '<div style="font-size:14px;color:' + muted + ';line-height:1.6;font-style:italic;">"' + _escape(enquiryMessage) + '"</div>' : '') +
+        '</td></tr>' +
+      '</table>';
+  }
+
+  return (
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
+    '<html xmlns="http://www.w3.org/1999/xhtml">' +
+    '<head>' +
+      '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
+      '<title>Enquiry received</title>' +
+    '</head>' +
+    '<body style="margin:0;padding:0;background-color:' + cream + ';font-family:' + serif + ';">' +
+
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="' + cream + '" style="background-color:' + cream + ';">' +
+        '<tr><td align="center" style="padding:32px 16px;">' +
+
+          '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="max-width:600px;background-color:#FFFFFF;border:1px solid #E5DFD3;">' +
+
+            // Header
+            '<tr><td bgcolor="' + navy + '" align="center" style="background-color:' + navy + ';padding:32px 24px;border-bottom:4px solid ' + gold + ';">' +
+              '<div style="font-family:' + serif + ';color:#FFFFFF;font-size:22px;font-weight:700;line-height:1.2;">The Data and AI</div>' +
+              '<div style="font-family:' + serif + ';color:' + gold + ';font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-top:6px;">School of London</div>' +
+            '</td></tr>' +
+
+            // Body
+            '<tr><td style="padding:40px 36px 24px;font-family:' + serif + ';">' +
+
+              '<h1 style="margin:0 0 20px 0;font-family:' + serif + ';font-size:24px;font-weight:700;color:' + navy + ';line-height:1.3;">Thank you for your enquiry</h1>' +
+
+              '<p style="margin:0 0 16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Hi ' + _escape(firstName) + ',</p>' +
+
+              '<p style="margin:0 0 16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Thank you for getting in touch with <strong style="color:' + navy + ';">The Data and AI School of London</strong>. We have received your message and a member of our team will respond within <strong style="color:' + navy + ';">2 working days</strong>.</p>' +
+
+              enquiryBlock +
+
+              '<p style="margin:16px 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">If your enquiry is urgent, you can reach us directly:</p>' +
+
+              // Contact rows
+              '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:12px 0 20px 0;border-collapse:collapse;">' +
+                '<tr><td style="padding:6px 0;font-family:' + serif + ';font-size:15px;color:' + text + ';">' +
+                  '<strong style="color:' + navy + ';">Phone:</strong> &nbsp;' +
+                  '<a href="tel:+442070990956" style="color:' + goldDk + ';text-decoration:none;font-weight:600;">+44 207 0990 956</a>' +
+                '</td></tr>' +
+                '<tr><td style="padding:6px 0;font-family:' + serif + ';font-size:15px;color:' + text + ';">' +
+                  '<strong style="color:' + navy + ';">Email:</strong> &nbsp;' +
+                  '<a href="mailto:info@dataaischool.com" style="color:' + goldDk + ';text-decoration:none;font-weight:600;">info@dataaischool.com</a>' +
+                '</td></tr>' +
+              '</table>' +
+
+              // CTA button (bulletproof)
+              '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;border-collapse:collapse;">' +
+                '<tr><td bgcolor="' + navy + '" align="center" style="background-color:' + navy + ';border-radius:4px;">' +
+                  '<a href="https://www.dataaischool.com/courses.html" style="display:inline-block;padding:14px 32px;font-family:' + serif + ';font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.5px;">View our courses &rarr;</a>' +
+                '</td></tr>' +
+              '</table>' +
+
+              '<p style="margin:24px 0 0 0;font-family:' + serif + ';font-size:16px;color:' + text + ';line-height:1.6;">Kind regards,<br/>' +
+                '<strong style="color:' + navy + ';">The Data and AI School of London</strong>' +
+              '</p>' +
+
+            '</td></tr>' +
+
+            // Footer
+            '<tr><td bgcolor="' + cream + '" align="center" style="background-color:' + cream + ';padding:20px 36px;border-top:1px solid #E5DFD3;font-family:' + serif + ';">' +
+              '<div style="font-size:13px;color:' + navy + ';line-height:1.6;">' +
+                '<a href="https://www.dataaischool.com" style="color:' + navy + ';text-decoration:none;font-weight:600;">www.dataaischool.com</a>' +
+                ' &nbsp;·&nbsp; ' +
+                '<a href="tel:+442070990956" style="color:' + navy + ';text-decoration:none;">+44 207 0990 956</a>' +
+              '</div>' +
+              '<div style="font-size:11px;color:' + muted + ';margin-top:10px;line-height:1.6;">' +
+                'The Data and AI School of London · ICO Registration <strong>ZC086597</strong>' +
+              '</div>' +
+              '<div style="font-size:11px;color:' + muted + ';margin-top:8px;line-height:1.6;">' +
+                'This is an automated confirmation of your enquiry submitted on dataaischool.com.' +
+              '</div>' +
+            '</td></tr>' +
+
+          '</table>' +
+
+        '</td></tr>' +
+      '</table>' +
+
+    '</body></html>'
+  );
 }
 
 function _escape(s) {
