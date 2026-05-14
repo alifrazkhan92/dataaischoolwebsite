@@ -38,51 +38,13 @@ function doPost(e) {
 
   var p = e.parameter || {};
 
-  // Debug: log every parameter key received — helps catch routing failures
-  Logger.log('doPost received parameters: ' + Object.keys(p).slice(0, 60).join(', '));
-  Logger.log('formType value: "' + p.formType + '"  (type=' + typeof p.formType + ')');
-
-  // Debug to spreadsheet: write every incoming POST to a _Debug tab so we
-  // can see what's actually arriving without needing to expand executions.
-  try {
-    var dbgSs    = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var dbgSheet = dbgSs.getSheetByName('_Debug') || dbgSs.insertSheet('_Debug');
-    if (dbgSheet.getLastRow() === 0) {
-      dbgSheet.appendRow(['Timestamp', 'Param Count', 'formType', 'has firstName', 'has lastName', 'has dob', 'has course', 'has ethnicity', 'has email', 'has photo_data', 'has id_data', 'All Keys (first 40)']);
-      dbgSheet.getRange(1, 1, 1, 12).setFontWeight('bold').setBackground('#0A2240').setFontColor('#FFFFFF');
-    }
-    dbgSheet.appendRow([
-      new Date(),
-      Object.keys(p).length,
-      String(p.formType || '(missing)'),
-      !!p.firstName,
-      !!p.lastName,
-      !!p.dob,
-      !!p.course,
-      !!p.ethnicity,
-      !!p.email,
-      !!p.photo_data,
-      !!p.id_data,
-      Object.keys(p).slice(0, 40).join(', ')
-    ]);
-  } catch (dbgErr) {
-    Logger.log('Debug write failed: ' + dbgErr.message);
-  }
-
-  // Primary routing: explicit formType field
-  if (p.formType === 'admission') {
-    Logger.log('→ Routing to handleAdmissionPost (formType match)');
+  // Route admission form → Admission.gs
+  // Detection: explicit formType, OR presence of admission-only fields
+  // (firstName/lastName/dob/ethnicity/photo_data — the contact form has none of these).
+  if (p.formType === 'admission' ||
+      p.firstName || p.lastName || p.dob || p.ethnicity || p.photo_data) {
     return handleAdmissionPost(p);
   }
-
-  // Fallback: any presence of admission-only fields routes to admission.
-  // The contact form never has firstName — so this is a safe disambiguator.
-  if (p.firstName || p.lastName || p.dob || p.ethnicity || p.photo_data) {
-    Logger.log('→ Routing to handleAdmissionPost (admission-field detected, formType="' + p.formType + '")');
-    return handleAdmissionPost(p);
-  }
-
-  Logger.log('→ Falling through to contact handler');
 
   // ── Contact / enquiry form handler ──────────────────────────────────────────
   try {

@@ -25,29 +25,21 @@ var ADMISSIONS_SS_PROP_KEY  = 'ADMISSIONS_SPREADSHEET_ID';
 
 function handleAdmissionPost(data) {
   try {
-    Logger.log('═══════════════════════════════════════════════');
-    Logger.log('handleAdmissionPost START');
-    Logger.log('Received ' + Object.keys(data).length + ' parameters');
-    Logger.log('Key fields: firstName=' + data.firstName + ', lastName=' + data.lastName +
-               ', dob=' + data.dob + ', email=' + data.email + ', course=' + data.course);
-
-    // 1. Honeypot — silent ok
+    // Honeypot — silent ok for bots
     if (data.hp_website && String(data.hp_website).trim() !== '') {
-      Logger.log('Honeypot triggered — returning silent ok');
       return _admJson({ result: 'ok' });
     }
 
-    // 2. Rate limit (10 per hour)
+    // Rate limit (10 per hour)
     var props   = PropertiesService.getScriptProperties();
     var hourKey = 'adm_' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMddHH');
     var count   = parseInt(props.getProperty(hourKey) || '0', 10);
     if (count >= 10) {
-      Logger.log('Rate limit exceeded');
       return _admJson({ result: 'error', message: 'Submission limit reached. Please call +44 207 0990 956.' });
     }
     props.setProperty(hourKey, String(count + 1));
 
-    // 3. Extract files from flat parameters
+    // Extract files from flat parameters
     var photo  = _admExtractFile(data, 'photo');
     var idDoc  = _admExtractFile(data, 'id');
     var qual   = _admExtractFile(data, 'qual');
@@ -56,66 +48,44 @@ function handleAdmissionPost(data) {
       var f = _admExtractFile(data, 'doc' + i);
       if (f) extras.push(f);
     }
-    Logger.log('Files extracted — photo=' + !!photo + ' (' + (photo ? Math.round(photo.data.length / 1024) + 'KB' : 'n/a') + ')' +
-               ', id=' + !!idDoc + ' (' + (idDoc ? Math.round(idDoc.data.length / 1024) + 'KB' : 'n/a') + ')' +
-               ', qual=' + !!qual +
-               ', extras=' + extras.length);
 
-    // 4. Validate
+    // Validate
     var v = _admValidate(data, photo, idDoc);
-    if (!v.ok) {
-      Logger.log('VALIDATION FAILED: ' + v.message);
-      return _admJson({ result: 'error', message: v.message });
-    }
-    Logger.log('Validation OK');
+    if (!v.ok) return _admJson({ result: 'error', message: v.message });
 
-    // 5. Create Drive folder
-    Logger.log('Creating Drive folder for ' + data.firstName + ' ' + data.lastName + '...');
+    // Create Drive folder
     var applicantFolder = _admCreateFolder(data.firstName, data.lastName, data.dob);
     var folderUrl       = applicantFolder.getUrl();
-    Logger.log('Folder created: ' + folderUrl);
 
-    // 6. Save files to Drive
+    // Save files
     var savedFiles = [];
     if (photo) {
       var pf = _admSaveFile(applicantFolder, photo, data.firstName, data.lastName, data.dob, 'Photo');
       savedFiles.push('Photo → ' + pf.getName());
-      Logger.log('  ✓ Photo saved: ' + pf.getName());
     }
     if (idDoc) {
       var idf = _admSaveFile(applicantFolder, idDoc, data.firstName, data.lastName, data.dob, 'ID_Document');
       savedFiles.push('ID → ' + idf.getName());
-      Logger.log('  ✓ ID saved: ' + idf.getName());
     }
     if (qual) {
       var qf = _admSaveFile(applicantFolder, qual, data.firstName, data.lastName, data.dob, 'Qualification_Certificate');
       savedFiles.push('Qualification → ' + qf.getName());
-      Logger.log('  ✓ Qualification saved: ' + qf.getName());
     }
     extras.forEach(function (doc, i) {
       var df = _admSaveFile(applicantFolder, doc, data.firstName, data.lastName, data.dob, 'Document_' + (i + 1));
       savedFiles.push('Document ' + (i + 1) + ' → ' + df.getName());
-      Logger.log('  ✓ Document ' + (i + 1) + ' saved: ' + df.getName());
     });
-    Logger.log('Total files saved: ' + savedFiles.length);
 
-    // 7. Log to Sheet (separate admissions spreadsheet)
-    Logger.log('Logging to admissions spreadsheet...');
+    // Log to spreadsheet + emails
     var ssUrl = _admSaveToSheet(data, folderUrl, savedFiles.join(' | '));
-    Logger.log('Sheet row appended');
-
-    // 8. Emails
     _admSendConfirmation(data);
     _admSendAdminAlert(data, folderUrl, savedFiles, ssUrl);
 
-    Logger.log('handleAdmissionPost SUCCESS');
-    Logger.log('═══════════════════════════════════════════════');
+    Logger.log('Admission saved: ' + data.firstName + ' ' + data.lastName + ' (' + data.email + ') — ' + savedFiles.length + ' files');
     return _admJson({ result: 'ok' });
 
   } catch (err) {
-    Logger.log('!!! ADMISSION ERROR: ' + err.message);
-    Logger.log('!!! STACK: ' + (err.stack || '(no stack)'));
-    Logger.log('═══════════════════════════════════════════════');
+    Logger.log('Admission error: ' + err.message + ' — ' + (err.stack || ''));
     return _admJson({
       result: 'error',
       message: 'Server error: ' + err.message + ' — please email info@dataaischool.com.'
@@ -151,10 +121,10 @@ function _admGetSpreadsheet() {
     }
   }
 
-  // Create a fresh spreadsheet in the script owner's Drive
+  // Create a fresh spreadsheet in the script owner's Drive (one-off)
   var ss = SpreadsheetApp.create(ADMISSIONS_SS_NAME);
   props.setProperty(ADMISSIONS_SS_PROP_KEY, ss.getId());
-  Logger.log('🆕 Created admissions spreadsheet: ' + ss.getUrl());
+  Logger.log('Created admissions spreadsheet: ' + ss.getUrl());
   return ss;
 }
 
