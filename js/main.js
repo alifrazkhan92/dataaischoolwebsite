@@ -229,7 +229,7 @@
  // A hidden iframe form submission uses the browser's native POST handling,
  // which follows redirects correctly and delivers e.parameter to Apps Script.
 
- var forms = document.querySelectorAll(".contact-form.apply-form");
+ var forms = document.querySelectorAll(".contact-form, .apply-form");
  forms.forEach(function (form) {
  form.addEventListener("submit", function (e) {
  e.preventDefault();
@@ -250,6 +250,9 @@
  }
  return;
  }
+
+ // Detect form type early so it can be used everywhere below
+ var isContact = form.classList.contains("contact-form");
 
  // Honeypot check, if filled, silently fake success (it's a bot)
  var hp = form.querySelector("[name='hp_website']");
@@ -282,7 +285,6 @@
  }
 
  // Collect values
- var isContact = form.classList.contains("contact-form");
  var fields = {
  formType: isContact ? "Contact Enquiry" : "Course Application",
  name: (form.querySelector("[name='name']") || {}).value || "",
