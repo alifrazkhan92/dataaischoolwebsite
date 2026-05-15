@@ -185,6 +185,11 @@
 
  initCookieConsent();
 
+ // Load Tawk.to chat widget on every page unconditionally.
+ // Live chat is a customer-support tool treated as strictly necessary.
+ // Google Fonts remains consent-gated (applyConsent handles that).
+ loadTawkTo();
+
  // ─── Mobile nav toggle ────────────────────────────────────────────────────────
 
  var menuToggle = document.querySelector(".menu-toggle");
