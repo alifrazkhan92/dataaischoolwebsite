@@ -184,11 +184,8 @@
  }
 
  initCookieConsent();
-
- // Load Tawk.to chat widget on every page unconditionally.
- // Live chat is a customer-support tool treated as strictly necessary.
- // Google Fonts remains consent-gated (applyConsent handles that).
- loadTawkTo();
+ // Tawk.to is loaded via a static <script src> tag in each HTML page.
+ // Google Fonts remains consent-gated via applyConsent().
 
  // ─── Mobile nav toggle ────────────────────────────────────────────────────────
 
