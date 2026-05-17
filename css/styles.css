@@ -265,6 +265,42 @@ html[data-theme="dark"] .logo span {
 }
 .nav-main .nav-theme-wrap { margin-left: 0.5rem; }
 
+/* Student Portal nav button */
+.nav-portal-item { margin-left: 0.25rem; }
+.nav-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #0A2240;
+  color: #C89930 !important;
+  border: 2px solid #0A2240;
+  border-radius: var(--radius);
+  padding: 0.35rem 0.85rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+  transition: background var(--transition), border-color var(--transition),
+              color var(--transition), transform var(--transition), box-shadow var(--transition);
+  white-space: nowrap;
+}
+.nav-portal-btn:hover {
+  background: #C89930 !important;
+  border-color: #C89930 !important;
+  color: #0A2240 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(200,153,48,0.35);
+}
+html[data-theme="dark"] .nav-portal-btn {
+  background: #C89930;
+  border-color: #C89930;
+  color: #0A2240 !important;
+}
+html[data-theme="dark"] .nav-portal-btn:hover {
+  background: #DFB040 !important;
+  border-color: #DFB040 !important;
+  color: #0A2240 !important;
+}
+
 /* Theme toggle */
 .theme-toggle {
   display: inline-flex;
@@ -856,6 +892,16 @@ html[data-theme="dark"] .values-list .value-icon {
   .nav-main.is-open { display: flex; }
   .nav-main a { padding: 0.85rem 0.75rem; font-size: 1rem; min-height: 44px; }
   .header-inner { flex-direction: column; align-items: stretch; }
+  .nav-portal-item { margin-left: 0; margin-top: 0.25rem; }
+  .nav-portal-btn {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+    padding: 0.85rem 0.75rem !important;
+    font-size: 1rem !important;
+    min-height: 44px;
+    border-radius: var(--radius);
+  }
 
   /* Theme toggle: move to row with menu button */
   .header-actions { margin-top: 0.5rem; }
