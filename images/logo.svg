@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 160" width="560" height="160">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#FFE066"/>
+      <stop offset="50%"  stop-color="#C89930"/>
+      <stop offset="100%" stop-color="#8B6010"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#FFE580"/>
+      <stop offset="40%"  stop-color="#C89930"/>
+      <stop offset="100%" stop-color="#7A5500"/>
+    </linearGradient>
+    <linearGradient id="gFace" x1="0%" y1="0%" x2="60%" y2="100%">
+      <stop offset="0%"   stop-color="#FFE880"/>
+      <stop offset="45%"  stop-color="#D4A030"/>
+      <stop offset="100%" stop-color="#8B6010"/>
+    </linearGradient>
+    <linearGradient id="gSide" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#5C3A00"/>
+      <stop offset="100%" stop-color="#9A7020"/>
+    </linearGradient>
+    <linearGradient id="gRight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#A07820"/>
+      <stop offset="100%" stop-color="#5C3A00"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.45)"/>
+    </filter>
+    <filter id="tglow">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(200,153,48,0.7)"/>
+    </filter>
+  </defs>
+
+  <!-- ══════ 3-D HEX PRISM ══════ -->
+  <!-- drop shadow -->
+  <ellipse cx="72" cy="128" rx="42" ry="8" fill="rgba(0,0,0,0.22)"/>
+
+  <!-- right face -->
+  <polygon points="112,32 112,86 72,110 72,56" fill="url(#gRight)"/>
+  <!-- left face -->
+  <polygon points="32,32 72,56  72,110 32,86" fill="url(#gSide)"/>
+  <!-- top face -->
+  <polygon points="32,32 72,8  112,32 72,56" fill="url(#gFace)"/>
+
+  <!-- top face: circuit grid -->
+  <g opacity="0.5">
+    <line x1="52" y1="20" x2="92" y2="20" stroke="#FFE066" stroke-width="0.7"/>
+    <line x1="42" y1="32" x2="102" y2="32" stroke="#FFE066" stroke-width="0.7"/>
+    <line x1="44" y1="44" x2="100" y2="44" stroke="#FFE066" stroke-width="0.6"/>
+    <line x1="57" y1="12" x2="47" y2="52" stroke="#FFE066" stroke-width="0.5"/>
+    <line x1="72" y1="8"  x2="72" y2="56" stroke="#FFE066" stroke-width="0.5"/>
+    <line x1="87" y1="12" x2="97" y2="52" stroke="#FFE066" stroke-width="0.5"/>
+    <circle cx="72" cy="8"  r="3"   fill="#FFE066"/>
+    <circle cx="52" cy="20" r="2.2" fill="#FFE066"/>
+    <circle cx="92" cy="20" r="2.2" fill="#FFE066"/>
+    <circle cx="42" cy="32" r="2"   fill="#FFE066"/>
+    <circle cx="72" cy="32" r="3.5" fill="#fff" opacity="0.85"/>
+    <circle cx="102" cy="32" r="2"  fill="#FFE066"/>
+    <circle cx="72" cy="56" r="2.2" fill="#FFE066"/>
+  </g>
+
+  <!-- highlight edges -->
+  <line x1="32" y1="32" x2="72" y2="8"  stroke="rgba(255,248,180,0.9)" stroke-width="1.4"/>
+  <line x1="72" y1="8"  x2="112" y2="32" stroke="rgba(255,235,140,0.55)" stroke-width="1"/>
+  <polygon points="32,32 72,8 112,32 72,56" fill="none" stroke="rgba(255,230,100,0.35)" stroke-width="0.6"/>
+
+  <!-- bottom edges -->
+  <line x1="32" y1="86"  x2="72" y2="110" stroke="rgba(200,153,48,0.4)" stroke-width="0.8"/>
+  <line x1="72" y1="110" x2="112" y2="86" stroke="rgba(200,153,48,0.25)" stroke-width="0.8"/>
+
+  <!-- ══════ NEURAL ARMS ══════ -->
+  <g filter="url(#glow)" opacity="0.72">
+    <line x1="112" y1="32" x2="132" y2="18" stroke="#C89930" stroke-width="1.1"/>
+    <circle cx="132" cy="18" r="3.5" fill="#C89930"/>
+    <line x1="132" y1="18" x2="148" y2="9"  stroke="#C89930" stroke-width="0.7" opacity="0.55"/>
+    <circle cx="148" cy="9"  r="2"   fill="#C89930" opacity="0.55"/>
+
+    <line x1="112" y1="56" x2="134" y2="52" stroke="#C89930" stroke-width="1"/>
+    <circle cx="134" cy="52" r="2.8" fill="#C89930"/>
+
+    <line x1="32" y1="32" x2="14" y2="19" stroke="#C89930" stroke-width="1.1"/>
+    <circle cx="14" cy="19" r="3"   fill="#C89930"/>
+    <line x1="14" y1="19" x2="5"  y2="10" stroke="#C89930" stroke-width="0.7" opacity="0.5"/>
+    <circle cx="5"  cy="10" r="1.8" fill="#C89930" opacity="0.5"/>
+
+    <line x1="32" y1="56" x2="12" y2="58" stroke="#C89930" stroke-width="1"/>
+    <circle cx="12" cy="58" r="2.5" fill="#C89930"/>
+  </g>
+
+  <!-- ══════ "DAIS" — 3-D serif text ══════ -->
+  <!-- extrusion shadow layers -->
+  <text x="162" y="82" font-family="Georgia,'Times New Roman',serif"
+    font-size="60" font-weight="700" letter-spacing="3" fill="#3A2000" opacity="0.45">DAIS</text>
+  <text x="160" y="80" font-family="Georgia,'Times New Roman',serif"
+    font-size="60" font-weight="700" letter-spacing="3" fill="#5C3800" opacity="0.35">DAIS</text>
+  <text x="158" y="78" font-family="Georgia,'Times New Roman',serif"
+    font-size="60" font-weight="700" letter-spacing="3" fill="#7A5000" opacity="0.25">DAIS</text>
+  <!-- main gold text -->
+  <text x="157" y="76" font-family="Georgia,'Times New Roman',serif"
+    font-size="60" font-weight="700" letter-spacing="3"
+    fill="url(#g2)" filter="url(#tglow)">DAIS</text>
+  <!-- specular sheen -->
+  <text x="157" y="76" font-family="Georgia,'Times New Roman',serif"
+    font-size="60" font-weight="700" letter-spacing="3"
+    fill="rgba(255,255,255,0.07)">DAIS</text>
+
+  <!-- separator rule -->
+  <line x1="157" y1="88" x2="545" y2="88" stroke="rgba(200,153,48,0.5)" stroke-width="0.9"/>
+
+  <!-- tagline 1 -->
+  <text x="157" y="108" font-family="Georgia,'Times New Roman',serif"
+    font-size="14" letter-spacing="3.5" fill="rgba(255,255,255,0.93)">THE DATA AND AI SCHOOL</text>
+
+  <!-- tagline 2 -->
+  <text x="157" y="128" font-family="Georgia,'Times New Roman',serif"
+    font-size="11.5" letter-spacing="6.5" fill="rgba(200,153,48,0.88)">OF LONDON</text>
+</svg>
