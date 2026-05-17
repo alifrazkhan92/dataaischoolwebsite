@@ -119,9 +119,76 @@ html[data-theme="dark"] {
   }
 }
 
+/* ─── Cross-browser normalisation ───────────────────────────────────────────── */
+/* Ensures consistent rendering across Chrome, Safari, Firefox, Brave, Edge     */
+
+/* 1. Box model */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* 2. Font rendering — consistent across macOS/iOS Safari and Chrome/Brave */
+html {
+  -webkit-text-size-adjust: 100%;   /* stop iOS Safari inflating fonts on rotate */
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;              /* older Safari */
+  scroll-behavior: smooth;
+  tab-size: 4;
+}
+
+/* 3. Form elements — Safari resets native appearance so styled controls match */
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  color: inherit;
+  -webkit-appearance: none;         /* Safari: removes default native styling */
+  appearance: none;
+  border-radius: 0;                 /* Safari adds border-radius on inputs */
+}
+
+/* Restore checkbox/radio native rendering (we style accent-color instead) */
+input[type="checkbox"],
+input[type="radio"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+}
+
+/* 4. Links — remove tap highlight on mobile Safari */
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 5. Images — prevent overflow and Safari gaps under inline images */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Headings — prevent Safari from applying its own bold weight */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+/* 7. Lists — Safari and Firefox handle list-style differently */
+ul, ol { list-style: none; }
+
+/* 8. Tables */
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* 9. Hidden elements */
+[hidden] { display: none !important; }
+
+/* 10. Focus visible — consistent keyboard focus ring across all browsers */
+:focus-visible {
+  outline: 2px solid var(--accent, #0A2240);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
 /* ─── Reset ──────────────────────────────────────────────────────────────────── */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { }   /* extended above */
 
 body {
   font-family: var(--font-sans);
@@ -616,6 +683,33 @@ html[data-theme="dark"] .course-card .badge {
   min-height: 120px;
   resize: vertical;
 }
+
+/* Safari: select arrow fix — adds consistent dropdown arrow across browsers */
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B5E52' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Safari: search input clear button */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* Safari: number input spinner */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* Safari: date input styling normalisation */
+input[type="date"],
+input[type="month"] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 2.75rem;
+}
+
 .form-actions { margin-top: 1.75rem; }
 
 /* ─── Footer ─────────────────────────────────────────────────────────────────── */
@@ -716,6 +810,36 @@ html[data-theme="dark"] .values-list .value-icon {
 }
 
 /* ─── Responsive — tablet / large mobile (≤768px) ───────────────────────────── */
+/* ─── Responsive — tablet (≤1024px) ─────────────────────────────────────────── */
+@media (max-width: 1024px) {
+
+  /* Slightly tighter side padding on tablet */
+  :root { --side-pad: clamp(1rem, 4vw, 2.5rem); }
+
+  /* Course grid: 2 columns on tablet */
+  .course-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+
+  /* Blog grid: 2 columns on tablet */
+  .blog-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+  /* Admission form: collapse 2-col grid to 1 col on tablet */
+  .form-grid { grid-template-columns: 1fr; }
+  .span-2, .span-3 { grid-column: span 1; }
+
+  /* Admission intro grid: stack on tablet */
+  .adm-intro-grid { grid-template-columns: 1fr; }
+  .adm-checklist { max-width: 100%; }
+
+  /* Hero: tighten up */
+  .hero { padding: 3.5rem 0 2.5rem; }
+
+  /* Touch targets: minimum 44px height for all interactive elements */
+  .btn { min-height: 44px; }
+  .nav-main a { min-height: 44px; display: flex; align-items: center; }
+  input, select, textarea { min-height: 44px; }
+}
+
+/* ─── Responsive — mobile (≤768px) ──────────────────────────────────────────── */
 @media (max-width: 768px) {
 
   /* Navigation */
@@ -730,8 +854,11 @@ html[data-theme="dark"] .values-list .value-icon {
     margin-top: 0.5rem;
   }
   .nav-main.is-open { display: flex; }
-  .nav-main a { padding: 0.7rem 0.75rem; font-size: 1rem; }
+  .nav-main a { padding: 0.85rem 0.75rem; font-size: 1rem; min-height: 44px; }
   .header-inner { flex-direction: column; align-items: stretch; }
+
+  /* Theme toggle: move to row with menu button */
+  .header-actions { margin-top: 0.5rem; }
 
   /* Hero section */
   .hero { padding: 2.5rem 0 1.75rem; }
@@ -744,13 +871,11 @@ html[data-theme="dark"] .values-list .value-icon {
   }
   .hero-actions .btn {
     width: 100%;
-    max-width: 300px;
+    max-width: 320px;
     justify-content: center;
+    min-height: 48px;
   }
-  .hero-image {
-    margin-top: 1.75rem;
-    border-radius: var(--radius);
-  }
+  .hero-image { margin-top: 1.75rem; border-radius: var(--radius); }
   .hero-image img { max-height: 220px; object-fit: cover; }
 
   /* Section titles */
@@ -761,18 +886,14 @@ html[data-theme="dark"] .values-list .value-icon {
   .page-title { font-size: 1.75rem; }
   .page-intro { font-size: 1rem; }
 
-  /* Banner images (about, courses pages) */
+  /* Banner images */
   .banner-image { border-radius: var(--radius); }
   .banner-image img { max-height: 180px; }
 
   /* Image grids */
   .image-grid { grid-template-columns: 1fr 1fr; gap: 0.875rem; }
   .image-grid img { height: 160px; }
-
-  /* Img with caption */
   .img-with-caption img { max-height: 200px; }
-
-  /* Two-col image */
   .two-col-image { grid-template-columns: 1fr; }
 
   /* Course cards */
@@ -792,19 +913,54 @@ html[data-theme="dark"] .values-list .value-icon {
   .blog-post-header h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
   .blog-post-header img { max-height: 200px; object-fit: cover; }
 
+  /* Forms: full width, larger touch targets */
+  .form-group input,
+  .form-group select,
+  .form-group textarea { min-height: 48px; font-size: 1rem; }
+  .form-group select { background-position: right 0.625rem center; }
+  .contact-form, .apply-form { max-width: 100%; }
+
+  /* Admission form: single column */
+  .form-grid { grid-template-columns: 1fr; }
+  .span-2, .span-3 { grid-column: span 1; }
+  .adm-intro-grid { grid-template-columns: 1fr; }
+  .form-section-body { padding: 1rem; }
+
+  /* Radio/checkbox groups on mobile: stack vertically */
+  .radio-group, .check-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .radio-group label, .check-group label {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* Upload zones: full width */
+  .upload-zone { padding: 1rem; }
+
   /* Footer */
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .footer-nav { flex-wrap: wrap; gap: 0.25rem 1rem; }
+  .footer-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* Buttons: minimum touch target */
+  .btn { min-height: 44px; }
 }
 
 /* ─── Responsive — small mobile (≤480px) ────────────────────────────────────── */
 @media (max-width: 480px) {
+
+  /* Side padding tighter */
+  :root { --side-pad: 1rem; }
 
   /* Hero */
   .hero { padding: 2rem 0 1.5rem; }
   .hero h1 { font-size: 1.625rem; letter-spacing: -0.01em; }
   .hero .tagline { font-size: 0.9375rem; }
   .hero-image img { max-height: 180px; }
+  .hero-actions .btn { max-width: 100%; min-height: 52px; font-size: 1rem; }
 
   /* Titles */
   .page-title { font-size: 1.5rem; }
@@ -813,49 +969,60 @@ html[data-theme="dark"] .values-list .value-icon {
   /* Banners */
   .banner-image img { max-height: 140px; }
 
-  /* Image grid: single column on small phones */
+  /* Image grid: single column */
   .image-grid { grid-template-columns: 1fr; }
   .image-grid img { height: 200px; }
-
-  /* Img with caption */
   .img-with-caption img { max-height: 170px; }
 
-  /* Blog hero */
+  /* Blog */
   .blog-hero-img img { max-height: 130px; }
-
-  /* Blog grid: single column */
   .blog-grid { grid-template-columns: 1fr; }
   .blog-card-img { height: 160px; }
+  .blog-post-header img { max-height: 170px; }
 
   /* Course grid: single column */
   .course-grid { grid-template-columns: 1fr; }
 
-  /* Blog post images */
-  .blog-post-header img { max-height: 170px; }
-
-  /* Buttons full-width in hero on smallest screens */
-  .hero-actions .btn { max-width: 100%; }
-
-  /* Blog CTA buttons */
+  /* Blog CTA buttons: stack and full width */
   .blog-cta .btn {
     display: block;
     width: 100%;
     margin-right: 0 !important;
     margin-bottom: 0.75rem;
     text-align: center;
+    min-height: 52px;
+    line-height: 1.4;
   }
 
   /* Values list */
   .values-list .value-icon { width: 34px; height: 34px; min-width: 34px; font-size: 0.875rem; }
 
   /* FAQ */
-  .faq-item summary { font-size: 0.875rem; padding: 0.875rem 1rem; }
+  .faq-item summary { font-size: 0.875rem; padding: 0.875rem 1rem; min-height: 44px; }
 
   /* Forms */
-  .contact-form, .apply-form { max-width: 100%; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 1rem; min-height: 52px; }
+  .form-group label { font-size: 0.875rem; }
+  .form-section-hd { padding: 0.875rem 1rem; }
+  .form-section-hd h2 { font-size: 0.9375rem; }
+
+  /* Declaration checkboxes: easier to tap */
+  .declaration-item { padding: 0.75rem 0; gap: 0.75rem; }
+  .declaration-item input[type="checkbox"] {
+    width: 1.25rem; height: 1.25rem; flex-shrink: 0;
+  }
 
   /* Policy TOC */
   .policy-toc ol { columns: 1; }
+
+  /* Team avatars */
+  .team-avatar { width: 72px; height: 72px; font-size: 1.25rem; }
+
+  /* Cookie banner */
+  .cookie-banner-actions { flex-direction: column; }
+  .cookie-banner-actions .btn { width: 100%; min-height: 48px; }
 }
 
 /* ─── Testimonials ───────────────────────────────────────────────────────────── */

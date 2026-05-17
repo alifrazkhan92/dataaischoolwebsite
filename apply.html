@@ -120,16 +120,26 @@
  .form-group.has-error input.form-group.has-error select.form-group.has-error textarea { border-color: #c00; }
 
  /* Inline radio/checkbox groups */
- .radio-group.check-group {
- display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: 0.25rem;
+ .radio-group,
+ .check-group {
+ display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 0.25rem;
+ align-items: center;
  }
- .radio-group label.check-group label {
- display: flex; align-items: center; gap: 0.4rem;
+ .radio-group label,
+ .check-group label {
+ display: inline-flex; align-items: center; gap: 0.4rem;
  font-size: 0.875rem; font-weight: 400; color: var(--text-muted);
- cursor: pointer;
+ cursor: pointer; line-height: 1;
  }
- .radio-group input[type="radio"].check-group input[type="checkbox"] {
- width: auto; flex-shrink: 0; accent-color: var(--accent);
+ .radio-group input[type="radio"],
+ .radio-group input[type="checkbox"],
+ .check-group input[type="radio"],
+ .check-group input[type="checkbox"] {
+ width: 1rem; height: 1rem; flex-shrink: 0;
+ accent-color: var(--accent);
+ margin: 0; padding: 0;
+ vertical-align: middle;
+ position: relative; top: -1px;
  }
 
  /* Info box (equality monitoring note) */
