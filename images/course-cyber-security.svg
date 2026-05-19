@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#061628"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C89930"/>
+      <stop offset="100%" style="stop-color:#E8B030"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="400" fill="url(#bg)"/>
+  <g stroke="#6B8FAE" stroke-width="0.4" opacity="0.06">
+    <line x1="0" y1="80" x2="900" y2="80"/><line x1="0" y1="160" x2="900" y2="160"/>
+    <line x1="0" y1="240" x2="900" y2="240"/><line x1="0" y1="320" x2="900" y2="320"/>
+    <line x1="180" y1="0" x2="180" y2="400"/><line x1="360" y1="0" x2="360" y2="400"/>
+    <line x1="540" y1="0" x2="540" y2="400"/><line x1="720" y1="0" x2="720" y2="400"/>
+  </g>
+
+  <!-- Left: Central shield -->
+  <g transform="translate(250,200)">
+    <!-- Outer glow ring -->
+    <circle cx="0" cy="0" r="130" fill="none" stroke="#C89930" stroke-width="0.5" opacity="0.2"/>
+    <circle cx="0" cy="0" r="110" fill="none" stroke="#C89930" stroke-width="0.8" opacity="0.3"/>
+    <!-- Shield body -->
+    <path d="M0,-95 L80,-60 L80,30 Q80,90 0,115 Q-80,90 -80,30 L-80,-60 Z"
+          fill="#0D1E35" stroke="#C89930" stroke-width="3"/>
+    <!-- Shield inner highlight -->
+    <path d="M0,-75 L60,-48 L60,25 Q60,72 0,92 Q-60,72 -60,25 L-60,-48 Z"
+          fill="none" stroke="#C89930" stroke-width="1" opacity="0.4"/>
+    <!-- Lock icon in shield -->
+    <rect x="-22" y="-10" width="44" height="34" rx="5" fill="#C89930" opacity="0.9"/>
+    <path d="M-14,-10 L-14,-24 Q-14,-44 0,-44 Q14,-44 14,-24 L14,-10" 
+          fill="none" stroke="#C89930" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="0" cy="8" r="6" fill="#0D1E35"/>
+    <rect x="-2" y="8" width="4" height="8" rx="2" fill="#0D1E35"/>
+    <!-- Connecting lines to network nodes -->
+    <line x1="-80" y1="-60" x2="-170" y2="-100" stroke="#C89930" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+    <line x1="-80" y1="30" x2="-170" y2="60" stroke="#C89930" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+    <line x1="80" y1="-60" x2="170" y2="-100" stroke="#C89930" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+    <line x1="80" y1="30" x2="170" y2="60" stroke="#C89930" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+    <line x1="0" y1="-95" x2="0" y2="-160" stroke="#C89930" stroke-width="1" opacity="0.4" stroke-dasharray="4,3"/>
+    <!-- Network nodes -->
+    <circle cx="-170" cy="-100" r="14" fill="#112038" stroke="#C89930" stroke-width="1.5"/>
+    <text x="-170" y="-96" text-anchor="middle" font-family="monospace" font-size="10" fill="#C89930">TLS</text>
+    <circle cx="-170" cy="60" r="14" fill="#112038" stroke="#C89930" stroke-width="1.5"/>
+    <text x="-170" y="64" text-anchor="middle" font-family="monospace" font-size="10" fill="#C89930">VPN</text>
+    <circle cx="170" cy="-100" r="14" fill="#112038" stroke="#C89930" stroke-width="1.5"/>
+    <text x="170" y="-96" text-anchor="middle" font-family="monospace" font-size="10" fill="#C89930">IDS</text>
+    <circle cx="170" cy="60" r="14" fill="#112038" stroke="#C89930" stroke-width="1.5"/>
+    <text x="170" y="64" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">SOC</text>
+    <circle cx="0" cy="-160" r="14" fill="#112038" stroke="#C89930" stroke-width="1.5"/>
+    <text x="0" y="-156" text-anchor="middle" font-family="monospace" font-size="9" fill="#C89930">PKI</text>
+  </g>
+
+  <!-- Right: Qualification info -->
+  <g transform="translate(560,60)">
+    <text x="0" y="30" font-family="Georgia,serif" font-size="20" fill="#FFFFFF" font-weight="700">Cyber Security</text>
+    <text x="0" y="52" font-family="Georgia,serif" font-size="13" fill="#C89930">NCFE Regulated Qualifications</text>
+    <line x1="0" y1="64" x2="300" y2="64" stroke="#1E3A5E" stroke-width="1"/>
+    <g font-family="Georgia,serif">
+      <text x="0" y="86" font-size="12" fill="#8AABCC">Level 2</text>
+      <text x="0" y="104" font-size="12" fill="#FFFFFF" font-weight="700">Principles of Cyber Security</text>
+      <text x="0" y="120" font-size="11" fill="#C89930">603/5853/1</text>
+      <line x1="0" y1="130" x2="300" y2="130" stroke="#1E3A5E" stroke-width="0.8"/>
+      <text x="0" y="150" font-size="12" fill="#8AABCC">Level 3</text>
+      <text x="0" y="168" font-size="12" fill="#FFFFFF" font-weight="700">Cyber Security Practices</text>
+      <text x="0" y="184" font-size="11" fill="#C89930">603/5762/9</text>
+      <line x1="0" y1="194" x2="300" y2="194" stroke="#1E3A5E" stroke-width="0.8"/>
+      <text x="0" y="214" font-size="12" fill="#8AABCC">Level 3 Diploma</text>
+      <text x="0" y="232" font-size="12" fill="#FFFFFF" font-weight="700">Technical Occupational Entry</text>
+      <text x="0" y="250" font-size="11" fill="#C89930">610/4004/6</text>
+      <line x1="0" y1="260" x2="300" y2="260" stroke="#1E3A5E" stroke-width="0.8"/>
+      <text x="0" y="280" font-size="12" fill="#8AABCC">Level 4 HTQ Diploma</text>
+      <text x="0" y="298" font-size="12" fill="#FFFFFF" font-weight="700">Cyber Security Engineer</text>
+      <text x="0" y="314" font-size="11" fill="#C89930">603/7748/3</text>
+    </g>
+  </g>
+  <rect x="0" y="390" width="900" height="4" fill="url(#gold)" opacity="0.8"/>
+</svg>

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" width="900" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2240"/>
+      <stop offset="100%" style="stop-color:#0E3268"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C89930"/>
+      <stop offset="100%" style="stop-color:#E8B030"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="400" fill="url(#bg)"/>
+  <g stroke="#6B8FAE" stroke-width="0.4" opacity="0.07">
+    <line x1="0" y1="80" x2="900" y2="80"/><line x1="0" y1="160" x2="900" y2="160"/>
+    <line x1="0" y1="240" x2="900" y2="240"/><line x1="0" y1="320" x2="900" y2="320"/>
+    <line x1="180" y1="0" x2="180" y2="400"/><line x1="360" y1="0" x2="360" y2="400"/>
+    <line x1="540" y1="0" x2="540" y2="400"/><line x1="720" y1="0" x2="720" y2="400"/>
+  </g>
+
+  <!-- Left: Cloud architecture diagram -->
+  <g transform="translate(50,50)">
+    <!-- Central cloud -->
+    <g transform="translate(220,110)">
+      <ellipse cx="-40" cy="10" rx="55" ry="42" fill="#1A3A5C" stroke="#C89930" stroke-width="2"/>
+      <ellipse cx="40" cy="16" rx="48" ry="36" fill="#1A3A5C" stroke="#C89930" stroke-width="2"/>
+      <ellipse cx="0" cy="-14" rx="45" ry="46" fill="#1A3A5C" stroke="#C89930" stroke-width="2"/>
+      <rect x="-75" y="30" width="150" height="28" fill="#0D1E35"/>
+      <text x="0" y="20" text-anchor="middle" font-family="monospace" font-size="14" fill="#C89930" font-weight="700">CLOUD</text>
+    </g>
+    <!-- Servers on left -->
+    <rect x="20" y="60" width="80" height="56" rx="4" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
+    <text x="60" y="82" text-anchor="middle" font-family="monospace" font-size="10" fill="#8AABCC">SERVER</text>
+    <rect x="30" y="90" width="60" height="6" rx="2" fill="#C89930" opacity="0.5"/>
+    <rect x="30" y="100" width="40" height="6" rx="2" fill="#2ECC71" opacity="0.4"/>
+    <rect x="30" y="110" width="50" height="6" rx="2" fill="#C89930" opacity="0.3"/>
+    <!-- Server 2 -->
+    <rect x="20" y="136" width="80" height="56" rx="4" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
+    <text x="60" y="158" text-anchor="middle" font-family="monospace" font-size="10" fill="#8AABCC">DATABASE</text>
+    <rect x="30" y="166" width="60" height="6" rx="2" fill="#7EC8E3" opacity="0.5"/>
+    <rect x="30" y="176" width="45" height="6" rx="2" fill="#7EC8E3" opacity="0.3"/>
+    <rect x="30" y="186" width="55" height="6" rx="2" fill="#C89930" opacity="0.3"/>
+    <!-- Server 3 on right -->
+    <rect x="340" y="60" width="80" height="56" rx="4" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
+    <text x="380" y="82" text-anchor="middle" font-family="monospace" font-size="10" fill="#8AABCC">NETWORK</text>
+    <rect x="350" y="90" width="60" height="6" rx="2" fill="#C89930" opacity="0.5"/>
+    <rect x="350" y="100" width="40" height="6" rx="2" fill="#2ECC71" opacity="0.4"/>
+    <!-- Client devices -->
+    <rect x="340" y="200" width="80" height="56" rx="4" fill="#0D1E35" stroke="#1E3A5E" stroke-width="1.5"/>
+    <text x="380" y="222" text-anchor="middle" font-family="monospace" font-size="10" fill="#8AABCC">CLIENTS</text>
+    <circle cx="360" cy="240" r="8" fill="#C89930" opacity="0.5"/>
+    <circle cx="380" cy="240" r="8" fill="#7EC8E3" opacity="0.5"/>
+    <circle cx="400" cy="240" r="8" fill="#2ECC71" opacity="0.4"/>
+    <!-- Connecting lines -->
+    <line x1="100" y1="88" x2="155" y2="130" stroke="#C89930" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+    <line x1="100" y1="164" x2="155" y2="150" stroke="#C89930" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+    <line x1="340" y1="88" x2="290" y2="130" stroke="#C89930" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+    <line x1="340" y1="228" x2="290" y2="160" stroke="#C89930" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.6"/>
+    <!-- Level badges -->
+    <rect x="100" y="260" width="60" height="20" rx="10" fill="#1A3A5C" stroke="#C89930" stroke-width="1"/>
+    <text x="130" y="274" text-anchor="middle" font-family="monospace" font-size="10" fill="#C89930">Level 3</text>
+    <rect x="175" y="260" width="60" height="20" rx="10" fill="#1A3A5C" stroke="#C89930" stroke-width="1"/>
+    <text x="205" y="274" text-anchor="middle" font-family="monospace" font-size="10" fill="#C89930">Level 5</text>
+    <rect x="250" y="260" width="70" height="20" rx="10" fill="#1A3A5C" stroke="#E8B030" stroke-width="1"/>
+    <text x="285" y="274" text-anchor="middle" font-family="monospace" font-size="10" fill="#E8B030">HTQ</text>
+  </g>
+
+  <!-- Right: Qualification info -->
+  <g transform="translate(570,60)">
+    <text x="0" y="30" font-family="Georgia,serif" font-size="20" fill="#FFFFFF" font-weight="700">Cloud and Digital Support</text>
+    <text x="0" y="52" font-family="Georgia,serif" font-size="13" fill="#C89930">NCFE Regulated Qualifications</text>
+    <line x1="0" y1="64" x2="300" y2="64" stroke="#1E3A5E" stroke-width="1"/>
+    <g font-family="Georgia,serif">
+      <text x="0" y="86" font-size="12" fill="#8AABCC">Level 3 Diploma</text>
+      <text x="0" y="104" font-size="12" fill="#FFFFFF" font-weight="700">Digital Support</text>
+      <text x="0" y="120" font-size="11" fill="#C89930">610/4005/8</text>
+      <line x1="0" y1="130" x2="300" y2="130" stroke="#1E3A5E" stroke-width="0.8"/>
+      <text x="0" y="152" font-size="12" fill="#8AABCC">Level 5 HTQ Diploma</text>
+      <text x="0" y="170" font-size="12" fill="#FFFFFF" font-weight="700">Data Engineer</text>
+      <text x="0" y="186" font-size="11" fill="#C89930">610/5972/9</text>
+      <line x1="0" y1="196" x2="300" y2="196" stroke="#1E3A5E" stroke-width="0.8"/>
+      <text x="0" y="218" font-size="12" fill="#8AABCC">Level 5 HTQ Diploma</text>
+      <text x="0" y="236" font-size="12" fill="#FFFFFF" font-weight="700">Cloud Systems and Secure</text>
+      <text x="0" y="254" font-size="12" fill="#FFFFFF" font-weight="700">Networking</text>
+      <text x="0" y="272" font-size="11" fill="#C89930">HTQDZ25001</text>
+      <rect x="0" y="290" width="200" height="28" rx="6" fill="#1A3A5C" stroke="#C89930" stroke-width="1"/>
+      <text x="100" y="309" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#C89930">Highest Technical Qualifications</text>
+    </g>
+  </g>
+  <rect x="0" y="390" width="900" height="4" fill="url(#gold)" opacity="0.8"/>
+</svg>
