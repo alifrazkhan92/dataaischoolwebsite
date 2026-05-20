@@ -356,7 +356,7 @@
  .form-grid { gap: 0.875rem; }
 
  /* 16px minimum on all inputs/selects to prevent iOS auto-zoom on focus */
- .form-group input,
+ .form-group input:not([type="radio"]):not([type="checkbox"]),
  .form-group select,
  .form-group textarea {
    font-size: 1rem;

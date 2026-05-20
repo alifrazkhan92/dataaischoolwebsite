@@ -872,7 +872,7 @@ html[data-theme="dark"] .values-list .value-icon {
   /* Touch targets: minimum 44px height for all interactive elements */
   .btn { min-height: 44px; }
   .nav-main a { min-height: 44px; display: flex; align-items: center; }
-  input, select, textarea { min-height: 44px; }
+  input:not([type="radio"]):not([type="checkbox"]), select, textarea { min-height: 44px; }
 }
 
 /* ─── Responsive — mobile (≤768px) ──────────────────────────────────────────── */
