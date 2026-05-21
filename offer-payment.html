@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Enrolment | The Data and AI School of London</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .enrol-wrap {
+      max-width: 640px;
+      margin: 48px auto;
+      padding: 0 1rem;
+    }
+    .enrol-header {
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .enrol-header h1 { font-size: 1.4rem; margin: 0 0 4px; color: #fff; }
+    .enrol-header p  { font-size: 0.9rem; margin: 0; color: rgba(255,255,255,0.8); }
+    .enrol-body {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      padding: 32px;
+    }
+    .course-pill {
+      background: var(--bg-elevated);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 12px 16px;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .pay-options { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+    .pay-opt {
+      flex: 1;
+      min-width: 220px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .pay-opt.best { border-color: var(--gold); background: #fffdf5; }
+    .pay-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--accent);
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 10px;
+    }
+    .pay-title { font-size: 0.9rem; font-weight: 700; color: var(--accent); margin: 0 0 6px; }
+    .pay-was { text-decoration: line-through; color: var(--text-muted); font-size: 0.875rem; margin: 0 0 2px; }
+    .pay-price { font-size: 2rem; font-weight: 800; color: var(--accent); margin: 4px 0; }
+    .pay-sub { font-size: 0.8rem; color: var(--text-muted); margin: 0 0 14px; }
+    .pay-saving { color: #1a7a1a; font-size: 0.8125rem; font-weight: 700; margin: 0 0 14px; }
+    .pay-btn {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+      margin-top: auto;
+    }
+    .pay-btn-gold { background: var(--gold); color: var(--accent); }
+    .pay-btn-navy { background: var(--accent); color: #fff; }
+    .pay-btn-cash { background: #f8f9fa; color: var(--accent); border: 2px solid var(--border); }
+    .cash-box {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+    }
+    .cash-box h3 { color: var(--accent); font-size: 1rem; margin: 0 0 8px; }
+    .cash-box p  { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin: 0 0 10px; }
+    .cash-steps { padding-left: 1.2rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.9; margin: 0 0 14px; }
+    .cash-contact {
+      background: var(--bg-elevated);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .secure-note {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 20px;
+    }
+    #loading-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    #error-state  { display: none; text-align: center; padding: 40px 20px; }
+    #error-state h2 { color: var(--accent); }
+
+    @media (max-width: 560px) {
+      .pay-options { flex-direction: column; }
+      .enrol-body { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo-link" aria-label="DAIS home">
+        <img src="images/logo-dais.png" alt="The Data and AI School of London" class="logo-img" width="180" height="52">
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="enrol-wrap">
+      <div class="enrol-header">
+        <h1>Complete Your Enrolment</h1>
+        <p>Choose how you would like to pay to secure your place</p>
+      </div>
+
+      <div class="enrol-body">
+
+        <div id="loading-state">
+          <p>Loading your payment options...</p>
+        </div>
+
+        <div id="payment-content" style="display:none;">
+          <div class="course-pill" id="course-name"></div>
+
+          <div class="pay-options">
+            <!-- Full payment -->
+            <div class="pay-opt best" id="opt-full">
+              <span class="pay-badge">Best value</span>
+              <p class="pay-title">Pay in Full</p>
+              <p class="pay-was" id="full-was"></p>
+              <p class="pay-price" id="full-price"></p>
+              <p class="pay-sub">One payment. No further charges.</p>
+              <p class="pay-saving" id="full-saving"></p>
+              <a href="#" class="pay-btn pay-btn-gold" id="btn-full">Pay in Full</a>
+            </div>
+
+            <!-- Instalments -->
+            <div class="pay-opt" id="opt-inst">
+              <p class="pay-title">Pay in 3 Instalments</p>
+              <p class="pay-price" id="inst-price"></p>
+              <p class="pay-sub" id="inst-sub">x 3 monthly payments</p>
+              <a href="#" class="pay-btn pay-btn-navy" id="btn-inst">Pay by Instalment</a>
+            </div>
+          </div>
+
+          <!-- Cash / Bank Transfer -->
+          <div class="cash-box">
+            <h3>Pay by Cash or Bank Transfer</h3>
+            <p>If you prefer to pay in person or by bank transfer, please follow these steps:</p>
+            <ol class="cash-steps">
+              <li>Contact our Registrar using the details below to arrange payment.</li>
+              <li>Once payment is received, we will create your Moodle account and email your login credentials within one working day.</li>
+            </ol>
+            <div class="cash-contact">
+              <strong>Registrar</strong><br>
+              Email: <a href="mailto:registrar@dataaischool.com">registrar@dataaischool.com</a><br>
+              Phone: <a href="tel:+442070990956">+44 207 0990 956</a><br>
+              Hours: Monday to Friday, 09:00 to 18:00
+            </div>
+          </div>
+
+          <p class="secure-note">&#128274; Secure payments processed by Stripe. DAIS never stores your card details.</p>
+        </div>
+
+        <div id="error-state">
+          <h2>Something went wrong</h2>
+          <p>We could not load your payment options. Please contact us and we will send you a fresh link.</p>
+          <p>
+            <a href="mailto:registrar@dataaischool.com">registrar@dataaischool.com</a> &nbsp;|&nbsp;
+            <a href="tel:+442070990956">+44 207 0990 956</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-legal">The Data and AI School of London &nbsp;|&nbsp; ICO Registration ZC086597 &nbsp;|&nbsp; <a href="privacy-policy.html">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var fullUrl  = params.get('fullUrl');
+      var instUrl  = params.get('instUrl');
+      var fullAmt  = params.get('fullAmt')  || '';
+      var instAmt  = params.get('instAmt')  || '';
+      var stdAmt   = params.get('stdAmt')   || '';
+      var course   = params.get('course')   || 'Your enrolled course';
+      var name     = params.get('name')     || '';
+
+      var loading = document.getElementById('loading-state');
+      var content = document.getElementById('payment-content');
+      var errBox  = document.getElementById('error-state');
+
+      if (!fullUrl || !instUrl) {
+        loading.style.display = 'none';
+        errBox.style.display  = 'block';
+        return;
+      }
+
+      // Populate course name
+      document.getElementById('course-name').textContent = course;
+
+      // Full payment card
+      document.getElementById('full-price').textContent = fullAmt ? '£' + fullAmt : '';
+      if (stdAmt && stdAmt !== fullAmt) {
+        document.getElementById('full-was').textContent = '£' + stdAmt;
+        var saving = Math.round((parseFloat(stdAmt) - parseFloat(fullAmt)) * 100) / 100;
+        document.getElementById('full-saving').textContent = 'Save £' + saving.toFixed(2);
+      } else {
+        document.getElementById('full-was').style.display = 'none';
+        document.getElementById('full-saving').style.display = 'none';
+      }
+      document.getElementById('btn-full').href = fullUrl;
+
+      // Instalment card
+      document.getElementById('inst-price').textContent = instAmt ? '£' + instAmt : '';
+      document.getElementById('inst-sub').textContent = instAmt
+        ? '× 3 monthly payments = £' + (Math.round(parseFloat(instAmt) * 3 * 100) / 100).toFixed(2) + ' total'
+        : '× 3 monthly payments';
+      document.getElementById('btn-inst').href = instUrl;
+
+      // Show content
+      loading.style.display = 'none';
+      content.style.display = 'block';
+    })();
+  </script>
+</body>
+</html>
