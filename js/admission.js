@@ -11,7 +11,7 @@
 (function () {
   'use strict';
 
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsVarvXp0F-KJk0P4g4uqvQlgo_e0EAkMd5XV_DfgeNYSqF6yYSvvwgqLxzbov2fM/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBPPe9V9sEmFmtuD79ZZSchc7NydKxVPoYNLqzfdFBikhGrZJUip8p5v9CYbyIDBFV2A/exec';
 
   // ── DOB max (applicant must be 16+) ─────────────────────────────────────────
   (function setDobMax() {
