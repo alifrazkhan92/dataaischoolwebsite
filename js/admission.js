@@ -477,9 +477,7 @@
       document.body.appendChild(form);
 
       var done = false;
-      var loadCount = 0;
-
-      function showSuccess() {
+      var onLoad = function () {
         if (done) return;
         done = true;
         hideLoading();
@@ -490,54 +488,11 @@
         setTimeout(function () {
           try { form.remove(); iframe.remove(); } catch (ex) {}
         }, 1000);
-      }
-
-      function showSubmitError(msg) {
-        if (done) return;
-        done = true;
-        hideLoading();
-        document.getElementById('adm-submit').disabled = false;
-        showBanner(msg || 'There was a problem submitting your application. Please try again or call +44 207 0990 956.');
-        setTimeout(function () {
-          try { form.remove(); iframe.remove(); } catch (ex) {}
-        }, 1000);
-      }
-
-      iframe.addEventListener('load', function () {
-        loadCount++;
-        // Load #1 is always about:blank (iframe created without src).
-        // Load #2 is the actual Apps Script response. Wait for that.
-        if (loadCount < 2) return;
-        if (done) return;
-
-        // Try to read the JSON response (same-origin check will fail but try anyway)
-        try {
-          var body = iframe.contentDocument && iframe.contentDocument.body
-            ? iframe.contentDocument.body.innerText.trim()
-            : '';
-          if (body) {
-            var resp = JSON.parse(body);
-            if (resp && resp.result === 'error') {
-              showSubmitError(resp.message);
-              return;
-            }
-          }
-        } catch (ex) {
-          // Cross-origin: can't read iframe body — treat as success
-        }
-        showSuccess();
-      });
-
-      // Safety fallback: if iframe never fires a second load (e.g. browser blocks
-      // cross-origin navigation), show success after 25 seconds
-      var fallbackTimer = setTimeout(showSuccess, 25000);
-
-      // Clear fallback once done via either path
-      var origShowSuccess = showSuccess;
-      showSuccess = function () {
-        clearTimeout(fallbackTimer);
-        origShowSuccess();
       };
+
+      iframe.addEventListener('load', onLoad);
+      // Fallback: show success after 30s in case load event never fires
+      setTimeout(onLoad, 30000);
 
       form.submit();
 
