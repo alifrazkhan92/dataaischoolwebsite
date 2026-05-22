@@ -203,6 +203,19 @@
 
   <script>
     (function () {
+      // Break out of any iframe immediately (Google Apps Script wraps doGet in an iframe).
+      // Stripe blocks iframe embedding (X-Frame-Options: DENY), so payment buttons must
+      // open in the top-level window. If we can escape now, we load cleanly at top level.
+      if (window !== window.top) {
+        try {
+          window.top.location.replace(window.location.href);
+          return; // Top window will reload this page outside the iframe
+        } catch (e) {
+          // Cross-origin restriction: cannot escape iframe programmatically.
+          // Fall through — target="_top" on the payment buttons will handle it.
+        }
+      }
+
       var params = new URLSearchParams(window.location.search);
       var fullUrl  = params.get('fullUrl');
       var instUrl  = params.get('instUrl');
@@ -235,14 +248,22 @@
         document.getElementById('full-was').style.display = 'none';
         document.getElementById('full-saving').style.display = 'none';
       }
-      document.getElementById('btn-full').href = fullUrl;
+
+      // Set href AND target="_top" so Stripe opens in the full browser window,
+      // not inside the Apps Script iframe (which Stripe blocks).
+      var btnFull = document.getElementById('btn-full');
+      btnFull.href   = fullUrl;
+      btnFull.target = '_top';
 
       // Instalment card
       document.getElementById('inst-price').textContent = instAmt ? '£' + instAmt : '';
       document.getElementById('inst-sub').textContent = instAmt
         ? '× 3 monthly payments = £' + (Math.round(parseFloat(instAmt) * 3 * 100) / 100).toFixed(2) + ' total'
         : '× 3 monthly payments';
-      document.getElementById('btn-inst').href = instUrl;
+
+      var btnInst = document.getElementById('btn-inst');
+      btnInst.href   = instUrl;
+      btnInst.target = '_top';
 
       // Show content
       loading.style.display = 'none';
