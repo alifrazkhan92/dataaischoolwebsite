@@ -1,0 +1,12 @@
+name = "dais-chat"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+KNOWLEDGE_BASE_URL = "https://raw.githubusercontent.com/alifrazkhan92/dataaischoolwebsite/main/ai-knowledge-base.txt"
+ALLOWED_ORIGIN = "https://www.dataaischool.com"
+
+# After running `wrangler deploy`, set the secret:
+# wrangler secret put ANTHROPIC_API_KEY
+# (paste your key when prompted)

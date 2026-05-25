@@ -1,0 +1,69 @@
+name: Update AI Knowledge Base
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'blog/**'
+      - 'ai-knowledge-base.txt'
+
+jobs:
+  regenerate-kb:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Regenerate knowledge base from HTML pages
+        run: |
+          python3 - <<'PYEOF'
+          import re, pathlib, textwrap
+
+          def strip_html(html):
+              # Remove script and style blocks entirely
+              html = re.sub(r'<(script|style)[^>]*>.*?</\1>', ' ', html, flags=re.DOTALL|re.IGNORECASE)
+              # Remove JSON-LD blocks
+              html = re.sub(r'<script[^>]*application/ld\+json[^>]*>.*?</script>', ' ', html, flags=re.DOTALL|re.IGNORECASE)
+              # Strip remaining tags
+              html = re.sub(r'<[^>]+>', ' ', html)
+              # Decode common HTML entities
+              html = html.replace('&amp;', '&').replace('&nbsp;', ' ').replace('&lt;', '<').replace('&gt;', '>').replace('&#127891;', '').replace('&copy;', '(c)')
+              # Collapse whitespace
+              html = re.sub(r'[ \t]+', ' ', html)
+              html = re.sub(r'\n{3,}', '\n\n', html)
+              return html.strip()
+
+          pages = ['index.html', 'about.html', 'courses.html', 'apply.html', 'contact.html', 'team.html']
+          sections = []
+
+          for page in pages:
+              p = pathlib.Path(page)
+              if not p.exists():
+                  continue
+              content = strip_html(p.read_text(encoding='utf-8'))
+              # Remove nav/footer boilerplate (short repeated lines)
+              lines = [l.strip() for l in content.split('\n') if len(l.strip()) > 30]
+              sections.append(f'== {page.upper()} ==\n' + '\n'.join(lines[:300]))
+
+          kb = '\n\n'.join(sections)
+          # Prepend a header note
+          header = 'THE DATA AND AI SCHOOL OF LONDON - AUTO-GENERATED KNOWLEDGE BASE\nAuto-generated from website HTML. Do not edit manually.\n\n'
+          pathlib.Path('ai-knowledge-base.txt').write_text(header + kb, encoding='utf-8')
+          print(f'Knowledge base written: {len(kb)} chars')
+          PYEOF
+
+      - name: Commit updated knowledge base
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ai-knowledge-base.txt
+          if git diff --staged --quiet; then
+            echo "No changes to knowledge base."
+          else
+            git commit -m "chore: auto-update AI knowledge base [skip ci]"
+            git push
+          fi
