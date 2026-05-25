@@ -213,10 +213,19 @@
       })
       .then(function (data) {
         removeTyping(typingId);
-        var reply = data.reply || 'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
+        var raw   = data.reply || 'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
+        // Strip any markdown the model sends despite instructions
+        var reply = raw
+          .replace(/#{1,6}\s*/g, '')          // headings: # ## ###
+          .replace(/\*\*(.+?)\*\*/g, '$1')    // bold: **text**
+          .replace(/\*(.+?)\*/g, '$1')        // italic: *text*
+          .replace(/`(.+?)`/g, '$1')          // code: `text`
+          .replace(/^\s*[-*+]\s+/gm, '')      // bullet points
+          .replace(/^\s*\d+\.\s+/gm, '')      // numbered lists
+          .replace(/\n{3,}/g, '\n\n')         // excess blank lines
+          .trim();
         messages.push({ role: 'assistant', content: reply });
         if (voiceEnabled && synth) {
-          // Show text instantly so voice and text are in sync
           appendMessage('bot', reply);
           speakText(reply);
         } else {
@@ -330,15 +339,20 @@
 
   function pickVoice(utt) {
     var voices = synth.getVoices();
-    // Priority: best named voices first (high quality), then language fallbacks
+    // Prefer high-quality female British voices for a warm, conversational tone
     var preferred =
-      voices.find(function (v) { return v.name === 'Daniel'; })               ||  // macOS premium British male
-      voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
-      voices.find(function (v) { return v.name === 'Google UK English Female'; }) ||
-      voices.find(function (v) { return v.name === 'Karen'; })                ||  // macOS Australian (clear)
+      voices.find(function (v) { return v.name === 'Serena'; })                    ||  // macOS premium British female
+      voices.find(function (v) { return v.name === 'Google UK English Female'; })  ||  // Chrome high quality
+      voices.find(function (v) { return v.name === 'Kate'; })                      ||  // Windows British female
+      voices.find(function (v) { return v.name === 'Moira'; })                     ||  // macOS Irish English female
+      voices.find(function (v) { return v.name === 'Google US English'; })         ||  // Chrome US female
+      voices.find(function (v) { return v.name === 'Samantha'; })                  ||  // macOS US female
+      voices.find(function (v) {
+        return v.lang === 'en-GB' && !v.name.toLowerCase().includes('compact') &&
+               (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('serena') ||
+                v.name.toLowerCase().includes('kate') || v.name.toLowerCase().includes('martha'));
+      }) ||
       voices.find(function (v) { return v.lang === 'en-GB' && !v.name.toLowerCase().includes('compact'); }) ||
-      voices.find(function (v) { return v.lang === 'en-GB'; })                ||
-      voices.find(function (v) { return v.name === 'Samantha'; })             ||  // macOS US English
       voices.find(function (v) { return v.lang.startsWith('en') && !v.name.toLowerCase().includes('compact'); }) ||
       voices.find(function (v) { return v.lang.startsWith('en'); });
     if (preferred) utt.voice = preferred;
