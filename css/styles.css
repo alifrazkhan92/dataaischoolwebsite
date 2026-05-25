@@ -1924,3 +1924,71 @@ html[data-theme="dark"] .form-feedback.error {
   }
   .ai-float-btn { bottom: 16px; right: 16px; }
 }
+
+/* ── Voice chat controls ──────────────────────────────────────────────────── */
+#ai-chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Voice toggle button (speaker icon in header) */
+#ai-chat-voice-toggle {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  transition: color var(--transition);
+}
+#ai-chat-voice-toggle svg { width: 18px; height: 18px; }
+#ai-chat-voice-toggle:hover { color: #fff; }
+#ai-chat-voice-toggle.ai-voice-on {
+  color: var(--gold);
+  background: rgba(200,153,48,0.18);
+}
+
+/* Microphone button in input row */
+#ai-chat-mic {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+  flex-shrink: 0;
+}
+#ai-chat-mic svg { width: 16px; height: 16px; stroke: var(--text-muted); }
+#ai-chat-mic:hover { background: var(--accent-muted); border-color: var(--accent); }
+#ai-chat-mic:hover svg { stroke: var(--accent); }
+#ai-chat-mic:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Mic active: pulsing red */
+#ai-chat-mic.ai-mic-active {
+  background: #fee2e2;
+  border-color: #ef4444;
+  animation: mic-pulse 1.2s ease-in-out infinite;
+}
+#ai-chat-mic.ai-mic-active svg { stroke: #ef4444; }
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50%       { box-shadow: 0 0 0 7px rgba(239,68,68,0); }
+}
+
+/* Status line (listening / voice on/off feedback) */
+#ai-chat-status {
+  min-height: 18px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0 16px 4px;
+  flex-shrink: 0;
+}

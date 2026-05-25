@@ -7,6 +7,11 @@ compatibility_flags = ["nodejs_compat"]
 KNOWLEDGE_BASE_URL = "https://raw.githubusercontent.com/alifrazkhan92/dataaischoolwebsite/main/ai-knowledge-base.txt"
 ALLOWED_ORIGIN = "https://www.dataaischool.com"
 
-# After running `wrangler deploy`, set the secret:
-# wrangler secret put ANTHROPIC_API_KEY
-# (paste your key when prompted)
+# Secrets (set via wrangler secret put — never stored here):
+#   ANTHROPIC_API_KEY  — Anthropic API key
+#   ADMIN_KEY          — password to view conversation logs
+
+[[d1_databases]]
+binding = "dais_chat_logs"
+database_name = "dais-chat-logs"
+database_id = "e89bb081-fdd2-44e3-b8b2-a735d1eaf687"

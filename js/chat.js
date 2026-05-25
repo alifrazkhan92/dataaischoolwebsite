@@ -1,16 +1,15 @@
 /**
  * DAIS AI Chat Widget
- * Connects to the Cloudflare Worker backend for AI-powered Q&A about DAIS.
- *
- * To configure: replace WORKER_URL below with your deployed Cloudflare Worker URL.
- * Example: https://dais-chat.your-subdomain.workers.dev
+ * Features: text chat, voice input (Web Speech API), voice output (SpeechSynthesis)
+ * Backend: Cloudflare Worker with D1 conversation logging
  */
 
 (function () {
   'use strict';
 
-  // ---- CONFIGURATION ----
+  // ── Configuration ────────────────────────────────────────────────────────────
   var WORKER_URL = 'https://dais-chat.alifrazkhan92.workers.dev';
+
   var SUGGESTED_QUESTIONS = [
     'What qualifications do you offer?',
     'How do I apply?',
@@ -19,11 +18,33 @@
     'How much does it cost?',
   ];
 
-  // ---- STATE ----
-  var messages = []; // { role: 'user'|'assistant', content: string }
-  var isLoading = false;
+  // ── State ────────────────────────────────────────────────────────────────────
+  var messages   = [];
+  var isLoading  = false;
+  var sessionId  = generateSessionId();
+  var isSpeaking = false;
+  var isListening = false;
 
-  // ---- INIT ----
+  // Speech APIs
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  var recognition       = null;
+  var synth             = window.speechSynthesis || null;
+  var voiceEnabled      = false; // user must opt in per session
+
+  // ── Session ID (anonymous, not tied to any personal data) ────────────────────
+  function generateSessionId() {
+    try {
+      var arr = new Uint8Array(16);
+      crypto.getRandomValues(arr);
+      return Array.from(arr).map(function (b) {
+        return b.toString(16).padStart(2, '0');
+      }).join('');
+    } catch (e) {
+      return 'sess-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+    }
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
     buildModal();
     wireButtons();
@@ -35,8 +56,27 @@
     });
   }
 
-  // ---- MODAL BUILD ----
+  // ── Modal ─────────────────────────────────────────────────────────────────────
   function buildModal() {
+    var hasSpeechInput  = !!SpeechRecognition;
+    var hasSpeechOutput = !!synth;
+
+    var micBtn = hasSpeechInput
+      ? '<button type="button" id="ai-chat-mic" aria-label="Start voice input" title="Speak your question">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+        '<rect x="9" y="2" width="6" height="11" rx="3"/>' +
+        '<path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/>' +
+        '</svg></button>'
+      : '';
+
+    var voiceToggle = hasSpeechOutput
+      ? '<button type="button" id="ai-chat-voice-toggle" aria-label="Toggle voice reply" title="Toggle voice replies">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+        '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>' +
+        '<path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>' +
+        '</svg></button>'
+      : '';
+
     var overlay = document.createElement('div');
     overlay.id = 'ai-chat-overlay';
     overlay.setAttribute('role', 'dialog');
@@ -52,7 +92,10 @@
       '        <div id="ai-chat-subtitle">Powered by Claude &middot; Online now</div>',
       '      </div>',
       '    </div>',
-      '    <button id="ai-chat-close" aria-label="Close chat">&times;</button>',
+      '    <div id="ai-chat-header-actions">',
+           voiceToggle,
+      '      <button id="ai-chat-close" aria-label="Close chat">&times;</button>',
+      '    </div>',
       '  </div>',
       '  <div id="ai-chat-messages" aria-live="polite" aria-atomic="false">',
       '    <div class="ai-msg ai-msg-bot">',
@@ -61,12 +104,14 @@
       '      </div>',
       '    </div>',
       '    <div id="ai-chat-suggestions">',
-      SUGGESTED_QUESTIONS.map(function (q) {
-        return '      <button class="ai-suggestion" tabindex="0">' + escHtml(q) + '</button>';
-      }).join('\n'),
+           SUGGESTED_QUESTIONS.map(function (q) {
+             return '<button class="ai-suggestion" tabindex="0">' + escHtml(q) + '</button>';
+           }).join(''),
       '    </div>',
       '  </div>',
+      '  <div id="ai-chat-status" aria-live="polite"></div>',
       '  <div id="ai-chat-input-row">',
+           micBtn,
       '    <textarea id="ai-chat-input" placeholder="Ask me anything about DAIS..." rows="1" aria-label="Your message"></textarea>',
       '    <button id="ai-chat-send" aria-label="Send message">',
       '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
@@ -78,36 +123,35 @@
 
     document.body.appendChild(overlay);
 
-    // Events
+    // Core events
     document.getElementById('ai-chat-close').addEventListener('click', closeModal);
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) closeModal();
-    });
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
     document.getElementById('ai-chat-send').addEventListener('click', sendMessage);
     document.getElementById('ai-chat-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     });
-    // Auto-resize textarea
     document.getElementById('ai-chat-input').addEventListener('input', function () {
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
-    // Suggestion chips
     document.getElementById('ai-chat-suggestions').addEventListener('click', function (e) {
       var btn = e.target.closest('.ai-suggestion');
-      if (!btn) return;
-      sendMessageText(btn.textContent.trim());
+      if (btn) sendMessageText(btn.textContent.trim());
     });
-    // Close on Escape
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeModal();
-    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+    // Voice input
+    if (hasSpeechInput) {
+      document.getElementById('ai-chat-mic').addEventListener('click', toggleListening);
+    }
+
+    // Voice output toggle
+    if (hasSpeechOutput) {
+      document.getElementById('ai-chat-voice-toggle').addEventListener('click', toggleVoice);
+    }
   }
 
-  // ---- OPEN / CLOSE ----
+  // ── Open / Close ──────────────────────────────────────────────────────────────
   function openModal() {
     var overlay = document.getElementById('ai-chat-overlay');
     if (!overlay) return;
@@ -120,13 +164,15 @@
   }
 
   function closeModal() {
+    stopListening();
+    stopSpeaking();
     var overlay = document.getElementById('ai-chat-overlay');
     if (!overlay) return;
     overlay.classList.remove('ai-chat-open');
     document.body.style.overflow = '';
   }
 
-  // ---- SEND ----
+  // ── Send ──────────────────────────────────────────────────────────────────────
   function sendMessage() {
     var input = document.getElementById('ai-chat-input');
     var text = (input.value || '').trim();
@@ -138,26 +184,24 @@
 
   function sendMessageText(text) {
     if (!text || isLoading) return;
+    stopSpeaking();
 
-    // Hide suggestion chips after first user message
     var suggestions = document.getElementById('ai-chat-suggestions');
     if (suggestions) suggestions.style.display = 'none';
 
-    // Show user message
     appendMessage('user', text);
     messages.push({ role: 'user', content: text });
 
-    // Show typing indicator
     var typingId = 'typing-' + Date.now();
     appendTyping(typingId);
     isLoading = true;
     setInputEnabled(false);
+    setStatus('');
 
-    // Call worker
     fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: messages }),
+      body: JSON.stringify({ messages: messages, sessionId: sessionId }),
     })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -167,12 +211,13 @@
         removeTyping(typingId);
         var reply = data.reply || 'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
         messages.push({ role: 'assistant', content: reply });
-        appendMessageAnimated('bot', reply);
+        appendMessageAnimated('bot', reply, function () {
+          if (voiceEnabled) speakText(reply);
+        });
       })
       .catch(function () {
         removeTyping(typingId);
-        var err = 'Sorry, something went wrong. Please try again or contact us directly at info@dataaischool.com.';
-        appendMessage('bot', err);
+        appendMessage('bot', 'Sorry, something went wrong. Please try again or contact us at info@dataaischool.com.');
       })
       .finally(function () {
         isLoading = false;
@@ -182,7 +227,132 @@
       });
   }
 
-  // ---- UI HELPERS ----
+  // ── Voice Input (SpeechRecognition) ──────────────────────────────────────────
+  function toggleListening() {
+    if (isListening) { stopListening(); return; }
+    startListening();
+  }
+
+  function startListening() {
+    if (!SpeechRecognition || isLoading) return;
+    stopSpeaking();
+
+    recognition = new SpeechRecognition();
+    recognition.lang        = 'en-GB';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function () {
+      isListening = true;
+      setMicState(true);
+      setStatus('Listening...');
+    };
+
+    recognition.onresult = function (e) {
+      var transcript = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        transcript += e.results[i][0].transcript;
+      }
+      var input = document.getElementById('ai-chat-input');
+      if (input) {
+        input.value = transcript;
+        input.style.height = 'auto';
+        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+      }
+      if (e.results[e.results.length - 1].isFinal) {
+        setStatus('');
+        stopListening();
+        sendMessageText(transcript.trim());
+      }
+    };
+
+    recognition.onerror = function (e) {
+      setStatus(e.error === 'not-allowed'
+        ? 'Microphone access denied. Please allow microphone in your browser settings.'
+        : 'Voice input error. Please try typing instead.');
+      stopListening();
+    };
+
+    recognition.onend = function () {
+      isListening = false;
+      setMicState(false);
+    };
+
+    try {
+      recognition.start();
+    } catch (e) {
+      setStatus('Could not start voice input. Please type instead.');
+    }
+  }
+
+  function stopListening() {
+    if (recognition) {
+      try { recognition.stop(); } catch (e) {}
+      recognition = null;
+    }
+    isListening = false;
+    setMicState(false);
+    setStatus('');
+  }
+
+  function setMicState(active) {
+    var btn = document.getElementById('ai-chat-mic');
+    if (!btn) return;
+    if (active) {
+      btn.classList.add('ai-mic-active');
+      btn.setAttribute('aria-label', 'Stop voice input');
+    } else {
+      btn.classList.remove('ai-mic-active');
+      btn.setAttribute('aria-label', 'Start voice input');
+    }
+  }
+
+  // ── Voice Output (SpeechSynthesis) ────────────────────────────────────────────
+  function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    var btn = document.getElementById('ai-chat-voice-toggle');
+    if (btn) {
+      btn.classList.toggle('ai-voice-on', voiceEnabled);
+      btn.setAttribute('aria-label', voiceEnabled ? 'Voice replies on (click to turn off)' : 'Toggle voice replies');
+      btn.title = voiceEnabled ? 'Voice replies on' : 'Voice replies off';
+    }
+    setStatus(voiceEnabled ? 'Voice replies on.' : 'Voice replies off.');
+    if (!voiceEnabled) stopSpeaking();
+  }
+
+  function speakText(text) {
+    if (!synth) return;
+    stopSpeaking();
+    // Strip markdown-style formatting for cleaner speech
+    var clean = text.replace(/[*_`#]/g, '').trim();
+    var utt = new SpeechSynthesisUtterance(clean);
+    utt.lang  = 'en-GB';
+    utt.rate  = 1.0;
+    utt.pitch = 1.0;
+    // Prefer a British English voice if available
+    var voices = synth.getVoices();
+    var preferred = voices.find(function (v) {
+      return v.lang === 'en-GB' && v.localService;
+    }) || voices.find(function (v) {
+      return v.lang === 'en-GB';
+    }) || voices.find(function (v) {
+      return v.lang.startsWith('en');
+    });
+    if (preferred) utt.voice = preferred;
+    utt.onstart = function () { isSpeaking = true; };
+    utt.onend   = function () { isSpeaking = false; };
+    utt.onerror = function () { isSpeaking = false; };
+    synth.speak(utt);
+  }
+
+  function stopSpeaking() {
+    if (synth && isSpeaking) {
+      synth.cancel();
+      isSpeaking = false;
+    }
+  }
+
+  // ── UI helpers ────────────────────────────────────────────────────────────────
   function appendMessage(role, text) {
     var messagesEl = document.getElementById('ai-chat-messages');
     var div = document.createElement('div');
@@ -195,7 +365,7 @@
     scrollToBottom();
   }
 
-  function appendMessageAnimated(role, text) {
+  function appendMessageAnimated(role, text, onComplete) {
     var messagesEl = document.getElementById('ai-chat-messages');
     var div = document.createElement('div');
     div.className = 'ai-msg ai-msg-' + role + ' ai-msg-new';
@@ -205,7 +375,6 @@
     messagesEl.appendChild(div);
     scrollToBottom();
 
-    // Typewriter effect
     var i = 0;
     var speed = Math.max(8, Math.min(20, Math.round(3000 / text.length)));
     function type() {
@@ -214,6 +383,8 @@
         i++;
         scrollToBottom();
         setTimeout(type, speed);
+      } else if (typeof onComplete === 'function') {
+        onComplete();
       }
     }
     type();
@@ -241,12 +412,20 @@
 
   function setInputEnabled(enabled) {
     var input = document.getElementById('ai-chat-input');
-    var send = document.getElementById('ai-chat-send');
+    var send  = document.getElementById('ai-chat-send');
+    var mic   = document.getElementById('ai-chat-mic');
     if (input) input.disabled = !enabled;
-    if (send) send.disabled = !enabled;
+    if (send)  send.disabled  = !enabled;
+    if (mic)   mic.disabled   = !enabled;
+  }
+
+  function setStatus(msg) {
+    var el = document.getElementById('ai-chat-status');
+    if (el) el.textContent = msg;
   }
 
   function escHtml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+
 })();
