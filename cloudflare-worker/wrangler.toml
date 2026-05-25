@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 KNOWLEDGE_BASE_URL = "https://raw.githubusercontent.com/alifrazkhan92/dataaischoolwebsite/main/ai-knowledge-base.txt"
 ALLOWED_ORIGIN     = "https://www.dataaischool.com"
 # Change this to any ElevenLabs voice ID you prefer (see elevenlabs.io/voice-library)
-ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"
+ELEVENLABS_VOICE_ID = "Xb7hH8MSUJpSbSDYk0k2"  # Alice — British female, works on free plan
 
 # Secrets (set via wrangler secret put — never stored here):
 #   ANTHROPIC_API_KEY    — Anthropic API key
