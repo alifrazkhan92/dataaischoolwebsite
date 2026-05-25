@@ -10,7 +10,7 @@
   'use strict';
 
   // ---- CONFIGURATION ----
-  var WORKER_URL = 'https://dais-chat.REPLACE_WITH_YOUR_SUBDOMAIN.workers.dev';
+  var WORKER_URL = 'https://dais-chat.alifrazkhan92.workers.dev';
   var SUGGESTED_QUESTIONS = [
     'What qualifications do you offer?',
     'How do I apply?',
