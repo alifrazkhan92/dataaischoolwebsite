@@ -215,9 +215,13 @@
         removeTyping(typingId);
         var reply = data.reply || 'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
         messages.push({ role: 'assistant', content: reply });
-        appendMessageAnimated('bot', reply, function () {
-          if (voiceEnabled) speakText(reply);
-        });
+        if (voiceEnabled && synth) {
+          // Show text instantly so voice and text are in sync
+          appendMessage('bot', reply);
+          speakText(reply);
+        } else {
+          appendMessageAnimated('bot', reply);
+        }
       })
       .catch(function () {
         removeTyping(typingId);
@@ -326,33 +330,46 @@
 
   function pickVoice(utt) {
     var voices = synth.getVoices();
-    var preferred = voices.find(function (v) { return v.lang === 'en-GB' && v.localService; })
-      || voices.find(function (v) { return v.lang === 'en-GB'; })
-      || voices.find(function (v) { return v.lang.startsWith('en'); });
+    // Priority: best named voices first (high quality), then language fallbacks
+    var preferred =
+      voices.find(function (v) { return v.name === 'Daniel'; })               ||  // macOS premium British male
+      voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
+      voices.find(function (v) { return v.name === 'Google UK English Female'; }) ||
+      voices.find(function (v) { return v.name === 'Karen'; })                ||  // macOS Australian (clear)
+      voices.find(function (v) { return v.lang === 'en-GB' && !v.name.toLowerCase().includes('compact'); }) ||
+      voices.find(function (v) { return v.lang === 'en-GB'; })                ||
+      voices.find(function (v) { return v.name === 'Samantha'; })             ||  // macOS US English
+      voices.find(function (v) { return v.lang.startsWith('en') && !v.name.toLowerCase().includes('compact'); }) ||
+      voices.find(function (v) { return v.lang.startsWith('en'); });
     if (preferred) utt.voice = preferred;
   }
 
   function speakText(text) {
     if (!synth) return;
-    stopSpeaking();
-    var clean = text.replace(/[*_`#]/g, '').trim();
-    var utt = new SpeechSynthesisUtterance(clean);
-    utt.lang  = 'en-GB';
-    utt.rate  = 1.0;
-    utt.pitch = 1.0;
-    utt.onstart = function () { isSpeaking = true; };
-    utt.onend   = function () { isSpeaking = false; };
-    utt.onerror = function () { isSpeaking = false; };
+    synth.cancel(); // clear queue before speaking
+    var clean = text.replace(/[*_`#]/g, '').replace(/\s+/g, ' ').trim();
+    if (!clean) return;
 
-    // Voices load asynchronously — wait for them if not ready yet
-    if (synth.getVoices().length > 0) {
+    function doSpeak() {
+      var utt   = new SpeechSynthesisUtterance(clean);
+      utt.lang  = 'en-GB';
+      utt.rate  = 0.92;   // slightly slower = clearer and more natural
+      utt.pitch = 1.05;   // very slightly warmer
+      utt.volume = 1.0;
       pickVoice(utt);
-      synth.speak(utt);
+      utt.onstart = function () { isSpeaking = true; };
+      utt.onend   = function () { isSpeaking = false; };
+      utt.onerror = function () { isSpeaking = false; };
+      // Small timeout — Chrome requires a brief gap after cancel() before speak()
+      setTimeout(function () { synth.speak(utt); }, 50);
+    }
+
+    if (synth.getVoices().length > 0) {
+      doSpeak();
     } else {
       synth.addEventListener('voiceschanged', function handler() {
         synth.removeEventListener('voiceschanged', handler);
-        pickVoice(utt);
-        synth.speak(utt);
+        doSpeak();
       });
     }
   }
