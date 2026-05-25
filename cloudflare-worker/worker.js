@@ -1,25 +1,29 @@
 /**
  * DAIS AI Chat - Cloudflare Worker
  *
- * Handles:
- *   POST /          — chat endpoint (AI response + D1 logging)
- *   GET  /?action=logs&key=ADMIN_KEY  — secure admin log viewer
+ * POST /          — chat endpoint (AI response + D1 logging)
+ * POST /tts       — text-to-speech via ElevenLabs
+ * POST /stt       — speech-to-text via ElevenLabs
+ * GET  /?action=logs&key=ADMIN_KEY  — admin log viewer
  *
  * Secrets (set via wrangler secret put):
- *   ANTHROPIC_API_KEY  — Anthropic API key
- *   ADMIN_KEY          — password to access /logs admin page
+ *   ANTHROPIC_API_KEY
+ *   ELEVENLABS_API_KEY
+ *   ADMIN_KEY
  *
  * Env vars (wrangler.toml [vars]):
- *   KNOWLEDGE_BASE_URL — raw GitHub URL to ai-knowledge-base.txt
- *   ALLOWED_ORIGIN     — your site origin
+ *   KNOWLEDGE_BASE_URL    — raw GitHub URL to ai-knowledge-base.txt
+ *   ALLOWED_ORIGIN        — your site origin
+ *   ELEVENLABS_VOICE_ID   — ElevenLabs voice ID (optional, default: Rachel)
  *
- * D1 binding:
- *   dais_chat_logs     — Cloudflare D1 database
+ * D1 binding: dais_chat_logs
  */
 
-const MODEL      = 'claude-haiku-4-5';
-const MAX_TOKENS = 800;
+const MODEL           = 'claude-haiku-4-5';
+const MAX_TOKENS      = 800;
 const KB_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+const DEFAULT_VOICE   = '21m00Tcm4TlvDq8ikWAM'; // ElevenLabs "Rachel" — warm professional female
+const EL_TTS_MODEL    = 'eleven_turbo_v2_5';     // Fast, high quality, low cost
 
 let cachedKB       = null;
 let cacheTimestamp = 0;
@@ -67,17 +71,26 @@ function corsHeaders(origin, env) {
   const allowed = env.ALLOWED_ORIGIN || 'https://www.dataaischool.com';
   const isAllowed = origin === allowed;
   return {
-    'Access-Control-Allow-Origin': isAllowed ? origin : allowed,
+    'Access-Control-Allow-Origin':  isAllowed ? origin : allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Max-Age': '86400',
+    'Access-Control-Max-Age':       '86400',
   };
+}
+
+// ── Shared error helper ───────────────────────────────────────────────────────
+
+function jsonError(status, message, headers) {
+  return new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
 }
 
 // ── D1 logging ────────────────────────────────────────────────────────────────
 
 async function logConversation(env, sessionId, turn, visitorMsg, aiReply) {
-  if (!env.dais_chat_logs) return; // D1 not bound (local dev)
+  if (!env.dais_chat_logs) return;
   try {
     const now = new Date().toISOString();
     await env.dais_chat_logs.prepare(
@@ -86,8 +99,196 @@ async function logConversation(env, sessionId, turn, visitorMsg, aiReply) {
     ).bind(sessionId, now, visitorMsg, aiReply, turn).run();
   } catch (e) {
     console.error('D1 log error:', e.message);
-    // Never fail a chat response due to a logging error
   }
+}
+
+// ── Chat handler ──────────────────────────────────────────────────────────────
+
+async function handleChat(request, env, ctx, headers) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError(400, 'Invalid JSON', headers);
+  }
+
+  const { messages, sessionId } = body;
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return jsonError(400, 'messages array required', headers);
+  }
+
+  const cleanMessages = messages.slice(-10).map(m => ({
+    role:    m.role === 'assistant' ? 'assistant' : 'user',
+    content: String(m.content).slice(0, 2000),
+  }));
+
+  const safeSessionId = typeof sessionId === 'string'
+    ? sessionId.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 64)
+    : 'unknown';
+
+  const kb           = await getKnowledgeBase(env);
+  const systemPrompt = buildSystemPrompt(kb);
+
+  let anthropicRes;
+  try {
+    anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'x-api-key':         env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-beta':    'prompt-caching-2024-07-31',
+      },
+      body: JSON.stringify({
+        model:      MODEL,
+        max_tokens: MAX_TOKENS,
+        system: [
+          {
+            type:          'text',
+            text:          systemPrompt,
+            cache_control: { type: 'ephemeral' },
+          },
+        ],
+        messages: cleanMessages,
+      }),
+    });
+  } catch (e) {
+    return jsonError(502, 'Failed to reach AI service. Please try again.', headers);
+  }
+
+  if (!anthropicRes.ok) {
+    const errText = await anthropicRes.text();
+    console.error('Anthropic error:', errText);
+    return jsonError(502, 'AI service error. Please try again.', headers);
+  }
+
+  const data  = await anthropicRes.json();
+  const reply = data.content?.[0]?.text ||
+    'Sorry, I could not generate a response. Please contact us at info@dataaischool.com.';
+
+  const turn = Math.ceil(cleanMessages.length / 2);
+  const lastUserMsg = cleanMessages.filter(m => m.role === 'user').pop()?.content || '';
+  ctx.waitUntil(logConversation(env, safeSessionId, turn, lastUserMsg, reply));
+
+  return new Response(JSON.stringify({ reply }), {
+    status: 200,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
+}
+
+// ── ElevenLabs TTS ────────────────────────────────────────────────────────────
+
+async function handleTTS(request, env, headers) {
+  if (!env.ELEVENLABS_API_KEY) {
+    return jsonError(503, 'TTS not configured', headers);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonError(400, 'Invalid JSON', headers);
+  }
+
+  const text = String(body.text || '').slice(0, 2000).trim();
+  if (!text) return jsonError(400, 'text required', headers);
+
+  const voiceId = env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE;
+
+  let elRes;
+  try {
+    elRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key':   env.ELEVENLABS_API_KEY,
+        'Content-Type': 'application/json',
+        'Accept':       'audio/mpeg',
+      },
+      body: JSON.stringify({
+        text,
+        model_id: EL_TTS_MODEL,
+        voice_settings: {
+          stability:        0.5,
+          similarity_boost: 0.75,
+          style:            0,
+          use_speaker_boost: true,
+        },
+      }),
+    });
+  } catch (e) {
+    console.error('ElevenLabs TTS fetch error:', e.message);
+    return jsonError(502, 'TTS service unreachable', headers);
+  }
+
+  if (!elRes.ok) {
+    const errText = await elRes.text();
+    console.error('ElevenLabs TTS error:', elRes.status, errText);
+    return jsonError(502, 'TTS generation failed', headers);
+  }
+
+  // Stream the audio directly back to the browser
+  return new Response(elRes.body, {
+    status: 200,
+    headers: {
+      ...headers,
+      'Content-Type':  'audio/mpeg',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+
+// ── ElevenLabs STT ────────────────────────────────────────────────────────────
+
+async function handleSTT(request, env, headers) {
+  if (!env.ELEVENLABS_API_KEY) {
+    return jsonError(503, 'STT not configured', headers);
+  }
+
+  const mimeType  = request.headers.get('Content-Type') || 'audio/webm';
+  const extension = mimeType.includes('mp4') ? 'm4a'
+                  : mimeType.includes('ogg') ? 'ogg'
+                  : 'webm';
+
+  let audioData;
+  try {
+    audioData = await request.arrayBuffer();
+  } catch {
+    return jsonError(400, 'Could not read audio', headers);
+  }
+
+  if (!audioData.byteLength) return jsonError(400, 'Empty audio', headers);
+
+  const formData = new FormData();
+  formData.append(
+    'file',
+    new File([audioData], `recording.${extension}`, { type: mimeType }),
+  );
+  formData.append('model_id', 'scribe_v1');
+
+  let elRes;
+  try {
+    elRes = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+      method:  'POST',
+      headers: { 'xi-api-key': env.ELEVENLABS_API_KEY },
+      body:    formData,
+    });
+  } catch (e) {
+    console.error('ElevenLabs STT fetch error:', e.message);
+    return jsonError(502, 'STT service unreachable', headers);
+  }
+
+  if (!elRes.ok) {
+    const errText = await elRes.text();
+    console.error('ElevenLabs STT error:', elRes.status, errText);
+    return jsonError(502, 'STT transcription failed', headers);
+  }
+
+  const data = await elRes.json();
+  return new Response(JSON.stringify({ text: data.text || '' }), {
+    status: 200,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
 }
 
 // ── Admin log viewer ──────────────────────────────────────────────────────────
@@ -99,7 +300,6 @@ async function handleAdminLogs(request, env) {
   const limit  = 50;
   const offset = (page - 1) * limit;
 
-  // Constant-time comparison to prevent timing attacks
   if (!env.ADMIN_KEY || !timingSafeEqual(key, env.ADMIN_KEY)) {
     return new Response('Unauthorised', { status: 401 });
   }
@@ -185,11 +385,12 @@ function timingSafeEqual(a, b) {
 
 export default {
   async fetch(request, env, ctx) {
-    const url    = new URL(request.url);
-    const origin = request.headers.get('Origin') || '';
+    const url     = new URL(request.url);
+    const origin  = request.headers.get('Origin') || '';
     const headers = corsHeaders(origin, env);
+    const path    = url.pathname.replace(/\/+$/, '') || '/';
 
-    // Admin log viewer (GET only, no CORS needed)
+    // Admin log viewer (GET only, no CORS)
     if (request.method === 'GET' && url.searchParams.get('action') === 'logs') {
       return handleAdminLogs(request, env);
     }
@@ -203,91 +404,11 @@ export default {
       return new Response('Method not allowed', { status: 405, headers });
     }
 
-    // Parse body
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-        status: 400,
-        headers: { ...headers, 'Content-Type': 'application/json' },
-      });
-    }
+    // Route POST requests
+    if (path === '/tts') return handleTTS(request, env, headers);
+    if (path === '/stt') return handleSTT(request, env, headers);
 
-    const { messages, sessionId } = body;
-
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return new Response(JSON.stringify({ error: 'messages array required' }), {
-        status: 400,
-        headers: { ...headers, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Sanitise
-    const cleanMessages = messages.slice(-10).map(m => ({
-      role:    m.role === 'assistant' ? 'assistant' : 'user',
-      content: String(m.content).slice(0, 2000),
-    }));
-
-    const safeSessionId = typeof sessionId === 'string'
-      ? sessionId.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 64)
-      : 'unknown';
-
-    // Build prompt and call Anthropic
-    const kb           = await getKnowledgeBase(env);
-    const systemPrompt = buildSystemPrompt(kb);
-
-    let anthropicRes;
-    try {
-      anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type':      'application/json',
-          'x-api-key':         env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-beta':    'prompt-caching-2024-07-31',
-        },
-        body: JSON.stringify({
-          model:      MODEL,
-          max_tokens: MAX_TOKENS,
-          system: [
-            {
-              type:          'text',
-              text:          systemPrompt,
-              cache_control: { type: 'ephemeral' },
-            },
-          ],
-          messages: cleanMessages,
-        }),
-      });
-    } catch (e) {
-      return new Response(JSON.stringify({ error: 'Failed to reach AI service. Please try again.' }), {
-        status: 502,
-        headers: { ...headers, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (!anthropicRes.ok) {
-      const errText = await anthropicRes.text();
-      console.error('Anthropic error:', errText);
-      return new Response(JSON.stringify({ error: 'AI service error. Please try again.' }), {
-        status: 502,
-        headers: { ...headers, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const data  = await anthropicRes.json();
-    const reply = data.content?.[0]?.text ||
-      'Sorry, I could not generate a response. Please contact us at info@dataaischool.com.';
-
-    // Log to D1 (fire-and-forget — never delays the response)
-    const turn = Math.ceil(cleanMessages.length / 2);
-    const lastUserMsg = cleanMessages.filter(m => m.role === 'user').pop()?.content || '';
-    ctx.waitUntil(logConversation(env, safeSessionId, turn, lastUserMsg, reply));
-
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: { ...headers, 'Content-Type': 'application/json' },
-    });
+    // Default: chat
+    return handleChat(request, env, ctx, headers);
   },
 };

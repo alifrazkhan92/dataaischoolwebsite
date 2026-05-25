@@ -1,7 +1,7 @@
 /**
  * DAIS AI Chat Widget
- * Features: text chat, voice input (Web Speech API), voice output (SpeechSynthesis)
- * Backend: Cloudflare Worker with D1 conversation logging
+ * Features: text chat, voice input (MediaRecorder), voice output (ElevenLabs TTS)
+ * Backend: Cloudflare Worker with D1 conversation logging, ElevenLabs TTS+STT
  */
 
 (function () {
@@ -19,24 +19,24 @@
   ];
 
   // ── State ────────────────────────────────────────────────────────────────────
-  var messages   = [];
-  var isLoading  = false;
-  var sessionId  = generateSessionId();
-  var isSpeaking = false;
-  var isListening = false;
+  var messages      = [];
+  var isLoading     = false;
+  var sessionId     = generateSessionId();
+  var voiceEnabled  = true;
+  var currentAudio  = null;   // current Audio element for TTS playback
+  var mediaRecorder = null;   // MediaRecorder for mic input
+  var audioChunks   = [];     // recorded audio chunks
+  var isRecording   = false;
+  var audioUnlocked = false;  // tracks whether iOS audio has been unlocked
 
-  // Speech APIs
-  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
-  var recognition       = null;
-  var synth             = window.speechSynthesis || null;
-  var voiceEnabled      = true;
+  // Check MediaRecorder support (works on iOS Safari 14.5+, all modern browsers)
+  var hasMediaRecorder = (
+    typeof MediaRecorder !== 'undefined' &&
+    typeof navigator.mediaDevices !== 'undefined' &&
+    typeof navigator.mediaDevices.getUserMedia === 'function'
+  );
 
-  // Detect iOS — SpeechRecognition is unsupported; SpeechSynthesis needs tap-to-play
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isIOS) SpeechRecognition = null; // mic input not available on iOS Safari
-
-  // ── Session ID (anonymous, not tied to any personal data) ────────────────────
+  // ── Session ID (anonymous) ────────────────────────────────────────────────────
   function generateSessionId() {
     try {
       var arr = new Uint8Array(16);
@@ -63,24 +63,20 @@
 
   // ── Modal ─────────────────────────────────────────────────────────────────────
   function buildModal() {
-    var hasSpeechInput  = !!SpeechRecognition;
-    var hasSpeechOutput = !!synth;
-
-    var micBtn = hasSpeechInput
-      ? '<button type="button" id="ai-chat-mic" aria-label="Start voice input" title="Speak your question">' +
+    var micBtn = hasMediaRecorder
+      ? '<button type="button" id="ai-chat-mic" aria-label="Hold to record voice message" title="Tap to record">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
         '<rect x="9" y="2" width="6" height="11" rx="3"/>' +
         '<path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/>' +
         '</svg></button>'
       : '';
 
-    var voiceToggle = hasSpeechOutput
-      ? '<button type="button" id="ai-chat-voice-toggle" aria-label="Toggle voice reply" title="Toggle voice replies">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-        '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>' +
-        '<path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>' +
-        '</svg></button>'
-      : '';
+    var voiceToggle =
+      '<button type="button" id="ai-chat-voice-toggle" aria-label="Voice replies on (click to turn off)" title="Voice replies on">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+      '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>' +
+      '<path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>' +
+      '</svg></button>';
 
     var overlay = document.createElement('div');
     overlay.id = 'ai-chat-overlay';
@@ -145,31 +141,36 @@
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-    // Voice input
-    if (hasSpeechInput) {
-      document.getElementById('ai-chat-mic').addEventListener('click', toggleListening);
-    }
+    // Voice toggle — start ON
+    var vBtn = document.getElementById('ai-chat-voice-toggle');
+    vBtn.classList.add('ai-voice-on');
+    vBtn.addEventListener('click', toggleVoice);
 
-    // Voice output toggle — set initial state to ON
-    if (hasSpeechOutput) {
-      var vBtn = document.getElementById('ai-chat-voice-toggle');
-      vBtn.classList.add('ai-voice-on');
-      vBtn.setAttribute('aria-label', 'Voice replies on (click to turn off)');
-      vBtn.title = 'Voice replies on';
-      vBtn.addEventListener('click', toggleVoice);
+    // Mic button
+    if (hasMediaRecorder) {
+      document.getElementById('ai-chat-mic').addEventListener('click', toggleMic);
     }
   }
 
   // ── Open / Close ──────────────────────────────────────────────────────────────
+
+  // Play a completely silent audio file to unlock iOS audio autoplay.
+  // Must be called synchronously inside a user gesture handler.
   function unlockAudio() {
-    // Pre-unlock iOS audio context on first user gesture
-    if (synth && voiceEnabled) {
-      try {
-        var u = new SpeechSynthesisUtterance('');
-        u.volume = 0;
-        synth.speak(u);
-      } catch (e) {}
-    }
+    if (audioUnlocked) return;
+    try {
+      // Minimal valid silent MP3 (44 bytes) — enough to satisfy iOS
+      var silent = new Audio(
+        'data:audio/mpeg;base64,SUQzBAAAAAAA' +
+        'AFRTQ08AAAAPAAADTGF2ZjU4LjI5LjEwMAD/+0DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' +
+        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+      );
+      silent.volume = 0;
+      var p = silent.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () { audioUnlocked = true; }).catch(function () {});
+      }
+    } catch (e) {}
   }
 
   function openModal() {
@@ -177,6 +178,7 @@
     if (!overlay) return;
     overlay.classList.add('ai-chat-open');
     document.body.style.overflow = 'hidden';
+    // Unlock iOS audio on modal open (direct user gesture)
     unlockAudio();
     setTimeout(function () {
       var input = document.getElementById('ai-chat-input');
@@ -185,8 +187,8 @@
   }
 
   function closeModal() {
-    stopListening();
-    stopSpeaking();
+    stopRecording();
+    stopAudio();
     var overlay = document.getElementById('ai-chat-overlay');
     if (!overlay) return;
     overlay.classList.remove('ai-chat-open');
@@ -205,17 +207,10 @@
 
   function sendMessageText(text) {
     if (!text || isLoading) return;
-    stopSpeaking();
+    stopAudio();
 
-    // iOS Safari requires speechSynthesis to be triggered inside a user gesture.
-    // Speak an empty utterance NOW (we are still inside the tap/click handler)
-    // to unlock the audio context for the programmatic call that comes after fetch().
-    if (synth && voiceEnabled) {
-      try {
-        var unlock = new SpeechSynthesisUtterance('');
-        synth.speak(unlock);
-      } catch (e) {}
-    }
+    // Unlock iOS audio synchronously (we are still inside the tap handler)
+    unlockAudio();
 
     var suggestions = document.getElementById('ai-chat-suggestions');
     if (suggestions) suggestions.style.display = 'none';
@@ -240,27 +235,25 @@
       })
       .then(function (data) {
         removeTyping(typingId);
-        var raw   = data.reply || 'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
-        // Strip any markdown the model sends despite instructions
+        var raw = data.reply ||
+          'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
+
+        // Strip any markdown the model may send despite the system prompt
         var reply = raw
-          .replace(/#{1,6}\s*/g, '')          // headings: # ## ###
-          .replace(/\*\*(.+?)\*\*/g, '$1')    // bold: **text**
-          .replace(/\*(.+?)\*/g, '$1')        // italic: *text*
-          .replace(/`(.+?)`/g, '$1')          // code: `text`
-          .replace(/^\s*[-*+]\s+/gm, '')      // bullet points
-          .replace(/^\s*\d+\.\s+/gm, '')      // numbered lists
-          .replace(/\n{3,}/g, '\n\n')         // excess blank lines
+          .replace(/#{1,6}\s*/g, '')
+          .replace(/\*\*(.+?)\*\*/g, '$1')
+          .replace(/\*(.+?)\*/g, '$1')
+          .replace(/`(.+?)`/g, '$1')
+          .replace(/^\s*[-*+]\s+/gm, '')
+          .replace(/^\s*\d+\.\s+/gm, '')
+          .replace(/\n{3,}/g, '\n\n')
           .trim();
+
         messages.push({ role: 'assistant', content: reply });
-        if (voiceEnabled && synth && !isIOS) {
-          // Desktop: auto-play immediately
-          appendMessage('bot', reply);
-          speakText(reply);
-        } else if (voiceEnabled && synth && isIOS) {
-          // iOS: show message + tap-to-play button (iOS blocks async audio)
-          appendBotMessageWithPlayBtn(reply);
-        } else {
-          appendMessageAnimated('bot', reply);
+        appendMessage('bot', reply);
+
+        if (voiceEnabled) {
+          playElevenLabs(reply);
         }
       })
       .catch(function () {
@@ -275,72 +268,172 @@
       });
   }
 
-  // ── Voice Input (SpeechRecognition) ──────────────────────────────────────────
-  function toggleListening() {
-    if (isListening) { stopListening(); return; }
-    startListening();
+  // ── ElevenLabs TTS ────────────────────────────────────────────────────────────
+
+  function playElevenLabs(text) {
+    stopAudio();
+    if (!text.trim()) return;
+
+    fetch(WORKER_URL + '/tts', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ text: text }),
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('TTS ' + res.status);
+        return res.blob();
+      })
+      .then(function (blob) {
+        var url = URL.createObjectURL(blob);
+        var audio = new Audio(url);
+        currentAudio = audio;
+        audio.onended = function () {
+          URL.revokeObjectURL(url);
+          if (currentAudio === audio) currentAudio = null;
+        };
+        audio.onerror = function () {
+          URL.revokeObjectURL(url);
+          if (currentAudio === audio) currentAudio = null;
+        };
+        return audio.play().catch(function (e) {
+          // Autoplay was blocked (older iOS / strict browser). Message is still visible.
+          console.warn('Audio autoplay blocked:', e.message);
+          URL.revokeObjectURL(url);
+          currentAudio = null;
+        });
+      })
+      .catch(function (e) {
+        console.warn('ElevenLabs TTS failed:', e.message);
+      });
   }
 
-  function startListening() {
-    if (!SpeechRecognition || isLoading) return;
-    stopSpeaking();
-
-    recognition = new SpeechRecognition();
-    recognition.lang        = 'en-GB';
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = function () {
-      isListening = true;
-      setMicState(true);
-      setStatus('Listening...');
-    };
-
-    recognition.onresult = function (e) {
-      var transcript = '';
-      for (var i = e.resultIndex; i < e.results.length; i++) {
-        transcript += e.results[i][0].transcript;
-      }
-      var input = document.getElementById('ai-chat-input');
-      if (input) {
-        input.value = transcript;
-        input.style.height = 'auto';
-        input.style.height = Math.min(input.scrollHeight, 120) + 'px';
-      }
-      if (e.results[e.results.length - 1].isFinal) {
-        setStatus('');
-        stopListening();
-        sendMessageText(transcript.trim());
-      }
-    };
-
-    recognition.onerror = function (e) {
-      setStatus(e.error === 'not-allowed'
-        ? 'Microphone access denied. Please allow microphone in your browser settings.'
-        : 'Voice input error. Please try typing instead.');
-      stopListening();
-    };
-
-    recognition.onend = function () {
-      isListening = false;
-      setMicState(false);
-    };
-
-    try {
-      recognition.start();
-    } catch (e) {
-      setStatus('Could not start voice input. Please type instead.');
+  function stopAudio() {
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch (e) {}
+      currentAudio = null;
     }
   }
 
-  function stopListening() {
-    if (recognition) {
-      try { recognition.stop(); } catch (e) {}
-      recognition = null;
+  // ── Voice toggle ──────────────────────────────────────────────────────────────
+
+  function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    var btn = document.getElementById('ai-chat-voice-toggle');
+    if (btn) {
+      btn.classList.toggle('ai-voice-on', voiceEnabled);
+      btn.setAttribute('aria-label',
+        voiceEnabled ? 'Voice replies on (click to turn off)' : 'Toggle voice replies');
+      btn.title = voiceEnabled ? 'Voice replies on' : 'Voice replies off';
     }
-    isListening = false;
+    setStatus(voiceEnabled ? 'Voice on.' : 'Voice off.');
+    if (!voiceEnabled) stopAudio();
+  }
+
+  // ── ElevenLabs STT (MediaRecorder) ────────────────────────────────────────────
+
+  function toggleMic() {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  }
+
+  function startRecording() {
+    if (!hasMediaRecorder || isLoading) return;
+    stopAudio();
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function (stream) {
+        // Pick the best supported MIME type
+        var mimeType = '';
+        var types = [
+          'audio/webm;codecs=opus',
+          'audio/webm',
+          'audio/mp4',
+          'audio/ogg;codecs=opus',
+        ];
+        for (var i = 0; i < types.length; i++) {
+          if (MediaRecorder.isTypeSupported(types[i])) {
+            mimeType = types[i];
+            break;
+          }
+        }
+
+        var options = mimeType ? { mimeType: mimeType } : {};
+        mediaRecorder = new MediaRecorder(stream, options);
+        audioChunks   = [];
+
+        mediaRecorder.ondataavailable = function (e) {
+          if (e.data && e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = function () {
+          // Stop all mic tracks
+          stream.getTracks().forEach(function (t) { t.stop(); });
+          sendAudioToSTT();
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+        setMicState(true);
+        setStatus('Recording... tap mic to send.');
+      })
+      .catch(function (err) {
+        console.warn('Mic error:', err);
+        setStatus(
+          err.name === 'NotAllowedError'
+            ? 'Microphone access denied. Please allow mic access in your browser settings.'
+            : 'Could not access microphone. Please type instead.'
+        );
+      });
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      try { mediaRecorder.stop(); } catch (e) {}
+    }
+    isRecording = false;
     setMicState(false);
     setStatus('');
+  }
+
+  function sendAudioToSTT() {
+    if (!audioChunks.length) return;
+
+    var mimeType = (audioChunks[0] && audioChunks[0].type) || 'audio/webm';
+    var blob = new Blob(audioChunks, { type: mimeType });
+    audioChunks = [];
+
+    setStatus('Transcribing...');
+    setInputEnabled(false);
+
+    fetch(WORKER_URL + '/stt', {
+      method:  'POST',
+      headers: { 'Content-Type': mimeType },
+      body:    blob,
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('STT ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        setStatus('');
+        setInputEnabled(true);
+        var transcript = (data.text || '').trim();
+        if (transcript) {
+          sendMessageText(transcript);
+        } else {
+          setStatus('Could not hear anything. Please try again.');
+          setTimeout(function () { setStatus(''); }, 3000);
+        }
+      })
+      .catch(function (e) {
+        console.warn('STT failed:', e);
+        setStatus('');
+        setInputEnabled(true);
+        appendMessage('bot', 'Sorry, I could not understand that. Please try typing instead.');
+      });
   }
 
   function setMicState(active) {
@@ -348,122 +441,16 @@
     if (!btn) return;
     if (active) {
       btn.classList.add('ai-mic-active');
-      btn.setAttribute('aria-label', 'Stop voice input');
+      btn.setAttribute('aria-label', 'Stop recording');
+      btn.title = 'Tap to stop and send';
     } else {
       btn.classList.remove('ai-mic-active');
-      btn.setAttribute('aria-label', 'Start voice input');
-    }
-  }
-
-  // ── Voice Output (SpeechSynthesis) ────────────────────────────────────────────
-  function toggleVoice() {
-    voiceEnabled = !voiceEnabled;
-    var btn = document.getElementById('ai-chat-voice-toggle');
-    if (btn) {
-      btn.classList.toggle('ai-voice-on', voiceEnabled);
-      btn.setAttribute('aria-label', voiceEnabled ? 'Voice replies on (click to turn off)' : 'Toggle voice replies');
-      btn.title = voiceEnabled ? 'Voice replies on' : 'Voice replies off';
-    }
-    setStatus(voiceEnabled ? 'Voice replies on.' : 'Voice replies off.');
-    if (!voiceEnabled) stopSpeaking();
-  }
-
-  function pickVoice(utt) {
-    var voices = synth.getVoices();
-    // Prefer high-quality female British voices for a warm, conversational tone
-    var preferred =
-      voices.find(function (v) { return v.name === 'Serena'; })                    ||  // macOS premium British female
-      voices.find(function (v) { return v.name === 'Google UK English Female'; })  ||  // Chrome high quality
-      voices.find(function (v) { return v.name === 'Kate'; })                      ||  // Windows British female
-      voices.find(function (v) { return v.name === 'Moira'; })                     ||  // macOS Irish English female
-      voices.find(function (v) { return v.name === 'Google US English'; })         ||  // Chrome US female
-      voices.find(function (v) { return v.name === 'Samantha'; })                  ||  // macOS US female
-      voices.find(function (v) {
-        return v.lang === 'en-GB' && !v.name.toLowerCase().includes('compact') &&
-               (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('serena') ||
-                v.name.toLowerCase().includes('kate') || v.name.toLowerCase().includes('martha'));
-      }) ||
-      voices.find(function (v) { return v.lang === 'en-GB' && !v.name.toLowerCase().includes('compact'); }) ||
-      voices.find(function (v) { return v.lang.startsWith('en') && !v.name.toLowerCase().includes('compact'); }) ||
-      voices.find(function (v) { return v.lang.startsWith('en'); });
-    if (preferred) utt.voice = preferred;
-  }
-
-  function speakText(text) {
-    if (!synth) return;
-    synth.cancel(); // clear queue before speaking
-    var clean = text.replace(/[*_`#]/g, '').replace(/\s+/g, ' ').trim();
-    if (!clean) return;
-
-    function doSpeak() {
-      var utt   = new SpeechSynthesisUtterance(clean);
-      utt.lang  = 'en-GB';
-      utt.rate  = 0.92;   // slightly slower = clearer and more natural
-      utt.pitch = 1.05;   // very slightly warmer
-      utt.volume = 1.0;
-      pickVoice(utt);
-      utt.onstart = function () { isSpeaking = true; };
-      utt.onend   = function () { isSpeaking = false; };
-      utt.onerror = function () { isSpeaking = false; };
-      // Small timeout — Chrome requires a brief gap after cancel() before speak()
-      setTimeout(function () { synth.speak(utt); }, 50);
-    }
-
-    if (synth.getVoices().length > 0) {
-      doSpeak();
-    } else {
-      // voiceschanged may never fire on iOS — use a timeout fallback too
-      var fired = false;
-      synth.addEventListener('voiceschanged', function handler() {
-        synth.removeEventListener('voiceschanged', handler);
-        if (!fired) { fired = true; doSpeak(); }
-      });
-      setTimeout(function () {
-        if (!fired) { fired = true; doSpeak(); } // speak anyway even without voices
-      }, 500);
-    }
-  }
-
-  function stopSpeaking() {
-    if (synth && isSpeaking) {
-      synth.cancel();
-      isSpeaking = false;
+      btn.setAttribute('aria-label', 'Hold to record voice message');
+      btn.title = 'Tap to record';
     }
   }
 
   // ── UI helpers ────────────────────────────────────────────────────────────────
-
-  // iOS only: show message with a tap-to-play button (avoids async audio block)
-  function appendBotMessageWithPlayBtn(text) {
-    var messagesEl = document.getElementById('ai-chat-messages');
-    var div = document.createElement('div');
-    div.className = 'ai-msg ai-msg-bot';
-
-    var bubble = document.createElement('div');
-    bubble.className = 'ai-msg-bubble';
-    bubble.textContent = text;
-
-    var playBtn = document.createElement('button');
-    playBtn.className = 'ai-play-btn';
-    playBtn.setAttribute('aria-label', 'Play voice reply');
-    playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
-
-    playBtn.addEventListener('click', function () {
-      // This is inside a direct tap — iOS allows audio here
-      speakText(text);
-      playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Playing';
-      playBtn.disabled = true;
-      setTimeout(function () {
-        playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play again';
-        playBtn.disabled = false;
-      }, Math.max(3000, text.length * 60));
-    });
-
-    div.appendChild(bubble);
-    div.appendChild(playBtn);
-    messagesEl.appendChild(div);
-    scrollToBottom();
-  }
 
   function appendMessage(role, text) {
     var messagesEl = document.getElementById('ai-chat-messages');
@@ -475,31 +462,6 @@
     div.appendChild(bubble);
     messagesEl.appendChild(div);
     scrollToBottom();
-  }
-
-  function appendMessageAnimated(role, text, onComplete) {
-    var messagesEl = document.getElementById('ai-chat-messages');
-    var div = document.createElement('div');
-    div.className = 'ai-msg ai-msg-' + role + ' ai-msg-new';
-    var bubble = document.createElement('div');
-    bubble.className = 'ai-msg-bubble';
-    div.appendChild(bubble);
-    messagesEl.appendChild(div);
-    scrollToBottom();
-
-    var i = 0;
-    var speed = Math.max(8, Math.min(20, Math.round(3000 / text.length)));
-    function type() {
-      if (i < text.length) {
-        bubble.textContent += text[i];
-        i++;
-        scrollToBottom();
-        setTimeout(type, speed);
-      } else if (typeof onComplete === 'function') {
-        onComplete();
-      }
-    }
-    type();
   }
 
   function appendTyping(id) {
@@ -537,7 +499,11 @@
   }
 
   function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
 })();
