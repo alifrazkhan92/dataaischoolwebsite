@@ -1992,3 +1992,24 @@ html[data-theme="dark"] .form-feedback.error {
   padding: 0 16px 4px;
   flex-shrink: 0;
 }
+
+/* ── iOS tap-to-play button ────────────────────────────────────────────────── */
+.ai-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  background: var(--accent-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--transition);
+}
+.ai-play-btn svg { width: 12px; height: 12px; }
+.ai-play-btn:hover { background: var(--gold-muted); }
+.ai-play-btn:disabled { opacity: 0.6; cursor: not-allowed; }

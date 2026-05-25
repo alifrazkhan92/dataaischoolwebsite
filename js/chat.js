@@ -29,7 +29,12 @@
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var recognition       = null;
   var synth             = window.speechSynthesis || null;
-  var voiceEnabled      = true; // voice replies on by default
+  var voiceEnabled      = true;
+
+  // Detect iOS — SpeechRecognition is unsupported; SpeechSynthesis needs tap-to-play
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) SpeechRecognition = null; // mic input not available on iOS Safari
 
   // ── Session ID (anonymous, not tied to any personal data) ────────────────────
   function generateSessionId() {
@@ -247,9 +252,13 @@
           .replace(/\n{3,}/g, '\n\n')         // excess blank lines
           .trim();
         messages.push({ role: 'assistant', content: reply });
-        if (voiceEnabled && synth) {
+        if (voiceEnabled && synth && !isIOS) {
+          // Desktop: auto-play immediately
           appendMessage('bot', reply);
           speakText(reply);
+        } else if (voiceEnabled && synth && isIOS) {
+          // iOS: show message + tap-to-play button (iOS blocks async audio)
+          appendBotMessageWithPlayBtn(reply);
         } else {
           appendMessageAnimated('bot', reply);
         }
@@ -423,6 +432,39 @@
   }
 
   // ── UI helpers ────────────────────────────────────────────────────────────────
+
+  // iOS only: show message with a tap-to-play button (avoids async audio block)
+  function appendBotMessageWithPlayBtn(text) {
+    var messagesEl = document.getElementById('ai-chat-messages');
+    var div = document.createElement('div');
+    div.className = 'ai-msg ai-msg-bot';
+
+    var bubble = document.createElement('div');
+    bubble.className = 'ai-msg-bubble';
+    bubble.textContent = text;
+
+    var playBtn = document.createElement('button');
+    playBtn.className = 'ai-play-btn';
+    playBtn.setAttribute('aria-label', 'Play voice reply');
+    playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+
+    playBtn.addEventListener('click', function () {
+      // This is inside a direct tap — iOS allows audio here
+      speakText(text);
+      playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Playing';
+      playBtn.disabled = true;
+      setTimeout(function () {
+        playBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play again';
+        playBtn.disabled = false;
+      }, Math.max(3000, text.length * 60));
+    });
+
+    div.appendChild(bubble);
+    div.appendChild(playBtn);
+    messagesEl.appendChild(div);
+    scrollToBottom();
+  }
+
   function appendMessage(role, text) {
     var messagesEl = document.getElementById('ai-chat-messages');
     var div = document.createElement('div');
