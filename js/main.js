@@ -90,22 +90,9 @@
  document.head.appendChild(link);
  }
 
- function loadTawkTo() {
- if (document.getElementById("dais-tawkto")) return;
- var s1 = document.createElement("script");
- s1.id = "dais-tawkto";
- s1.async = true;
- s1.src = "https://embed.tawk.to/6997b37fa5c7cc1c3718a9ee/1jhs9aagd";
- s1.charset = "UTF-8";
- s1.setAttribute("crossorigin", "*");
- var s0 = document.getElementsByTagName("script")[0];
- s0.parentNode.insertBefore(s1, s0);
- }
-
  function applyConsent(accepted) {
  if (accepted) {
  loadGoogleFonts();
- loadTawkTo();
  }
  }
 
@@ -133,9 +120,9 @@
  banner.innerHTML =
  '<div class="cookie-banner-inner">' +
  '<p class="cookie-banner-text">' +
- 'We use optional cookies to load fonts (Google Fonts) and a live-chat widget (Tawk.to). ' +
- 'These send your IP address to third parties. Strictly necessary cookies (e.g. your theme preference) ' +
- 'are stored only on your device. ' +
+ 'We use optional cookies to load fonts (Google Fonts). ' +
+ 'These send your IP address to third parties. Strictly necessary data (e.g. your theme preference and cookie choice) ' +
+ 'is stored only in your browser. ' +
  '<a href="privacy-policy.html#cookies">Cookie policy</a>' +
  '</p>' +
  '<div class="cookie-banner-actions">' +
@@ -184,8 +171,7 @@
  }
 
  initCookieConsent();
- // Tawk.to is loaded via a static <script src> tag in each HTML page.
- // Google Fonts remains consent-gated via applyConsent().
+ // Google Fonts is consent-gated via applyConsent().
 
  // ─── Mobile nav toggle ────────────────────────────────────────────────────────
 
