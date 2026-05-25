@@ -29,7 +29,7 @@
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   var recognition       = null;
   var synth             = window.speechSynthesis || null;
-  var voiceEnabled      = false; // user must opt in per session
+  var voiceEnabled      = true; // voice replies on by default
 
   // ── Session ID (anonymous, not tied to any personal data) ────────────────────
   function generateSessionId() {
@@ -89,7 +89,7 @@
       '      <span id="ai-chat-avatar" aria-hidden="true">&#129302;</span>',
       '      <div>',
       '        <div id="ai-chat-title">DAIS AI Assistant</div>',
-      '        <div id="ai-chat-subtitle">Powered by Claude &middot; Online now</div>',
+      '        <div id="ai-chat-subtitle">DAIS AI &middot; Online now</div>',
       '      </div>',
       '    </div>',
       '    <div id="ai-chat-header-actions">',
@@ -145,9 +145,13 @@
       document.getElementById('ai-chat-mic').addEventListener('click', toggleListening);
     }
 
-    // Voice output toggle
+    // Voice output toggle — set initial state to ON
     if (hasSpeechOutput) {
-      document.getElementById('ai-chat-voice-toggle').addEventListener('click', toggleVoice);
+      var vBtn = document.getElementById('ai-chat-voice-toggle');
+      vBtn.classList.add('ai-voice-on');
+      vBtn.setAttribute('aria-label', 'Voice replies on (click to turn off)');
+      vBtn.title = 'Voice replies on';
+      vBtn.addEventListener('click', toggleVoice);
     }
   }
 
@@ -320,29 +324,37 @@
     if (!voiceEnabled) stopSpeaking();
   }
 
+  function pickVoice(utt) {
+    var voices = synth.getVoices();
+    var preferred = voices.find(function (v) { return v.lang === 'en-GB' && v.localService; })
+      || voices.find(function (v) { return v.lang === 'en-GB'; })
+      || voices.find(function (v) { return v.lang.startsWith('en'); });
+    if (preferred) utt.voice = preferred;
+  }
+
   function speakText(text) {
     if (!synth) return;
     stopSpeaking();
-    // Strip markdown-style formatting for cleaner speech
     var clean = text.replace(/[*_`#]/g, '').trim();
     var utt = new SpeechSynthesisUtterance(clean);
     utt.lang  = 'en-GB';
     utt.rate  = 1.0;
     utt.pitch = 1.0;
-    // Prefer a British English voice if available
-    var voices = synth.getVoices();
-    var preferred = voices.find(function (v) {
-      return v.lang === 'en-GB' && v.localService;
-    }) || voices.find(function (v) {
-      return v.lang === 'en-GB';
-    }) || voices.find(function (v) {
-      return v.lang.startsWith('en');
-    });
-    if (preferred) utt.voice = preferred;
     utt.onstart = function () { isSpeaking = true; };
     utt.onend   = function () { isSpeaking = false; };
     utt.onerror = function () { isSpeaking = false; };
-    synth.speak(utt);
+
+    // Voices load asynchronously — wait for them if not ready yet
+    if (synth.getVoices().length > 0) {
+      pickVoice(utt);
+      synth.speak(utt);
+    } else {
+      synth.addEventListener('voiceschanged', function handler() {
+        synth.removeEventListener('voiceschanged', handler);
+        pickVoice(utt);
+        synth.speak(utt);
+      });
+    }
   }
 
   function stopSpeaking() {
