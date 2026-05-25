@@ -156,11 +156,23 @@
   }
 
   // ── Open / Close ──────────────────────────────────────────────────────────────
+  function unlockAudio() {
+    // Pre-unlock iOS audio context on first user gesture
+    if (synth && voiceEnabled) {
+      try {
+        var u = new SpeechSynthesisUtterance('');
+        u.volume = 0;
+        synth.speak(u);
+      } catch (e) {}
+    }
+  }
+
   function openModal() {
     var overlay = document.getElementById('ai-chat-overlay');
     if (!overlay) return;
     overlay.classList.add('ai-chat-open');
     document.body.style.overflow = 'hidden';
+    unlockAudio();
     setTimeout(function () {
       var input = document.getElementById('ai-chat-input');
       if (input) input.focus();
@@ -189,6 +201,16 @@
   function sendMessageText(text) {
     if (!text || isLoading) return;
     stopSpeaking();
+
+    // iOS Safari requires speechSynthesis to be triggered inside a user gesture.
+    // Speak an empty utterance NOW (we are still inside the tap/click handler)
+    // to unlock the audio context for the programmatic call that comes after fetch().
+    if (synth && voiceEnabled) {
+      try {
+        var unlock = new SpeechSynthesisUtterance('');
+        synth.speak(unlock);
+      } catch (e) {}
+    }
 
     var suggestions = document.getElementById('ai-chat-suggestions');
     if (suggestions) suggestions.style.display = 'none';
@@ -381,10 +403,15 @@
     if (synth.getVoices().length > 0) {
       doSpeak();
     } else {
+      // voiceschanged may never fire on iOS — use a timeout fallback too
+      var fired = false;
       synth.addEventListener('voiceschanged', function handler() {
         synth.removeEventListener('voiceschanged', handler);
-        doSpeak();
+        if (!fired) { fired = true; doSpeak(); }
       });
+      setTimeout(function () {
+        if (!fired) { fired = true; doSpeak(); } // speak anyway even without voices
+      }, 500);
     }
   }
 
