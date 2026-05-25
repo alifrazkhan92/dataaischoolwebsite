@@ -1586,32 +1586,51 @@ html[data-theme="dark"] .form-feedback.error {
   50%       { opacity: 0.82; box-shadow: 0 0 0 8px rgba(168,105,10,0); }
 }
 
-/* ---- Navbar button ---- */
-.nav-ai-item { display: flex; align-items: center; }
-
-.nav-ai-btn {
+/* ---- Floating chat button (bottom-right, visible on all pages) ---- */
+.ai-float-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9998;
   display: inline-flex;
   align-items: center;
-  gap: 0.35em;
+  gap: 0.5em;
   background: var(--gold);
   color: var(--on-gold, #fff);
   border: none;
-  border-radius: 20px;
-  padding: 0.45rem 1.1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  border-radius: 32px;
+  padding: 0.7rem 1.3rem 0.7rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
   cursor: pointer;
-  white-space: nowrap;
+  box-shadow: 0 6px 24px rgba(168,105,10,0.38);
   animation: ai-blink 1.8s ease-in-out infinite;
-  transition: background var(--transition), transform var(--transition);
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
 }
-.nav-ai-btn:hover,
-.nav-ai-btn:focus-visible {
+.ai-float-btn:hover,
+.ai-float-btn:focus-visible {
   background: var(--gold-hover);
   animation: none;
-  transform: scale(1.04);
-  outline: 2px solid var(--gold);
-  outline-offset: 2px;
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 32px rgba(168,105,10,0.45);
+  outline: none;
+}
+.ai-float-icon { font-size: 1.3rem; line-height: 1; }
+.ai-float-label { white-space: nowrap; }
+/* Pulsing ring around floating button */
+.ai-float-pulse {
+  position: absolute;
+  inset: -5px;
+  border-radius: 36px;
+  border: 2px solid var(--gold);
+  animation: pulse-ring 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .ai-float-btn { bottom: 16px; right: 16px; padding: 0.65rem 1rem 0.65rem 0.85rem; }
+  .ai-float-label { display: none; }
+  .ai-float-btn { border-radius: 50%; padding: 0.75rem; }
 }
 
 /* ---- Hero section button ---- */
@@ -1903,5 +1922,5 @@ html[data-theme="dark"] .form-feedback.error {
     max-height: none;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
-  .nav-ai-btn { font-size: 0.8rem; padding: 0.4rem 0.85rem; }
+  .ai-float-btn { bottom: 16px; right: 16px; }
 }
