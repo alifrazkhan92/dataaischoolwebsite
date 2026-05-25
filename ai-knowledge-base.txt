@@ -1,178 +1,266 @@
-THE DATA AND AI SCHOOL OF LONDON (DAIS) - KNOWLEDGE BASE
-Last updated: auto-generated from website content.
+THE DATA AND AI SCHOOL OF LONDON - AUTO-GENERATED KNOWLEDGE BASE
+Auto-generated from website HTML. Do not edit manually.
 
-== OVERVIEW ==
-The Data and AI School of London (DAIS) is a London-based NCFE-approved training provider delivering regulated qualifications in Programming, Cyber Security, Data Science and Analytics, Cloud and Digital Support, and Functional Skills English.
+== INDEX.HTML ==
+NCFE Qualifications in Programming, Cyber Security and Data Science | DAIS London
+NCFE Regulated Qualifications in Tech and Digital
+Programming, Cyber Security, Data Science, Cloud and Functional Skills. Levels 2 to 5. Delivered 100% online by The Data and AI School of London.
+Ask me anything about courses, fees or how to apply
+NCFE regulated qualifications across five subject areas, from Entry Level to Level 5. Nationally recognised by UK employers and universities.
+NCFE qualifications covering coding principles and practices. Level 2 Certificate in Understanding Coding and Level 3 Certificate in Coding Practices.
+From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Aligned to UK Cyber Security Council standards.
+SQL, Python, statistics and data visualisation. Entry-level certificates through to the Level 4 HTQ Diploma: Data Analyst.
+Digital support, data engineering and cloud networking. Two Level 5 HTQ Diplomas aligned to IfATE occupational standards.
+Join a community of learners. Study from anywhere with live sessions
+Our vision: cutting-edge environments where data and AI education
+Why The Data and AI School of London?
+NCFE regulated qualifications, expert tutors and a supportive online learning environment, based in Chancery Lane, London.
+NCFE regulated and Ofqual recognised. Every qualification we deliver sits on the Regulated Qualifications Framework (RQF) and is trusted by UK employers and universities.
+Portfolio-based assessment. No traditional exams. You demonstrate competence through practical work, internally assessed by our qualified assessors and verified by NCFE.
+100% online delivery. Study from anywhere in the UK through our Moodle Virtual Learning Environment, with tutor support and structured schemes of work.
+HTQ diplomas at Level 4 and 5. Our Higher Technical Qualifications in Cyber Security, Data and Cloud are among the highest technical qualifications below degree level.
+Real feedback from professionals who have studied with us.
+"I came in with no coding experience at all. By the time I completed the Level 2 Certificate in Understanding Coding I had built a complete project from scratch and understood how to keep learning. The tutor support made all the difference."
+NCFE Level 2 Certificate in Understanding Coding · London
+"The Data Analyst HTQ Diploma was exactly what I needed. The portfolio-based assessment meant I was building real, usable projects the whole way through, not just revising for exams. The NCFE qualification is already on my CV and employers recognise it."
+NCFE Level 4 Diploma: Data Analyst HTQ · Remote
+"I was sceptical about online learning after bad experiences elsewhere. This was completely different. The support team responds fast, the IQA process is rigorous, and the NCFE qualification is something I can actually put on my CV and have employers recognise. Highly recommended."
+NCFE Level 3 Certificate in Cyber Security Practices · Manchester
+⚠️ Testimonials are illustrative. Replace with verified reviews from your learners before publishing.
+Quick answers about our qualifications and how we work.
+What qualifications does The Data and AI School of London offer?
+We offer NCFE regulated qualifications across five subject areas: Programming (Python, Java, C#, PHP), Cyber Security , Data Science and Analytics , Cloud and Digital Support , and Functional Skills English . Qualifications range from Entry Level to Level 5 on the Regulated Qualifications Framework (RQF).
+Are the qualifications regulated and recognised by employers?
+Yes. All qualifications are regulated by NCFE, an Ofqual-approved Awarding Organisation. They sit on the Regulated Qualifications Framework (RQF) and are nationally recognised by UK employers and universities.
+Yes. All qualifications are delivered 100% online through our Moodle-based Virtual Learning Environment. You can study from anywhere in the UK with structured tutor support and flexible self-paced study.
+How are the qualifications assessed?
+Most qualifications use portfolio-based assessment, internally marked by our qualified assessors and verified by NCFE. Functional Skills English is internally assessed by our centre. There are no traditional written exams for most qualifications.
+Do I need prior experience to apply?
+Entry requirements vary by level. Level 2 qualifications are open to most learners aged 16 and over. Level 4 and 5 qualifications typically require prior learning at Level 3 or equivalent experience. We assess each applicant individually and recommend the most suitable qualification.
+How do I apply and what happens next?
+Fill in our short online application form . We will email you within two working days to confirm your place and discuss your study plan.
+How can I contact The Data and AI School of London?
+Call us on +44 207 0990 956 (Monday to Friday, 9am to 6pm), email info@dataaischool.com , or use our contact form . We aim to reply within two working days.
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
-Founder and Principal: Ali Fraz Khan FHEA (CEO and Principal)
-Mission: To close the gap between traditional education and what the industry actually needs. We teach the tools, frameworks and practices used by data and AI teams today.
+== ABOUT.HTML ==
+About The Data and AI School of London | DAIS London
+We are a London-based NCFE-approved training provider delivering regulated qualifications in Programming, Cyber Security, Data Science, Cloud and Digital Support, and Functional Skills English. Our mission is to make high-quality, nationally recognised technical education accessible to everyone across the UK.
+To close the gap between traditional education and what the industry
+actually needs. We teach the tools, frameworks and practices used by
+data and AI teams today, so you can contribute from day one.
+NCFE regulated. Every qualification we deliver is regulated by NCFE and sits on the Regulated Qualifications Framework (RQF), recognised by UK employers and universities.
+Five subject areas. Programming, Cyber Security, Data Science and Analytics, Cloud and Digital Support, and Functional Skills English, at levels from Entry Level to Level 5.
+Portfolio-based assessment. No traditional exams. Learners demonstrate competence through practical work, internally assessed by our qualified assessors and externally verified by NCFE.
+100% online delivery. All qualifications are delivered through our Moodle-based Virtual Learning Environment, accessible from anywhere in the UK.
+The future of data and AI education.
+The Data and AI School of London is led by a small, expert team of educators and quality professionals committed to delivering regulated, high-quality AI and data science education.
+Meet the people behind the school →
+Want to learn more or discuss which course fits you?
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
-All qualifications are regulated by NCFE (an Ofqual-approved Awarding Organisation) and sit on the Regulated Qualifications Framework (RQF), nationally recognised by UK employers and universities.
+== COURSES.HTML ==
+NCFE Regulated Qualifications: Programming, Cyber Security, Data Science | DAIS London
+We deliver NCFE regulated qualifications across five subject areas: Programming, Cyber Security, Data Science and Analytics, Cloud and Digital Support, and Functional Skills English. All qualifications sit on the Regulated Qualifications Framework (RQF) and are nationally recognised by UK employers and universities.
+Our programming qualifications introduce learners to coding principles, problem-solving, and software development. From understanding the fundamentals to applying them in real projects, these qualifications build a solid technical foundation.
+✓ NCFE regulated, RQF accredited
+Programming qualifications at Level 2 and Level 3.
+NCFE Level 2 Certificate in Understanding Coding Level 2 603/5854/3
+NCFE Level 3 Certificate in Coding Practices Level 3 603/5793/9
+Apply for a Programming qualification
+Our cyber security qualifications range from foundational awareness through to Higher Technical Qualifications (HTQ) at Level 4. You will develop skills in threat analysis, network security, ethical hacking principles and security engineering.
+✓ Levels 2, 3 and 4, including HTQ Diploma
+✓ Covers principles, practices and occupational entry
+✓ Aligned to UK Cyber Security Council standards
+✓ NCFE regulated, RQF accredited
+Cyber Security qualifications from Level 2 Certificate to Level 4 HTQ Diploma.
+NCFE Level 2 Certificate in the Principles of Cyber Security Level 2 603/5853/1
+NCFE Level 3 Certificate in Cyber Security Practices Level 3 603/5762/9
+NCFE Level 3 Technical Occupational Entry in Cyber Security - Diploma Level 3 610/4004/6
+NCFE Level 4 Diploma: Cyber Security Engineer - HTQ Level 4 603/7748/3
+Apply for a Cyber Security qualification
+Our data qualifications develop the skills needed to collect, analyse, interpret and present data. From Level 2 data analysis to the Level 4 HTQ Data Analyst Diploma, these qualifications are built for the UK data economy.
+✓ Levels 2, 3 and 4, including HTQ Diploma
+✓ SQL, Python, statistics and visualisation
+✓ Aligned to Data Technician and Data Analyst occupational standards
+✓ NCFE regulated, RQF accredited
+Data Science qualifications from Level 2 Certificate to Level 4 HTQ Diploma.
+NCFE Level 2 Certificate in Data Analysis Level 2 603/3916/0
+NCFE Level 3 Certificate in Data Level 3 603/7882/7
+NCFE Level 3 Technical Occupational Entry for the Data Technician - Diploma Level 3 610/4006/X
+NCFE Level 4 Diploma: Data Analyst - HTQ Level 4 603/7751/3
+Apply for a Data Science qualification
+Our cloud and digital qualifications develop the technical skills needed to support, manage and build cloud-based systems. The Level 5 HTQ Diplomas are among the highest technical qualifications we offer, aligned to Data Engineer and Cloud Networking occupational standards.
+✓ Levels 3 and 5, including two HTQ Diplomas
+✓ Cloud systems, networking and digital support
+✓ Aligned to IfATE occupational standards
+✓ NCFE regulated, RQF accredited
+Cloud qualifications from Level 3 Diploma to Level 5 HTQ.
+NCFE Level 3 Technical Occupational Entry in Digital Support - Diploma Level 3 610/4005/8
+NCFE Level 5 Diploma: Data Engineer - HTQ Level 5 610/5972/9
+NCFE Level 5 Diploma: Cloud Systems and Secure Networking - HTQ Level 5 HTQDZ25001
+Apply for a Cloud qualification
+Our Functional Skills English qualifications are internally assessed and cover reading, writing and speaking and listening at Entry Levels 1, 2 and 3. They support learners who need to develop their English skills alongside their technical qualifications.
+✓ Internally assessed by our centre
+✓ Supports co-delivery alongside technical qualifications
+✓ NCFE regulated, RQF accredited
+Functional Skills English at Entry Level 1, 2 and 3, internally assessed.
+NCFE Entry Level 1 Functional Skills Qualification in English Entry Level 1 603/5059/3
+NCFE Entry Level 2 Functional Skills Qualification in English Entry Level 2 603/5056/8
+NCFE Entry Level 3 Functional Skills Qualification in English Entry Level 3 603/5052/0
+Apply for Functional Skills English
+Are these qualifications nationally recognised?
+Yes. All our qualifications are regulated by NCFE and sit on the Regulated Qualifications Framework (RQF). They are recognised by UK employers, universities and the government. NCFE is an Awarding Organisation approved by Ofqual.
+What is the difference between a Certificate, Award and Diploma?
+These terms refer to the size of the qualification. An Award is the smallest (1 to 12 credits), a Certificate is medium-sized (13 to 36 credits), and a Diploma is the largest (37 or more credits). All three can be at the same level on the RQF.
+What is an HTQ (Higher Technical Qualification)?
+HTQs are Level 4 and 5 qualifications approved by the Institute for Apprenticeships and Technical Education (IfATE). They are designed to fill the skills gap between A-levels and degrees. Our Level 4 and Level 5 HTQ Diplomas in Cyber Security, Data and Cloud meet this standard.
+No degree is required. Entry requirements vary by level. Level 2 qualifications are open to most learners aged 16 and over. Level 4 and 5 qualifications typically require prior learning at Level 3 or equivalent. We assess each applicant individually and advise on the best starting point.
+How are the qualifications assessed?
+Most qualifications use portfolio-based assessment, internally marked by our assessors and verified by NCFE. Functional Skills English is internally assessed by our centre. There are no traditional written exams for most qualifications.
+Can I study more than one qualification?
+Yes. Many of our qualifications are designed to complement each other. For example, a learner might complete the Level 2 Certificate in Understanding Coding, progress to the Level 3 Certificate in Coding Practices, and then add the Level 4 Diploma: Data Analyst HTQ alongside it.
+Not sure which qualification is right for you?
+Our admissions team is happy to advise on the best pathway for your goals.
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
-Delivery: 100% online through a Moodle-based Virtual Learning Environment (VLE). No need to attend in person. Study from anywhere in the UK.
+== APPLY.HTML ==
+Apply: NCFE Admission Form | DAIS London
+Uploading documents, please do not close this window.
+Complete all sections of this form to apply for a regulated qualification. Your application and documents will be stored securely on our encrypted Google Drive.
+This is the official admission form for regulated NCFE qualifications delivered by The Data and AI School of London. All fields marked * are required. Your data is processed in accordance with our Privacy Policy and UK GDPR.
+Questions before applying? Call +44 207 0990 956 or send a message .
+Proof of identity (passport, driving licence or national ID)
+Highest qualification certificate (if available)
+Up to 3 additional supporting documents (optional)
+Max 10 MB per file. JPG, PNG and PDF accepted.
+Your legal name and personal details exactly as they appear on your identity document.
+Used for qualification registration. Leave blank if unknown.
+Find yours at gov.uk/find-unique-learner-number
+We will use these details to communicate about your application and enrolment.
+Mobile preferred for urgent contact.
+Equality & Diversity Monitoring
+Required by NCFE and Ofsted for regulatory monitoring. Data is used for statistical purposes only and does not affect your application.
+This information is collected to fulfil our obligations under the Equality Act 2010 and to meet NCFE and Ofsted reporting requirements. It will not be seen by assessors and will not influence your application outcome.
+English / Welsh / Scottish / Northern Irish / British
+Any other Mixed or Multiple ethnic background
+Any other Black, African or Caribbean background
+Do you have a disability, learning difficulty or health condition? *
+Type of disability / difficulty / condition *
+Specific learning difficulty (e.g. dyslexia, dyspraxia, ADHD)
+Social or communication impairment (e.g. autism spectrum disorder)
+Long-standing illness or health condition (e.g. cancer, HIV, asthma)
+Mental health condition (e.g. depression, anxiety, schizophrenia)
+Physical impairment or mobility issues (e.g. wheelchair user)
+Deaf or serious hearing impairment
+Blind or serious visual impairment (uncorrected)
+Any other disability or condition
+Do you require access arrangements or reasonable adjustments for assessments?
+Yes, please contact us to discuss
+NCFE uses this information to confirm entry requirements and to report to Ofsted and the Education and Skills Funding Agency (ESFA).
+Highest qualification achieved *
+Level 1, e.g. GCSEs grades D-G / 1 to 3, NVQ Level 1
+Level 2, e.g. GCSEs grades A*-C / 4 to 9, BTEC First, NVQ Level 2
+Level 3, e.g. A-levels, BTEC National, Access to HE, NVQ Level 3
+Level 4, e.g. HNC, Certificate of Higher Education
+Level 5, e.g. HND, Foundation Degree
+Level 6, e.g. Bachelor's degree, Graduate Certificate
+Level 7 or above, e.g. Master's degree, PGCE, MBA
+Equivalent overseas qualification
+Equivalent overseas qualification
+Required for ESFA and NCFE reporting. Your employment status does not affect your eligibility.
+Employed, full time (30 or more hours per week)
+Employed, part time (under 30 hours per week)
+Unemployed and actively seeking work
+Unemployed and not actively seeking work
+Select the NCFE-regulated qualification you are applying for and your preferred start date.
+NCFE Level 2 Certificate in Understanding Coding
+NCFE Level 3 Certificate in Coding Practices
+NCFE Level 2 Certificate in the Principles of Cyber Security
+NCFE Level 3 Certificate in Cyber Security Practices
+NCFE Level 3 Technical Occupational Entry in Cyber Security - Diploma
+NCFE Level 4 Diploma: Cyber Security Engineer - HTQ
+NCFE Level 2 Certificate in Data Analysis
+NCFE Level 3 Certificate in Data
+NCFE Level 3 Technical Occupational Entry for the Data Technician - Diploma
+NCFE Level 4 Diploma: Data Analyst - HTQ
+NCFE Level 3 Technical Occupational Entry in Digital Support - Diploma
+NCFE Level 5 Diploma: Data Engineer - HTQ
+NCFE Level 5 Diploma: Cloud Systems and Secure Networking - HTQ
+NCFE Entry Level 1 Functional Skills Qualification in English
+NCFE Entry Level 2 Functional Skills Qualification in English
+NCFE Entry Level 3 Functional Skills Qualification in English
+View course details at dataaischool.com/courses
+Social media (Instagram / Facebook)
+A person we can contact on your behalf in case of emergency. This information is kept confidential.
+Upload your documents below. Each file is saved securely to our encrypted Google Drive with your name and date of birth. Max 10 MB per file. Accepted: JPG, PNG, PDF.
+A recent, clear photo of your face. JPG or PNG. Max 5 MB.
+Passport, UK driving licence or national identity card. JPG, PNG or PDF. Max 10 MB.
+Click or drag & drop ID document
+Passport / Driving Licence / National ID · Max 10 MB
+Highest qualification certificate
+A scan or photo of your highest qualification (recommended but not required). JPG, PNG or PDF. Max 10 MB.
+Click or drag & drop certificate
+Optional · JPG, PNG or PDF · Max 10 MB
+Additional supporting documents (optional, up to 3)
+Any other documents that support your application, prior learning evidence, employer letters, references, etc.
+Please read and confirm each declaration before submitting your application.
+Accuracy. I confirm that the information I have provided in this form is accurate and complete to the best of my knowledge. I understand that providing false or misleading information may result in my application being withdrawn or my enrolment being cancelled.
+Data processing. I consent to The Data and AI School of London processing my personal data for the purposes of assessing my application, registering me with NCFE as a learner, and managing my enrolment and qualification. My data will be processed in accordance with UK GDPR and the school's Privacy Policy (DAIS-PRIV-001).
+Equality monitoring. I understand that the equality and diversity information I have provided in Section 3 will be used only for statistical reporting to NCFE and Ofsted and will not be used to make decisions about my application or learning.
+NCFE registration. I consent to my personal data being shared with NCFE (Newcastle College Group, Q6 Quorum Business Park, NE12 8BT) for the purpose of learner registration, qualification certification and regulatory compliance. NCFE's privacy policy is available at ncfe.org.uk .
+By submitting this form you confirm all declarations above are true. Your documents will be saved securely to our Google Drive and a confirmation email will be sent to the address you provided. Data controller: The Data and AI School of London, ICO registration ZC086597 .
+Questions? +44 207 0990 956 · Contact us
+Thank you for applying to The Data and AI School of London. A confirmation email has been sent to the address you provided.
+Our admissions team will review your application within 3 working days and contact you with next steps.
+Not received a confirmation email? Check your spam folder or call +44 207 0990 956 .
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
-Assessment: Portfolio-based assessment for most qualifications. No traditional exams. Learners demonstrate competence through practical work, internally assessed by qualified DAIS assessors and externally verified by NCFE. Functional Skills English is internally assessed.
+== CONTACT.HTML ==
+Contact Us | The Data and AI School of London
+Have a question about our courses, admissions or partnerships? Send us a
+message and we’ll get back to you.
+We’re here to help, reach out anytime.
+NCFE Level 2 Certificate in Understanding Coding
+NCFE Level 3 Certificate in Coding Practices
+NCFE Level 2 Certificate in the Principles of Cyber Security
+NCFE Level 3 Certificate in Cyber Security Practices
+NCFE Level 3 TOE in Cyber Security - Diploma
+NCFE Level 4 Diploma: Cyber Security Engineer - HTQ
+NCFE Level 2 Certificate in Data Analysis
+NCFE Level 3 Certificate in Data
+NCFE Level 3 TOE for the Data Technician - Diploma
+NCFE Level 4 Diploma: Data Analyst - HTQ
+NCFE Level 3 TOE in Digital Support - Diploma
+NCFE Level 5 Diploma: Data Engineer - HTQ
+NCFE Level 5 Diploma: Cloud Systems and Secure Networking - HTQ
+NCFE Entry Level 1 Functional Skills in English
+NCFE Entry Level 2 Functional Skills in English
+NCFE Entry Level 3 Functional Skills in English
+By submitting this form you confirm you have read our
+details solely to respond to your enquiry and will not use them
+for marketing without your separate consent. Data controller:
+The Data and AI School of London, ICO registration ZC086597.
+The Data and AI School of London
+Office LG06, 1 Quality Court, Chancery Lane
+We aim to respond to all enquiries within two working days. For urgent
+matters, please call us directly.
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
-== CONTACT INFORMATION ==
-Website: https://www.dataaischool.com
-Email (general): info@dataaischool.com
-Email (registrar): registrar@dataaischool.com
-Phone: +44 207 0990 956
-Hours: Monday to Friday, 09:00 to 18:00
-Address: Office LG06, 1 Quality Court, Chancery Lane, London WC2A 1HR
-Student Portal (Moodle): https://learn.dataaischool.com
-ICO Registration: ZC086597
-
-== QUALIFICATIONS OVERVIEW ==
-DAIS offers 16 NCFE regulated qualifications across five subject areas.
-Levels range from Entry Level (Functional Skills) to Level 5 (HTQ Diplomas).
-
-Subject areas:
-1. Programming (Levels 2 and 3)
-2. Cyber Security (Levels 2, 3 and 4)
-3. Data Science and Analytics (Levels 2, 3 and 4)
-4. Cloud and Digital Support (Levels 3 and 5)
-5. Functional Skills English (Entry Levels 1, 2 and 3)
-
-== PROGRAMMING QUALIFICATIONS ==
-1. NCFE Level 2 Certificate in Understanding Coding
-   - RQF Level: 2
-   - Qualification Number: 603/5854/3
-   - Focus: coding principles, problem-solving, software development fundamentals
-   - Assessment: portfolio-based
-   - Entry requirement: open to most learners aged 16 and over
-
-2. NCFE Level 3 Certificate in Coding Practices
-   - RQF Level: 3
-   - Qualification Number: 603/5793/9
-   - Focus: advanced coding practices, real-world project work
-   - Assessment: portfolio-based
-   - Entry requirement: Level 2 qualification or equivalent experience
-
-== CYBER SECURITY QUALIFICATIONS ==
-3. NCFE Level 2 Certificate in the Principles of Cyber Security
-   - RQF Level: 2
-   - Qualification Number: 603/5853/1
-   - Focus: foundational cyber security awareness and principles
-
-4. NCFE Level 3 Certificate in Cyber Security Practices
-   - RQF Level: 3
-   - Qualification Number: 603/5762/9
-   - Focus: threat analysis, network security, practical cyber security skills
-
-5. NCFE Level 3 Technical Occupational Entry in Cyber Security - Diploma
-   - RQF Level: 3
-   - Qualification Number: 610/4004/6
-   - Focus: occupational entry-level cyber security, aligned to UK Cyber Security Council standards
-
-6. NCFE Level 4 Diploma: Cyber Security Engineer - HTQ
-   - RQF Level: 4
-   - Qualification Number: 603/7748/3
-   - Type: Higher Technical Qualification (HTQ), IfATE-approved
-   - Focus: security engineering, ethical hacking principles, threat analysis, network security
-   - Entry requirement: Level 3 qualification or equivalent experience
-
-== DATA SCIENCE AND ANALYTICS QUALIFICATIONS ==
-7. NCFE Level 2 Certificate in Data Analysis
-   - RQF Level: 2
-   - Qualification Number: 603/3916/0
-   - Focus: data analysis fundamentals
-
-8. NCFE Level 3 Certificate in Data
-   - RQF Level: 3
-   - Focus: SQL, Python, statistics, data handling
-
-9. NCFE Level 3 Technical Occupational Entry for the Data Technician - Diploma
-   - RQF Level: 3
-   - Focus: data technician occupational standards, aligned to IfATE
-
-10. NCFE Level 4 Diploma: Data Analyst - HTQ
-    - RQF Level: 4
-    - Type: Higher Technical Qualification (HTQ), IfATE-approved
-    - Focus: SQL, Python, statistics, data visualisation, data analysis at professional level
-    - Entry requirement: Level 3 qualification or equivalent experience
-
-== CLOUD AND DIGITAL SUPPORT QUALIFICATIONS ==
-11. NCFE Level 3 Technical Occupational Entry in Digital Support - Diploma
-    - RQF Level: 3
-    - Focus: digital support fundamentals
-
-12. NCFE Level 5 Diploma: Data Engineer - HTQ
-    - RQF Level: 5
-    - Type: Higher Technical Qualification (HTQ), IfATE-approved
-    - Focus: data engineering, pipelines, cloud data infrastructure
-    - Entry requirement: Level 4 qualification or equivalent experience
-
-13. NCFE Level 5 Diploma: Cloud Systems and Secure Networking - HTQ
-    - RQF Level: 5
-    - Type: Higher Technical Qualification (HTQ), IfATE-approved
-    - Focus: cloud systems, secure networking, IfATE occupational standards
-    - Entry requirement: Level 4 qualification or equivalent experience
-
-== FUNCTIONAL SKILLS ENGLISH ==
-14. NCFE Entry Level 1 Functional Skills Qualification in English
-15. NCFE Entry Level 2 Functional Skills Qualification in English
-16. NCFE Entry Level 3 Functional Skills Qualification in English
-
-All Functional Skills qualifications are internally assessed by DAIS centre staff.
-
-== FREQUENTLY ASKED QUESTIONS ==
-
-Q: Are the qualifications regulated and recognised by employers?
-A: Yes. All qualifications are regulated by NCFE, an Ofqual-approved Awarding Organisation. They sit on the Regulated Qualifications Framework (RQF) and are nationally recognised by UK employers and universities.
-
-Q: Can I study entirely online?
-A: Yes. All qualifications are delivered 100% online through our Moodle-based Virtual Learning Environment. You can study from anywhere in the UK with structured tutor support and flexible self-paced study.
-
-Q: Do I need a degree to enrol?
-A: No degree is required. Level 2 qualifications are open to most learners aged 16 and over. Level 4 and 5 qualifications typically require prior learning at Level 3 or equivalent experience. We assess each applicant individually.
-
-Q: What is an HTQ (Higher Technical Qualification)?
-A: An HTQ is a Level 4 or Level 5 qualification approved by the Institute for Apprenticeships and Technical Education (IfATE). HTQs bridge the gap between A-levels and degrees and are recognised by employers as equivalent to the first or second year of a degree. DAIS offers HTQs in Cyber Security Engineer (L4), Data Analyst (L4), Data Engineer (L5) and Cloud Systems and Secure Networking (L5).
-
-Q: How are the qualifications assessed?
-A: Most qualifications use portfolio-based assessment, internally marked by DAIS qualified assessors and externally verified by NCFE. There are no traditional written exams. Functional Skills English is internally assessed.
-
-Q: How do I apply?
-A: Fill in the online application form at https://www.dataaischool.com/apply.html. We will email you within two working days to confirm your place and discuss your study plan.
-
-Q: What happens after I apply?
-A: After submitting your application, our admissions team reviews it within two working days. If successful, you receive an offer email. Accepting the offer takes you to a payment page where you can pay in full, pay in three monthly instalments, or pay by cash or bank transfer by contacting the registrar.
-
-Q: What payment options are available?
-A: Three options: (1) Pay in Full - one single payment with a 5% discount; (2) Pay in 3 Instalments - split into 3 equal monthly payments via Stripe; (3) Pay by Cash or Bank Transfer - contact the registrar at registrar@dataaischool.com or call +44 207 0990 956.
-
-Q: What is the student portal?
-A: The student portal is our Moodle-based Virtual Learning Environment at https://learn.dataaischool.com. After payment, your login credentials are emailed to you within one working day.
-
-Q: What subject areas do you cover?
-A: Programming (Python, Java, C#, PHP), Cyber Security, Data Science and Analytics (SQL, Python, statistics, visualisation), Cloud and Digital Support, and Functional Skills English.
-
-Q: What is the difference between a Certificate, Award and Diploma?
-A: These refer to qualification size (total learning time). An Award is smallest (1 to 12 credits), a Certificate is medium (13 to 36 credits), and a Diploma is largest (37 or more credits). All can be at the same RQF level.
-
-Q: Is there tutor support?
-A: Yes. All programmes include structured tutor support through the Moodle VLE. Tutors are available to guide your learning, provide feedback on your portfolio work, and answer questions throughout your qualification.
-
-Q: Where is DAIS located?
-A: Our registered address is Office LG06, 1 Quality Court, Chancery Lane, London WC2A 1HR. However, all learning is delivered entirely online so you can study from anywhere in the UK.
-
-Q: Who founded DAIS?
-A: DAIS was founded by Ali Fraz Khan FHEA, who serves as CEO and Principal.
-
-== ABOUT NCFE ==
-NCFE is an Ofqual-approved Awarding Organisation. All DAIS qualifications regulated by NCFE sit on the Regulated Qualifications Framework (RQF), which ranges from Entry Level to Level 8. Our qualifications span Entry Level to Level 5.
-
-== ABOUT RQF LEVELS ==
-Entry Level: basic foundations
-Level 2: equivalent to GCSE grade A to C / 4 to 9
-Level 3: equivalent to A-level
-Level 4: equivalent to first year of a degree / Higher Apprenticeship
-Level 5: equivalent to second year of a degree / Foundation Degree
-
-== BLOG AND RESOURCES ==
-DAIS publishes educational articles and resources at https://www.dataaischool.com/blog.html
-
-== POLICIES ==
-Privacy Policy: https://www.dataaischool.com/privacy-policy.html
-Complaints Policy: https://www.dataaischool.com/complaints.html
+== TEAM.HTML ==
+Our Team | The Data and AI School of London
+Home &rsaquo; About &rsaquo; Our Team
+Three dedicated professionals committed to delivering high-quality, regulated AI and data science education across the UK.
+CEO & Principal · Head of Centre
+FHEA · PgCert HE · MCT · AZ-204 · AZ-400 · AZ-104
+Ali is a Senior Lecturer in Computing with over eight years' experience in UK Higher Education. A Fellow of Advance HE and Microsoft Certified Trainer, he leads the school's academic delivery, quality assurance, safeguarding, and compliance. He is also the school's Data Protection Officer and Prevent Lead.
+His teaching connects live industry experience, Azure, DevOps, AI engineering, directly to learner outcomes, ensuring every programme reflects what employers actually need.
+Lead Internal Quality Assurer · Access Arrangements Coordinator
+Khadija leads all internal quality assurance activity across the school's NCFE qualifications. She designs and maintains the IQA strategy, conducts sampling of every assessor each term, chairs all standardisation meetings, and maintains direct claim status across all programmes.
+She is the primary contact for NCFE's External Quality Assurer during EQA visits, and reviews all recognition of prior learning and reasonable adjustment applications.
+Registrar & Examinations Officer
+Learner Support Lead · Marketing Lead · Work Placement Coordinator
+Sheherbano manages all aspects of learner registration, NCFE Portal administration, and certification claims. She is the first point of contact for learners on all administrative, support, and technical matters, and oversees the school's examination logistics.
+She monitors learner engagement through weekly VLE analytics, coordinates all IAG sessions, and manages the school's marketing communications and work placement programme.
+We are a growing team. If you are an experienced data scientist, AI engineer, or computing educator interested in associate tutoring or assessment roles, we would love to hear from you.
+© The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
