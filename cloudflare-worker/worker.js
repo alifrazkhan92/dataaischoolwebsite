@@ -51,8 +51,7 @@ ${kb}`;
 
 function corsHeaders(origin, env) {
   const allowed = env.ALLOWED_ORIGIN || 'https://www.dataaischool.com';
-  // Allow localhost for dev testing
-  const isAllowed = origin === allowed || origin === 'http://localhost:8765' || origin === 'http://127.0.0.1:8765';
+  const isAllowed = origin === allowed;
   return {
     'Access-Control-Allow-Origin': isAllowed ? origin : allowed,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
