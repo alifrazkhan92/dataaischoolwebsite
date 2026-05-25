@@ -1,8 +1,18 @@
 /**
  * DAIS AI Chat Widget
- * Voice input: MediaRecorder with auto silence detection (stops when you finish speaking)
- * Voice output: ElevenLabs TTS played via Web Audio API (works on all devices)
- * Backend: Cloudflare Worker with D1 logging, ElevenLabs TTS+STT
+ * Voice input  : MediaRecorder with auto silence detection (setInterval, reliable on iOS)
+ * Voice output : ElevenLabs TTS via <audio> element with playsinline (plays on iPhone speaker)
+ *
+ * Key iOS design decisions:
+ *  - TTS uses a single reusable <audio> element (not AudioContext) so it plays through
+ *    the speaker even while/after the mic is active. AudioContext routes to earpiece in
+ *    iOS PlayAndRecord audio session; <audio> with playsinline stays on speaker.
+ *  - Silence detection uses a SEPARATE, output-free AudioContext connected only to an
+ *    AnalyserNode. It is closed immediately after recording stops.
+ *  - setInterval (100ms) instead of requestAnimationFrame for the analysis loop so it
+ *    keeps firing on iOS when the user is not actively touching the screen.
+ *  - The <audio> element is unlocked with a silent WAV on the first user tap so
+ *    subsequent async play() calls work without needing another gesture.
  */
 
 (function () {
@@ -20,9 +30,12 @@
   ];
 
   // Silence detection tuning
-  var SILENCE_THRESHOLD = 14;    // 0-255 amplitude; below this = silence
-  var SILENCE_DELAY_MS  = 1400;  // auto-stop 1.4s after speech ends
-  var MAX_RECORD_MS     = 9000;  // hard cap at 9 seconds
+  var SILENCE_THRESHOLD = 14;   // 0-255 amplitude; below = silence
+  var SILENCE_DELAY_MS  = 1400; // auto-stop 1.4s after speech ends
+  var MAX_RECORD_MS     = 9000; // hard cap
+
+  // Minimal silent WAV (44 bytes) — unlocks the <audio> element on iOS
+  var SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
 
   // ── State ────────────────────────────────────────────────────────────────────
   var messages     = [];
@@ -30,16 +43,18 @@
   var sessionId    = generateSessionId();
   var voiceEnabled = true;
 
-  // Web Audio API (single shared context for TTS playback + silence analysis)
-  var audioCtx      = null;
-  var currentSource = null;  // active AudioBufferSourceNode
+  // TTS: single reusable <audio> element
+  var ttsAudio = null;
+  var blobUrl  = null;
 
-  // Recording state
-  var mediaRecorder = null;
-  var audioChunks   = [];
-  var isRecording   = false;
-  var silenceTimer  = null;
-  var maxRecTimer   = null;
+  // Mic recording
+  var mediaRecorder   = null;
+  var audioChunks     = [];
+  var isRecording     = false;
+  var silenceTimer    = null;
+  var maxRecTimer     = null;
+  var silenceCtx      = null; // separate AudioContext for analysis ONLY
+  var silenceInterval = null;
 
   var hasMediaRecorder = (
     typeof MediaRecorder !== 'undefined' &&
@@ -73,33 +88,41 @@
     });
   }
 
-  // ── Web Audio API ─────────────────────────────────────────────────────────────
+  // ── TTS: <audio> element (speaker-safe on iPhone) ────────────────────────────
 
-  function getAudioCtx() {
-    if (!audioCtx) {
-      var AC = window.AudioContext || window.webkitAudioContext;
-      if (AC) audioCtx = new AC();
+  function getTtsAudio() {
+    if (!ttsAudio) {
+      ttsAudio = document.createElement('audio');
+      ttsAudio.setAttribute('playsinline', '');         // iOS inline playback
+      ttsAudio.setAttribute('webkit-playsinline', '');  // legacy iOS
+      ttsAudio.preload = 'none';
+      document.body.appendChild(ttsAudio);
     }
-    return audioCtx;
+    return ttsAudio;
   }
 
-  // Call inside a user gesture to unlock iOS / autoplay-blocked browsers
+  // Must be called synchronously inside a user tap to unlock iOS audio
   function unlockAudio() {
-    var ctx = getAudioCtx();
-    if (!ctx) return;
-    if (ctx.state === 'suspended') {
-      ctx.resume().catch(function () {});
+    var el = getTtsAudio();
+    if (el._unlocked) return;
+    el.src = SILENT_WAV;
+    var p = el.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function () { el._unlocked = true; }).catch(function () {});
     }
   }
 
   function stopAudio() {
-    if (currentSource) {
-      try { currentSource.stop(0); } catch (e) {}
-      currentSource = null;
+    if (ttsAudio) {
+      ttsAudio.pause();
+      ttsAudio.currentTime = 0;
+    }
+    if (blobUrl) {
+      URL.revokeObjectURL(blobUrl);
+      blobUrl = null;
     }
   }
 
-  // Fetch TTS from worker, decode and play via AudioContext
   function playElevenLabs(text) {
     stopAudio();
     if (!text || !text.trim()) return;
@@ -111,30 +134,21 @@
     })
     .then(function (res) {
       if (!res.ok) throw new Error('TTS HTTP ' + res.status);
-      return res.arrayBuffer();
+      return res.blob();
     })
-    .then(function (arrayBuffer) {
-      var ctx = getAudioCtx();
-      if (!ctx) throw new Error('AudioContext not available');
-      // Resume context in case it was suspended (required after page load on some browsers)
-      return ctx.resume().then(function () {
-        return ctx.decodeAudioData(arrayBuffer);
-      });
-    })
-    .then(function (decoded) {
-      stopAudio(); // stop anything that started while we were fetching
-      var ctx = getAudioCtx();
-      var source = ctx.createBufferSource();
-      source.buffer = decoded;
-      source.connect(ctx.destination);
-      source.onended = function () {
-        if (currentSource === source) currentSource = null;
+    .then(function (blob) {
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      blobUrl = URL.createObjectURL(blob);
+      var el = getTtsAudio();
+      el.onended = function () {
+        if (blobUrl) { URL.revokeObjectURL(blobUrl); blobUrl = null; }
       };
-      source.start(0);
-      currentSource = source;
+      el.src = blobUrl;
+      el.load();
+      return el.play();
     })
     .catch(function (e) {
-      console.warn('TTS playback failed:', e.message);
+      console.warn('TTS failed:', e.message || e);
     });
   }
 
@@ -233,7 +247,7 @@
     if (!overlay) return;
     overlay.classList.add('ai-chat-open');
     document.body.style.overflow = 'hidden';
-    unlockAudio(); // must happen inside user gesture
+    unlockAudio(); // synchronous inside user gesture
     setTimeout(function () {
       var input = document.getElementById('ai-chat-input');
       if (input) input.focus();
@@ -262,7 +276,7 @@
   function sendMessageText(text) {
     if (!text || isLoading) return;
     stopAudio();
-    unlockAudio(); // inside user gesture, ensures AudioContext is live for playback later
+    unlockAudio(); // re-unlock on every send tap (keeps iOS happy)
 
     var suggestions = document.getElementById('ai-chat-suggestions');
     if (suggestions) suggestions.style.display = 'none';
@@ -288,9 +302,8 @@
     .then(function (data) {
       removeTyping(typingId);
       var raw = data.reply ||
-        'Sorry, I could not get a response. Please contact us at info@dataaischool.com or call +44 207 0990 956.';
+        'Sorry, I could not get a response. Please contact info@dataaischool.com or call +44 207 0990 956.';
 
-      // Strip any markdown the model may send despite the system prompt
       var reply = raw
         .replace(/#{1,6}\s*/g, '')
         .replace(/\*\*(.+?)\*\*/g, '$1')
@@ -310,7 +323,7 @@
     })
     .catch(function () {
       removeTyping(typingId);
-      appendMessage('bot', 'Sorry, something went wrong. Please try again or contact us at info@dataaischool.com.');
+      appendMessage('bot', 'Sorry, something went wrong. Please try again or contact info@dataaischool.com.');
     })
     .finally(function () {
       isLoading = false;
@@ -334,7 +347,7 @@
     if (!voiceEnabled) stopAudio();
   }
 
-  // ── Mic: MediaRecorder with auto silence detection ────────────────────────────
+  // ── Mic with auto silence detection ──────────────────────────────────────────
 
   function toggleMic() {
     if (isRecording) { stopRecording(); return; }
@@ -344,11 +357,10 @@
   function startRecording() {
     if (!hasMediaRecorder || isLoading) return;
     stopAudio();
-    unlockAudio(); // ensure AudioContext is live (needed for AnalyserNode)
+    unlockAudio();
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: false })
       .then(function (stream) {
-        // Pick best supported MIME type
         var mimeType = '';
         var types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
         for (var i = 0; i < types.length; i++) {
@@ -364,19 +376,20 @@
 
         mediaRecorder.onstop = function () {
           stream.getTracks().forEach(function (t) { t.stop(); });
-          clearAllTimers();
-          sendAudioToSTT();
+          clearTimers();
+          closeSilenceCtx();
+          // Brief pause lets iOS release the PlayAndRecord audio session
+          // before we try to play TTS through the speaker
+          setTimeout(function () { sendAudioToSTT(); }, 400);
         };
 
-        mediaRecorder.start(100); // collect every 100ms for stable chunks
+        mediaRecorder.start(100);
         isRecording = true;
         setMicState(true);
         setStatus('Listening...');
 
-        // Silence detection using the same AudioContext as TTS
         startSilenceDetection(stream);
 
-        // Absolute max length safety net
         maxRecTimer = setTimeout(function () {
           if (isRecording) stopRecording();
         }, MAX_RECORD_MS);
@@ -390,26 +403,29 @@
       });
   }
 
+  // Separate AudioContext with NO audio output — avoids earpiece routing on iOS
   function startSilenceDetection(stream) {
     try {
-      var ctx = getAudioCtx();
-      if (!ctx) return;
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
 
-      var src      = ctx.createMediaStreamSource(stream);
-      var analyser = ctx.createAnalyser();
+      silenceCtx = new AC();
+      var src      = silenceCtx.createMediaStreamSource(stream);
+      var analyser = silenceCtx.createAnalyser();
       analyser.fftSize = 512;
-      src.connect(analyser);
+      src.connect(analyser); // analysis only — NOT connected to destination
 
       var dataArr       = new Uint8Array(analyser.frequencyBinCount);
       var speechStarted = false;
-      var running       = true;
 
-      // Stop the RAF loop when recording ends
-      var origStop = stopRecording;
-      // We clear running flag via clearAllTimers called from onstop
-
-      function check() {
-        if (!isRecording) { running = false; return; }
+      // setInterval instead of requestAnimationFrame: fires reliably on iOS
+      // even when the user is not actively touching the screen
+      silenceInterval = setInterval(function () {
+        if (!isRecording) {
+          clearInterval(silenceInterval);
+          silenceInterval = null;
+          return;
+        }
 
         analyser.getByteFrequencyData(dataArr);
         var peak = 0;
@@ -418,26 +434,26 @@
         }
 
         if (peak > SILENCE_THRESHOLD) {
-          // Speech detected: clear any pending silence timer
           speechStarted = true;
-          if (silenceTimer) {
-            clearTimeout(silenceTimer);
-            silenceTimer = null;
-          }
+          if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
         } else if (speechStarted && !silenceTimer) {
-          // Silence after speech: schedule auto-stop
           silenceTimer = setTimeout(function () {
             if (isRecording) stopRecording();
           }, SILENCE_DELAY_MS);
         }
+      }, 100);
 
-        requestAnimationFrame(check);
-      }
-
-      requestAnimationFrame(check);
+      silenceCtx.resume().catch(function () {});
     } catch (e) {
-      // Silence detection unavailable on this browser: rely on maxRecTimer only
       console.warn('Silence detection not available:', e.message);
+    }
+  }
+
+  function closeSilenceCtx() {
+    if (silenceInterval) { clearInterval(silenceInterval); silenceInterval = null; }
+    if (silenceCtx) {
+      try { silenceCtx.close(); } catch (e) {}
+      silenceCtx = null;
     }
   }
 
@@ -450,7 +466,7 @@
     setStatus('');
   }
 
-  function clearAllTimers() {
+  function clearTimers() {
     if (silenceTimer) { clearTimeout(silenceTimer); silenceTimer = null; }
     if (maxRecTimer)  { clearTimeout(maxRecTimer);  maxRecTimer  = null; }
   }
@@ -481,7 +497,7 @@
       if (transcript) {
         sendMessageText(transcript);
       } else {
-        setStatus("Could not hear that clearly. Please try again.");
+        setStatus('Could not hear that clearly. Please try again.');
         setTimeout(function () { setStatus(''); }, 3000);
       }
     })
@@ -498,8 +514,8 @@
     if (!btn) return;
     if (active) {
       btn.classList.add('ai-mic-active');
-      btn.setAttribute('aria-label', 'Recording... tap to stop');
-      btn.title = 'Recording... (stops automatically when you finish speaking)';
+      btn.setAttribute('aria-label', 'Recording (stops when you finish speaking)');
+      btn.title = 'Recording (stops when you finish speaking)';
     } else {
       btn.classList.remove('ai-mic-active');
       btn.setAttribute('aria-label', 'Tap to speak');
