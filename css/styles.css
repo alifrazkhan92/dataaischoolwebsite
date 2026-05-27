@@ -221,12 +221,12 @@ a:hover { color: var(--accent-hover); }
 .header-inner {
   max-width: var(--site-width);
   margin: 0 auto;
-  padding: 0.875rem var(--side-pad);
+  padding: 0.55rem var(--side-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 /* Logo: navy "The Data and AI" + gold "School of London" */
@@ -238,7 +238,7 @@ a:hover { color: var(--accent-hover); }
   flex-shrink: 0;
 }
 .logo-img {
-  height: 44px;
+  height: 34px;
   width: auto;
   display: block;
   flex-shrink: 0;
@@ -249,7 +249,7 @@ a:hover { color: var(--accent-hover); }
   line-height: 1.15;
 }
 .logo-dais {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 900;
   color: var(--accent);
   letter-spacing: 0.1em;
