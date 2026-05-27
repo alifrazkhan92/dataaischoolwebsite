@@ -113,7 +113,7 @@
 
   <!-- tagline 1 -->
   <text x="157" y="108" font-family="Georgia,'Times New Roman',serif"
-    font-size="14" letter-spacing="3.5" fill="rgba(255,255,255,0.93)">THE DATA AND AI SCHOOL</text>
+    font-size="14" letter-spacing="3.5" fill="rgba(200,153,48,0.78)">THE DATA AND AI SCHOOL</text>
 
   <!-- tagline 2 -->
   <text x="157" y="128" font-family="Georgia,'Times New Roman',serif"
