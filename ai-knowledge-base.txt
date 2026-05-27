@@ -3,9 +3,13 @@ Auto-generated from website HTML. Do not edit manually.
 
 == INDEX.HTML ==
 NCFE Qualifications in Programming, Cyber Security and Data Science | DAIS London
+&#127979; The Data and AI School of London
 NCFE Regulated Qualifications in Tech and Digital
-Programming, Cyber Security, Data Science, Cloud and Functional Skills. Levels 2 to 5. Delivered 100% online by The Data and AI School of London.
+Programming, Cyber Security, Data Science, Cloud and Functional Skills. Levels 2 to 5. Delivered 100% online.
 Ask me anything about courses, fees or how to apply
+&#9729;&#65039; Cloud Computing
+&#128737;&#65039; Cyber Security
+&#129302; Artificial Intelligence
 NCFE regulated qualifications across five subject areas, from Entry Level to Level 5. Nationally recognised by UK employers and universities.
 NCFE qualifications covering coding principles and practices. Level 2 Certificate in Understanding Coding and Level 3 Certificate in Coding Practices.
 From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Aligned to UK Cyber Security Council standards.
