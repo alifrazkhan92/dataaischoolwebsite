@@ -231,18 +231,38 @@ a:hover { color: var(--accent-hover); }
 
 /* Logo: navy "The Data and AI" + gold "School of London" */
 .logo {
-  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+.logo-wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+.logo-dais {
   font-size: 1.2rem;
+  font-weight: 900;
   color: var(--accent);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.1em;
 }
-.logo span {
-  color: var(--gold);
+.logo-sub {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
 }
-html[data-theme="dark"] .logo,
-html[data-theme="dark"] .logo span {
-  color: var(--gold);
-}
+html[data-theme="dark"] .logo-dais { color: var(--gold); }
+html[data-theme="dark"] .logo-sub  { color: var(--text-muted); }
 
 .nav-main {
   display: flex;
@@ -358,7 +378,7 @@ main {
   overflow: hidden;
 }
 
-/* Layered academic radial — navy glow + faint gold shimmer */
+/* Soft radial glows */
 .hero::before {
   content: "";
   position: absolute;
@@ -368,6 +388,21 @@ main {
     radial-gradient(ellipse 40% 30% at 50% 80%, var(--gold-muted) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
+}
+/* Dot-grid tech overlay */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(10,34,64,0.13) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-theme="dark"] .hero::after {
+  background-image: radial-gradient(circle, rgba(200,153,48,0.12) 1.5px, transparent 1.5px);
 }
 
 .hero > * { position: relative; z-index: 1; }
@@ -416,6 +451,119 @@ main {
   display: block;
   object-fit: cover;
 }
+
+/* ─── Hero school badge ──────────────────────────────────────────────────────── */
+.hero-school-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--accent-muted);
+  border: 1px solid rgba(10,34,64,0.18);
+  border-radius: 100px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+html[data-theme="dark"] .hero-school-badge {
+  background: var(--accent-muted);
+  border-color: rgba(200,153,48,0.25);
+  color: var(--gold);
+}
+
+/* ─── Hero tech visual (replaces old image) ──────────────────────────────────── */
+.hero-tech-visual {
+  margin-top: 2.75rem;
+}
+
+/* Floating tech skill chips */
+.tech-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.tech-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.45rem 1.05rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 10px rgba(10,34,64,0.07);
+  animation: chip-float 4s ease-in-out infinite;
+  font-family: var(--font-sans);
+}
+.tech-chip:nth-child(2) { animation-delay: 0.5s; }
+.tech-chip:nth-child(3) { animation-delay: 1.0s; }
+.tech-chip:nth-child(4) { animation-delay: 1.5s; }
+.tech-chip:nth-child(5) { animation-delay: 2.0s; }
+.tech-chip:nth-child(6) { animation-delay: 2.5s; }
+.tech-chip:nth-child(7) { animation-delay: 3.0s; }
+.tech-chip:nth-child(8) { animation-delay: 3.5s; }
+@keyframes chip-float {
+  0%, 100% { transform: translateY(0);    box-shadow: 0 2px 10px rgba(10,34,64,0.07); }
+  50%       { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(10,34,64,0.12); }
+}
+html[data-theme="dark"] .tech-chip {
+  background: var(--bg-card);
+  border-color: var(--border);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+/* Stats bar */
+.hero-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.5rem;
+  max-width: 580px;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(10,34,64,0.08);
+  flex-wrap: wrap;
+  gap: 0.5rem 0;
+}
+.hero-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.75rem;
+}
+.stat-val {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stat-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 0.3rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.hero-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+html[data-theme="dark"] .hero-stats-row {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+html[data-theme="dark"] .stat-val { color: var(--gold); }
 
 /* ─── Image sections ─────────────────────────────────────────────────────────── */
 .image-section { margin-bottom: 3rem; }
@@ -923,6 +1071,10 @@ html[data-theme="dark"] .values-list .value-icon {
   }
   .hero-image { margin-top: 1.75rem; border-radius: var(--radius); }
   .hero-image img { max-height: 220px; object-fit: cover; }
+  .tech-chip { font-size: 0.78rem; padding: 0.4rem 0.85rem; }
+  .hero-stat-item { padding: 0 1rem; }
+  .stat-val { font-size: 1.2rem; }
+  .hero-school-badge { font-size: 0.72rem; padding: 0.35rem 0.9rem; }
 
   /* Section titles */
   .section-title { font-size: 1.5rem; }
@@ -1006,6 +1158,10 @@ html[data-theme="dark"] .values-list .value-icon {
   .hero h1 { font-size: 1.625rem; letter-spacing: -0.01em; }
   .hero .tagline { font-size: 0.9375rem; }
   .hero-image img { max-height: 180px; }
+  .hero-stats-row { padding: 0.85rem 0.75rem; }
+  .hero-stat-item { padding: 0 0.65rem; }
+  .hero-stat-divider { height: 30px; }
+  .hero-tech-visual { margin-top: 2rem; }
   .hero-actions .btn { max-width: 100%; min-height: 52px; font-size: 1rem; }
 
   /* Titles */
