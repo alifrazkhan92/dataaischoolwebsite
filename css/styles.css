@@ -208,6 +208,9 @@ a {
 a:hover { color: var(--accent-hover); }
 
 /* ─── Header & Navigation ────────────────────────────────────────────────────── */
+/* Custom element wrapper for the shared navbar component */
+site-nav { display: block; }
+
 .site-header {
   position: sticky;
   top: 0;
