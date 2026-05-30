@@ -38,10 +38,12 @@
   var SILENT_WAV = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
 
   // ── State ────────────────────────────────────────────────────────────────────
-  var messages     = [];
-  var isLoading    = false;
-  var sessionId    = generateSessionId();
-  var voiceEnabled = true;
+  var messages          = [];
+  var isLoading         = false;
+  var sessionId         = generateSessionId();
+  var voiceEnabled      = true;
+  var visitorRegistered = false;   // true once pre-chat form submitted
+  var visitorInfo       = null;    // { name, email, phone }
 
   // TTS: single reusable <audio> element
   var ttsAudio = null;
@@ -152,6 +154,46 @@
     });
   }
 
+  // ── Pre-chat validation helpers ───────────────────────────────────────────────
+
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function isValidName(v)  { return typeof v === 'string' && v.trim().length >= 2; }
+  function isValidEmail(v) { return typeof v === 'string' && EMAIL_RE.test(v.trim()); }
+  function isValidPhone(v) { return typeof v === 'string' && v.replace(/\D/g, '').length >= 7; }
+
+  function prechatFieldValid(id) {
+    var el = document.getElementById(id);
+    if (!el || !el.value.trim()) return false;
+    if (id === 'ai-prechat-email') return isValidEmail(el.value);
+    if (id === 'ai-prechat-phone') return isValidPhone(el.value);
+    return isValidName(el.value);
+  }
+
+  function updatePrechatCounter() {
+    var valid = ['ai-prechat-name', 'ai-prechat-email', 'ai-prechat-phone']
+      .filter(prechatFieldValid);
+    var count = valid.length;
+
+    var countEl  = document.getElementById('ai-prechat-count');
+    var submitEl = document.getElementById('ai-prechat-submit');
+    if (countEl)  countEl.textContent = count;
+    if (submitEl) submitEl.disabled = (count < 2);
+
+    // Mark fields
+    ['ai-prechat-name', 'ai-prechat-email', 'ai-prechat-phone'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var filled = el.value.trim().length > 0;
+      var ok     = prechatFieldValid(id);
+      el.classList.toggle('ai-prechat-ok',      filled && ok);
+      el.classList.toggle('ai-prechat-invalid',  filled && !ok);
+      el.classList.remove('ai-prechat-invalid');   // only show error on submit
+    });
+
+    return count;
+  }
+
   // ── Modal ─────────────────────────────────────────────────────────────────────
   function buildModal() {
     var micBtn = hasMediaRecorder
@@ -176,6 +218,8 @@
     overlay.setAttribute('aria-label', 'Talk to DAIS AI');
     overlay.innerHTML = [
       '<div id="ai-chat-modal">',
+
+      // ── Header (always visible) ──
       '  <div id="ai-chat-header">',
       '    <div id="ai-chat-header-inner">',
       '      <span id="ai-chat-avatar" aria-hidden="true">&#129302;</span>',
@@ -189,34 +233,84 @@
       '      <button id="ai-chat-close" aria-label="Close chat">&times;</button>',
       '    </div>',
       '  </div>',
-      '  <div id="ai-chat-messages" aria-live="polite" aria-atomic="false">',
-      '    <div class="ai-msg ai-msg-bot">',
-      '      <div class="ai-msg-bubble">',
-      '        Hi! I am the DAIS AI assistant. I can answer questions about our qualifications, admissions and how to apply. What would you like to know?',
+
+      // ── Pre-chat form ──
+      '  <div id="ai-chat-prechat">',
+      '    <p class="ai-prechat-intro">Before we start, please tell us a little about yourself so we can follow up if needed.</p>',
+      '    <p class="ai-prechat-hint">Provide at least <strong>2 of the 3</strong> fields below.</p>',
+      '    <form id="ai-prechat-form" novalidate>',
+      '      <div class="ai-prechat-field">',
+      '        <label for="ai-prechat-name">Full Name</label>',
+      '        <input type="text" id="ai-prechat-name" placeholder="Your name" autocomplete="name" maxlength="100">',
+      '      </div>',
+      '      <div class="ai-prechat-field">',
+      '        <label for="ai-prechat-email">Email Address</label>',
+      '        <input type="email" id="ai-prechat-email" placeholder="you@example.com" autocomplete="email" maxlength="200">',
+      '      </div>',
+      '      <div class="ai-prechat-field">',
+      '        <label for="ai-prechat-phone">Mobile Number</label>',
+      '        <input type="tel" id="ai-prechat-phone" placeholder="+44 7700 000000" autocomplete="tel" maxlength="50">',
+      '      </div>',
+      '      <div class="ai-prechat-counter">',
+      '        <span id="ai-prechat-count">0</span> of 3 fields provided',
+      '        <span class="ai-prechat-req">&nbsp;(min. 2 required)</span>',
+      '      </div>',
+      '      <div id="ai-prechat-error" class="ai-prechat-error" aria-live="polite" hidden></div>',
+      '      <button type="submit" id="ai-prechat-submit" class="ai-prechat-btn" disabled>',
+      '        Start Chat',
+      '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="width:16px;height:16px;margin-left:6px;vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+      '      </button>',
+      '    </form>',
+      '  </div>',
+
+      // ── Chat body (hidden until prechat complete) ──
+      '  <div id="ai-chat-body" hidden>',
+      '    <div id="ai-chat-messages" aria-live="polite" aria-atomic="false">',
+      '      <div class="ai-msg ai-msg-bot">',
+      '        <div class="ai-msg-bubble">',
+      '          Hi! I am the DAIS AI assistant. I can answer questions about our qualifications, admissions and how to apply. What would you like to know?',
+      '        </div>',
+      '      </div>',
+      '      <div id="ai-chat-suggestions">',
+             SUGGESTED_QUESTIONS.map(function (q) {
+               return '<button class="ai-suggestion" tabindex="0">' + escHtml(q) + '</button>';
+             }).join(''),
       '      </div>',
       '    </div>',
-      '    <div id="ai-chat-suggestions">',
-           SUGGESTED_QUESTIONS.map(function (q) {
-             return '<button class="ai-suggestion" tabindex="0">' + escHtml(q) + '</button>';
-           }).join(''),
+      '    <div id="ai-chat-status" aria-live="polite"></div>',
+      '    <div id="ai-chat-input-row">',
+             micBtn,
+      '      <textarea id="ai-chat-input" placeholder="Ask me anything about DAIS..." rows="1" aria-label="Your message"></textarea>',
+      '      <button id="ai-chat-send" aria-label="Send message">',
+      '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+      '      </button>',
       '    </div>',
+      '    <div id="ai-chat-footer">Ask me about courses, fees, admissions or how to get started.</div>',
       '  </div>',
-      '  <div id="ai-chat-status" aria-live="polite"></div>',
-      '  <div id="ai-chat-input-row">',
-           micBtn,
-      '    <textarea id="ai-chat-input" placeholder="Ask me anything about DAIS..." rows="1" aria-label="Your message"></textarea>',
-      '    <button id="ai-chat-send" aria-label="Send message">',
-      '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
-      '    </button>',
-      '  </div>',
-      '  <div id="ai-chat-footer">Ask me about courses, fees, admissions or how to get started.</div>',
+
       '</div>',
     ].join('\n');
 
     document.body.appendChild(overlay);
 
+    // Header buttons
     document.getElementById('ai-chat-close').addEventListener('click', closeModal);
     overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+    // Pre-chat form live validation
+    ['ai-prechat-name', 'ai-prechat-email', 'ai-prechat-phone'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', updatePrechatCounter);
+    });
+
+    // Pre-chat form submit
+    document.getElementById('ai-prechat-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      submitPrechat();
+    });
+
+    // Chat controls
     document.getElementById('ai-chat-send').addEventListener('click', sendMessage);
     document.getElementById('ai-chat-input').addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
@@ -229,7 +323,6 @@
       var btn = e.target.closest('.ai-suggestion');
       if (btn) sendMessageText(btn.textContent.trim());
     });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
     var vBtn = document.getElementById('ai-chat-voice-toggle');
     vBtn.classList.add('ai-voice-on');
@@ -241,6 +334,66 @@
     }
   }
 
+  // ── Pre-chat submit ───────────────────────────────────────────────────────────
+
+  function submitPrechat() {
+    var name  = (document.getElementById('ai-prechat-name').value  || '').trim();
+    var email = (document.getElementById('ai-prechat-email').value || '').trim();
+    var phone = (document.getElementById('ai-prechat-phone').value || '').trim();
+
+    // Validate
+    var errors = [];
+    if (email && !isValidEmail(email)) errors.push('Email address is not valid.');
+    if (phone && !isValidPhone(phone)) errors.push('Phone number must have at least 7 digits.');
+
+    var filledCount = [name, email, phone].filter(function (v) { return v.length > 0; }).length;
+    if (filledCount < 2) errors.push('Please fill in at least 2 fields.');
+
+    var errorEl = document.getElementById('ai-prechat-error');
+    if (errors.length) {
+      errorEl.textContent = errors.join(' ');
+      errorEl.hidden = false;
+      return;
+    }
+    errorEl.hidden = true;
+
+    // Disable form while POSTing
+    var submitBtn = document.getElementById('ai-prechat-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Starting...';
+
+    visitorInfo = { name: name, email: email, phone: phone };
+
+    // Register visitor with worker (fire-and-forget is fine; chat can proceed
+    // even if the network call fails)
+    fetch(WORKER_URL + '/visitor', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        sessionId: sessionId,
+        name:      name,
+        email:     email,
+        phone:     phone,
+      }),
+    }).catch(function (e) {
+      console.warn('Visitor registration failed:', e.message);
+    });
+
+    visitorRegistered = true;
+    showChatBody();
+  }
+
+  function showChatBody() {
+    var prechat = document.getElementById('ai-chat-prechat');
+    var body    = document.getElementById('ai-chat-body');
+    if (prechat) prechat.hidden = true;
+    if (body)    body.hidden    = false;
+    setTimeout(function () {
+      var input = document.getElementById('ai-chat-input');
+      if (input) input.focus();
+    }, 100);
+  }
+
   // ── Open / Close ──────────────────────────────────────────────────────────────
   function openModal() {
     var overlay = document.getElementById('ai-chat-overlay');
@@ -248,10 +401,23 @@
     overlay.classList.add('ai-chat-open');
     document.body.style.overflow = 'hidden';
     unlockAudio(); // synchronous inside user gesture
-    setTimeout(function () {
-      var input = document.getElementById('ai-chat-input');
-      if (input) input.focus();
-    }, 200);
+
+    if (visitorRegistered) {
+      // Already collected details, go straight to chat
+      setTimeout(function () {
+        var input = document.getElementById('ai-chat-input');
+        if (input) input.focus();
+      }, 200);
+    } else {
+      // Show pre-chat form, focus first empty field
+      setTimeout(function () {
+        var first = ['ai-prechat-name','ai-prechat-email','ai-prechat-phone'].find(function (id) {
+          var el = document.getElementById(id);
+          return el && !el.value.trim();
+        });
+        if (first) document.getElementById(first).focus();
+      }, 200);
+    }
   }
 
   function closeModal() {

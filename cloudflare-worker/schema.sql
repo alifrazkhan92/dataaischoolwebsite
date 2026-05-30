@@ -12,3 +12,12 @@ CREATE TABLE IF NOT EXISTS chat_logs (
 
 CREATE INDEX IF NOT EXISTS idx_session   ON chat_logs (session_id);
 CREATE INDEX IF NOT EXISTS idx_created   ON chat_logs (created_at);
+
+-- Visitor details collected via pre-chat form before the session starts
+CREATE TABLE IF NOT EXISTS visitor_sessions (
+  session_id    TEXT PRIMARY KEY,
+  created_at    TEXT NOT NULL,   -- ISO 8601 UTC timestamp
+  visitor_name  TEXT,
+  visitor_email TEXT,
+  visitor_phone TEXT
+);

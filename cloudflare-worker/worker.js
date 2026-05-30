@@ -2,6 +2,7 @@
  * DAIS AI Chat - Cloudflare Worker
  *
  * POST /          — chat endpoint (AI response + D1 logging)
+ * POST /visitor   — register visitor details before chat starts
  * POST /tts       — text-to-speech via ElevenLabs
  * POST /stt       — speech-to-text via ElevenLabs
  * GET  /?action=logs&key=ADMIN_KEY  — admin log viewer
@@ -291,6 +292,68 @@ async function handleSTT(request, env, headers) {
   });
 }
 
+// ── Visitor registration ──────────────────────────────────────────────────────
+
+const VISITOR_TABLE_SQL = `
+  CREATE TABLE IF NOT EXISTS visitor_sessions (
+    session_id    TEXT PRIMARY KEY,
+    created_at    TEXT NOT NULL,
+    visitor_name  TEXT,
+    visitor_email TEXT,
+    visitor_phone TEXT
+  )`;
+
+async function ensureVisitorTable(env) {
+  try {
+    await env.dais_chat_logs.exec(VISITOR_TABLE_SQL);
+  } catch (e) {
+    // Table likely already exists; ignore
+  }
+}
+
+async function handleVisitor(request, env, headers) {
+  let body;
+  try { body = await request.json(); }
+  catch { return jsonError(400, 'Invalid JSON', headers); }
+
+  const { sessionId, name, email, phone } = body;
+  if (!sessionId) return jsonError(400, 'sessionId required', headers);
+
+  // Enforce minimum 2-of-3 server-side as well
+  const filled = [name, email, phone].filter(v => typeof v === 'string' && v.trim().length > 0).length;
+  if (filled < 2) return jsonError(400, 'At least 2 contact fields are required', headers);
+
+  if (!env.dais_chat_logs) return jsonError(503, 'D1 not configured', headers);
+
+  await ensureVisitorTable(env);
+
+  const safeId = typeof sessionId === 'string'
+    ? sessionId.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 64)
+    : 'unknown';
+
+  try {
+    await env.dais_chat_logs.prepare(
+      `INSERT OR REPLACE INTO visitor_sessions
+         (session_id, created_at, visitor_name, visitor_email, visitor_phone)
+       VALUES (?, ?, ?, ?, ?)`
+    ).bind(
+      safeId,
+      new Date().toISOString(),
+      (name  || '').trim().slice(0, 100),
+      (email || '').trim().slice(0, 200),
+      (phone || '').trim().slice(0, 50)
+    ).run();
+  } catch (e) {
+    console.error('Visitor insert error:', e.message);
+    return jsonError(500, 'Could not save visitor info', headers);
+  }
+
+  return new Response(JSON.stringify({ ok: true }), {
+    status: 200,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
+}
+
 // ── Admin log viewer ──────────────────────────────────────────────────────────
 
 async function handleAdminLogs(request, env) {
@@ -308,10 +371,15 @@ async function handleAdminLogs(request, env) {
     return new Response('D1 not configured', { status: 503 });
   }
 
+  // Ensure visitor_sessions table exists before JOIN
+  await ensureVisitorTable(env);
+
   const { results } = await env.dais_chat_logs.prepare(
-    `SELECT session_id, created_at, turn, visitor_msg, ai_reply
-     FROM chat_logs
-     ORDER BY created_at DESC
+    `SELECT c.session_id, c.created_at, c.turn, c.visitor_msg, c.ai_reply,
+            v.visitor_name, v.visitor_email, v.visitor_phone
+     FROM chat_logs c
+     LEFT JOIN visitor_sessions v ON c.session_id = v.session_id
+     ORDER BY c.created_at DESC
      LIMIT ? OFFSET ?`
   ).bind(limit, offset).all();
 
@@ -321,14 +389,22 @@ async function handleAdminLogs(request, env) {
   const total = countResult[0]?.total || 0;
   const pages = Math.ceil(total / limit);
 
-  const rows = (results || []).map(r => `
+  const rows = (results || []).map(r => {
+    const visitor = [
+      r.visitor_name  ? `<strong>${esc(r.visitor_name)}</strong>` : '',
+      r.visitor_email ? `<a href="mailto:${esc(r.visitor_email)}">${esc(r.visitor_email)}</a>` : '',
+      r.visitor_phone ? esc(r.visitor_phone) : '',
+    ].filter(Boolean).join('<br>') || '<span style="color:#aaa">unknown</span>';
+    return `
     <tr>
       <td>${esc(r.created_at.replace('T',' ').slice(0,19))} UTC</td>
       <td><code>${esc(r.session_id.slice(0,8))}…</code></td>
-      <td>${esc(r.turn)}</td>
+      <td style="text-align:center">${esc(r.turn)}</td>
+      <td>${visitor}</td>
       <td>${esc(r.visitor_msg)}</td>
       <td>${esc(r.ai_reply)}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 
   const prevLink = page > 1
     ? `<a href="?action=logs&key=${esc(key)}&page=${page-1}">Previous</a>` : '';
@@ -355,8 +431,8 @@ async function handleAdminLogs(request, env) {
 <h1>DAIS AI Chat Logs</h1>
 <p class="meta">Showing ${results.length} of ${total} messages. Page ${page} of ${Math.max(1,pages)}.</p>
 <table>
-<thead><tr><th>Timestamp</th><th>Session</th><th>Turn</th><th>Visitor message</th><th>AI reply</th></tr></thead>
-<tbody>${rows || '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#999">No conversations yet.</td></tr>'}</tbody>
+<thead><tr><th>Timestamp</th><th>Session</th><th>Turn</th><th>Visitor</th><th>Visitor message</th><th>AI reply</th></tr></thead>
+<tbody>${rows || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#999">No conversations yet.</td></tr>'}</tbody>
 </table>
 <div class="pager">${prevLink} ${nextLink}</div>
 </body></html>`;
@@ -405,8 +481,9 @@ export default {
     }
 
     // Route POST requests
-    if (path === '/tts') return handleTTS(request, env, headers);
-    if (path === '/stt') return handleSTT(request, env, headers);
+    if (path === '/visitor') return handleVisitor(request, env, headers);
+    if (path === '/tts')     return handleTTS(request, env, headers);
+    if (path === '/stt')     return handleSTT(request, env, headers);
 
     // Default: chat
     return handleChat(request, env, ctx, headers);

@@ -2155,3 +2155,106 @@ html[data-theme="dark"] .form-feedback.error {
 .ai-play-btn svg { width: 12px; height: 12px; }
 .ai-play-btn:hover { background: var(--gold-muted); }
 .ai-play-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ── Pre-chat visitor form ─────────────────────────────────────────────────── */
+#ai-chat-prechat {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+.ai-prechat-intro {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.ai-prechat-hint {
+  margin: 0 0 16px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+#ai-prechat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ai-prechat-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ai-prechat-field label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.ai-prechat-field input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.ai-prechat-field input:focus {
+  border-color: var(--accent);
+}
+.ai-prechat-field input.ai-prechat-ok {
+  border-color: #22c55e;
+}
+.ai-prechat-field input.ai-prechat-invalid {
+  border-color: #ef4444;
+}
+.ai-prechat-counter {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.ai-prechat-req {
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+.ai-prechat-error {
+  font-size: 0.82rem;
+  color: #ef4444;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  margin-top: 2px;
+}
+.ai-prechat-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 11px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.ai-prechat-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+.ai-prechat-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
