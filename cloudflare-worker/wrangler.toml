@@ -1,5 +1,6 @@
 name = "dais-chat"
 main = "worker.js"
+account_id = "c40adef89621b2bcffb2f8e904883d75"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 

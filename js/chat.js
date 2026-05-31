@@ -364,8 +364,8 @@
 
     visitorInfo = { name: name, email: email, phone: phone };
 
-    // Register visitor with worker (fire-and-forget is fine; chat can proceed
-    // even if the network call fails)
+    // POST visitor details to worker — wait for response before opening chat
+    // so we know it saved. Show error if it fails rather than silently losing data.
     fetch(WORKER_URL + '/visitor', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -375,12 +375,27 @@
         email:     email,
         phone:     phone,
       }),
-    }).catch(function (e) {
-      console.warn('Visitor registration failed:', e.message);
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error('Server error ' + res.status);
+      visitorRegistered = true;
+      showChatBody();
+    })
+    .catch(function (e) {
+      console.error('Visitor registration failed:', e.message);
+      // Still open chat so the visitor is not blocked, but re-enable button
+      visitorRegistered = true;
+      showChatBody();
+      var errorEl = document.getElementById('ai-prechat-error');
+      if (errorEl) {
+        errorEl.textContent = 'Note: your details could not be saved. You can still chat.';
+        errorEl.hidden = false;
+      }
+    })
+    .finally(function () {
+      var submitBtn = document.getElementById('ai-prechat-submit');
+      if (submitBtn) submitBtn.disabled = false;
     });
-
-    visitorRegistered = true;
-    showChatBody();
   }
 
   function showChatBody() {

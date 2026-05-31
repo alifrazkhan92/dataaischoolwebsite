@@ -294,21 +294,11 @@ async function handleSTT(request, env, headers) {
 
 // ── Visitor registration ──────────────────────────────────────────────────────
 
-const VISITOR_TABLE_SQL = `
-  CREATE TABLE IF NOT EXISTS visitor_sessions (
-    session_id    TEXT PRIMARY KEY,
-    created_at    TEXT NOT NULL,
-    visitor_name  TEXT,
-    visitor_email TEXT,
-    visitor_phone TEXT
-  )`;
-
+// Table is created via wrangler migration (schema.sql).
+// This function is a no-op safety net only — exec() is unreliable for DDL in D1.
 async function ensureVisitorTable(env) {
-  try {
-    await env.dais_chat_logs.exec(VISITOR_TABLE_SQL);
-  } catch (e) {
-    // Table likely already exists; ignore
-  }
+  // No-op: visitor_sessions is created via `wrangler d1 execute` / schema.sql
+  // Kept here so callers don't need changing if we ever add guard logic.
 }
 
 async function handleVisitor(request, env, headers) {
