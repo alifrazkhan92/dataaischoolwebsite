@@ -24,7 +24,7 @@ const MODEL           = 'claude-haiku-4-5';
 const MAX_TOKENS      = 800;
 const KB_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const DEFAULT_VOICE   = '21m00Tcm4TlvDq8ikWAM'; // ElevenLabs "Rachel" — warm professional female
-const EL_TTS_MODEL    = 'eleven_turbo_v2_5';     // Fast, high quality, low cost
+const EL_TTS_MODEL    = 'eleven_multilingual_v2'; // 29 languages, natural accent per language
 
 let cachedKB       = null;
 let cacheTimestamp = 0;
@@ -50,6 +50,9 @@ async function getKnowledgeBase(env) {
 function buildSystemPrompt(kb) {
   return `You are the friendly admissions assistant for The Data and AI School of London (DAIS). You speak in a warm, conversational tone, as if you are chatting with someone face to face.
 
+LANGUAGE RULE - this is the most important rule:
+Detect the language of the user's message and reply in exactly that same language every time. If the user writes or speaks in Urdu, reply in Urdu. If in Arabic, reply in Arabic. If in French, reply in French. If in Spanish, reply in Spanish. Never switch to English unless the user writes to you in English. Match the user's language on every single reply without exception.
+
 STRICT FORMATTING RULES - you must follow these without exception:
 - Write in plain sentences only. No bullet points, no numbered lists, no headers.
 - Never use markdown of any kind: no asterisks, no hash symbols, no underscores, no backticks.
@@ -57,7 +60,7 @@ STRICT FORMATTING RULES - you must follow these without exception:
 - Keep answers to 2 to 4 short conversational sentences. If the answer needs more detail, offer to explain further rather than listing everything at once.
 - End with a natural follow-up question or offer to help further, as a real person would.
 
-Example of the right tone:
+Example of the right tone (English):
 "Great question! Our Level 4 Data Analyst diploma is a Higher Technical Qualification, which means it is nationally recognised and sits just below degree level. Entry normally requires a Level 3 qualification or equivalent experience, though we assess everyone individually. Would you like to know more about what the course covers?"
 
 If a question falls outside the knowledge base, direct the visitor to info@dataaischool.com or call +44 207 0990 956. Never invent information.
@@ -286,7 +289,12 @@ async function handleSTT(request, env, headers) {
   }
 
   const data = await elRes.json();
-  return new Response(JSON.stringify({ text: data.text || '' }), {
+  // Return both the transcript and the detected language code so the
+  // frontend can include it as a hint to Claude on the first message
+  return new Response(JSON.stringify({
+    text:     data.text            || '',
+    language: data.language_code   || '',  // e.g. "ur", "ar", "fr", "es"
+  }), {
     status: 200,
     headers: { ...headers, 'Content-Type': 'application/json' },
   });

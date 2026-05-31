@@ -454,16 +454,19 @@
     sendMessageText(text);
   }
 
-  function sendMessageText(text) {
-    if (!text || isLoading) return;
+  // displayText  — shown in the chat bubble (what the user sees)
+  // apiText      — sent to Claude (may include a hidden language hint); defaults to displayText
+  function sendMessageText(displayText, apiText) {
+    if (!displayText || isLoading) return;
     stopAudio();
     unlockAudio(); // re-unlock on every send tap (keeps iOS happy)
 
     var suggestions = document.getElementById('ai-chat-suggestions');
     if (suggestions) suggestions.style.display = 'none';
 
-    appendMessage('user', text);
-    messages.push({ role: 'user', content: text });
+    var contentForApi = apiText || displayText;
+    appendMessage('user', displayText);
+    messages.push({ role: 'user', content: contentForApi });
 
     var typingId = 'typing-' + Date.now();
     appendTyping(typingId);
@@ -675,12 +678,22 @@
       setStatus('');
       setInputEnabled(true);
       var transcript = (data.text || '').trim();
-      if (transcript) {
-        sendMessageText(transcript);
-      } else {
+      if (!transcript) {
         setStatus('Could not hear that clearly. Please try again.');
         setTimeout(function () { setStatus(''); }, 3000);
+        return;
       }
+
+      // If ElevenLabs detected a non-English language, prepend a hidden hint
+      // so Claude knows to reply in that language even on the very first message.
+      // The hint goes into apiText only — the chat bubble shows clean transcript.
+      var lang = (data.language || '').toLowerCase();
+      var apiText = transcript;
+      if (lang && lang !== 'en') {
+        apiText = '[Detected language: ' + lang + '. You must reply in this language.] ' + transcript;
+      }
+
+      sendMessageText(transcript, apiText);
     })
     .catch(function (e) {
       console.warn('STT failed:', e);
