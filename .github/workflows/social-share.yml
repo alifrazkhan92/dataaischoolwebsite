@@ -1,0 +1,53 @@
+name: Share new blog posts to social media
+
+# Fires whenever a commit to main touches the blog/ directory.
+# Only NEW blog posts (git diff-filter=A) trigger sharing — edits to
+# existing posts are ignored so the same article is never posted twice.
+
+on:
+  push:
+    branches: [main]
+    paths: ['blog/**.html']
+
+jobs:
+  share:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (2 commits so we can diff)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect newly added blog posts
+        id: detect
+        run: |
+          # --diff-filter=A  →  Added files only (not Modified/Renamed/Deleted)
+          NEW=$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'blog/*.html' | tr '\n' ' ')
+          echo "new_files=$NEW" >> "$GITHUB_OUTPUT"
+          if [ -n "$NEW" ]; then
+            echo "New blog post(s) detected: $NEW"
+          else
+            echo "No new blog posts in this push — skipping social share."
+          fi
+
+      - name: Set up Python
+        if: steps.detect.outputs.new_files != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        if: steps.detect.outputs.new_files != ''
+        run: pip install requests beautifulsoup4
+
+      - name: Share to Facebook, Instagram and LinkedIn
+        if: steps.detect.outputs.new_files != ''
+        env:
+          NEW_FILES:             ${{ steps.detect.outputs.new_files }}
+          FB_PAGE_ACCESS_TOKEN:  ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:            ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:            ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:       ${{ secrets.LI_ACCESS_TOKEN }}
+          LI_AUTHOR_URN:         ${{ secrets.LI_AUTHOR_URN }}
+        run: python scripts/social_share.py
