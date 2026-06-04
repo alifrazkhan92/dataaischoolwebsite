@@ -1285,10 +1285,14 @@ html[data-theme="dark"] .values-list .value-icon {
 .latest-post-img {
   flex-shrink: 0;
   width: 300px;
+  min-height: 240px;    /* explicit height so Windows browsers don't collapse it */
+  position: relative;
   overflow: hidden;
   display: block;
 }
 .latest-post-img img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
