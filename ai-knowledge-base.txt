@@ -2,10 +2,10 @@ THE DATA AND AI SCHOOL OF LONDON - AUTO-GENERATED KNOWLEDGE BASE
 Auto-generated from website HTML. Do not edit manually.
 
 == INDEX.HTML ==
-NCFE Qualifications in Programming, Cyber Security and Data Science | DAIS London
-&#127979; The Data and AI School of London
-NCFE Regulated Qualifications in Tech and Digital
-Programming, Cyber Security, Data Science, Cloud and Functional Skills. Levels 2 to 5. Delivered 100% online.
+The Data and AI School of London | Data, AI and Technology Qualifications
+&#127979; Based in London &middot; 100% Online
+The UK's Specialist School for Data, AI and Technology
+Programming, Cyber Security, Data Science, Cloud and AI. Levels 2 to 5. NCFE regulated and nationally recognised by UK employers.
 Ask me anything about courses, fees or how to apply
 &#9729;&#65039; Cloud Computing
 &#128737;&#65039; Cyber Security
@@ -66,7 +66,7 @@ Want to learn more or discuss which course fits you?
 © The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
 
 == COURSES.HTML ==
-NCFE Regulated Qualifications: Programming, Cyber Security, Data Science | DAIS London
+Courses | The Data and AI School of London
 We deliver NCFE regulated qualifications across five subject areas: Programming, Cyber Security, Data Science and Analytics, Cloud and Digital Support, and Functional Skills English. All qualifications sit on the Regulated Qualifications Framework (RQF) and are nationally recognised by UK employers and universities.
 Our programming qualifications introduce learners to coding principles, problem-solving, and software development. From understanding the fundamentals to applying them in real projects, these qualifications build a solid technical foundation.
 ✓ NCFE regulated, RQF accredited
