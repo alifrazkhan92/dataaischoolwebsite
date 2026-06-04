@@ -1958,7 +1958,10 @@ html[data-theme="dark"] .form-feedback.error {
 #ai-chat-modal {
   width: 100%;
   max-width: 520px;
+  /* dvh = dynamic viewport height — accounts for Android URL bar hide/show.
+     vh fallback for older browsers. */
   height: 75vh;
+  height: 75dvh;
   max-height: 640px;
   background: var(--bg-card);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
@@ -2018,12 +2021,17 @@ html[data-theme="dark"] .form-feedback.error {
 /* ---- Messages ---- */
 #ai-chat-messages {
   flex: 1;
+  min-height: 0;           /* critical: lets flex child shrink below content size */
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;   /* momentum scroll on Android/iOS */
+  overscroll-behavior: contain;        /* stop scroll bleeding to page behind */
+  touch-action: pan-y;                 /* allow vertical finger scroll on Android */
   padding: 20px 16px 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth removed — interferes with programmatic scroll on Android */
 }
 
 .ai-msg { display: flex; }
@@ -2167,6 +2175,7 @@ html[data-theme="dark"] .form-feedback.error {
   #ai-chat-modal {
     max-width: 100%;
     height: 88vh;
+    height: 88dvh;   /* dvh adapts when Android URL bar appears/disappears */
     max-height: none;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
@@ -2269,7 +2278,11 @@ html[data-theme="dark"] .form-feedback.error {
   flex-direction: column;
   gap: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   flex: 1;
+  min-height: 0;
 }
 .ai-prechat-intro {
   margin: 0 0 6px;
