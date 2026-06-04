@@ -2233,6 +2233,13 @@ html[data-theme="dark"] .form-feedback.error {
   padding: 8px 12px;
   margin-top: 2px;
 }
+.ai-prechat-privacy {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 4px 0 8px;
+}
+.ai-prechat-privacy a { color: var(--accent); }
 .ai-prechat-btn {
   display: inline-flex;
   align-items: center;

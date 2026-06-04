@@ -55,6 +55,12 @@ def parse_blog_post(filepath):
     if image.startswith('/'):
         image = BASE_URL + image
 
+    # Security: reject URLs that do not belong to the DAIS domain
+    if not url.startswith(BASE_URL):
+        url = f'{BASE_URL}/blog/{filename}'
+    if not image.startswith(BASE_URL):
+        image = f'{BASE_URL}/images/og-default.jpg'
+
     return {'title': title, 'description': desc, 'url': url, 'image': image}
 
 

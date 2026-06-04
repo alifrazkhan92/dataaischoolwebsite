@@ -256,6 +256,7 @@
       '        <span class="ai-prechat-req">&nbsp;(min. 2 required)</span>',
       '      </div>',
       '      <div id="ai-prechat-error" class="ai-prechat-error" aria-live="polite" hidden></div>',
+      '      <p class="ai-prechat-privacy">Your details are stored securely and used only to follow up on your enquiry. See our <a href="/privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>. By clicking Start Chat you consent to your details and conversation being stored for up to 90 days.</p>',
       '      <button type="submit" id="ai-prechat-submit" class="ai-prechat-btn" disabled>',
       '        Start Chat',
       '        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="width:16px;height:16px;margin-left:6px;vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',

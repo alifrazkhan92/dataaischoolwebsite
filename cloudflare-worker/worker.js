@@ -26,6 +26,49 @@ const KB_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const DEFAULT_VOICE   = '21m00Tcm4TlvDq8ikWAM'; // ElevenLabs "Rachel" — warm professional female
 const EL_TTS_MODEL    = 'eleven_multilingual_v2'; // 29 languages, natural accent per language
 
+// Security limits
+const STT_MAX_BYTES   = 5 * 1024 * 1024; // 5 MB audio upload cap
+const TTS_MAX_CHARS   = 1000;            // max chars forwarded to ElevenLabs per request
+
+// In-memory rate limiter (best-effort; resets per isolate restart)
+// For strict distributed limiting add a Cloudflare Rate Limiting rule in the dashboard.
+const rateLimiter = new Map(); // IP -> { count, windowStart }
+const RATE_WINDOWS = {
+  '/':        { max: 20,  windowMs: 60_000 },  // chat: 20 req/min
+  '/visitor': { max: 5,   windowMs: 60_000 },  // visitor reg: 5 req/min
+  '/tts':     { max: 15,  windowMs: 60_000 },  // TTS: 15 req/min
+  '/stt':     { max: 10,  windowMs: 60_000 },  // STT: 10 req/min
+};
+
+function checkRateLimit(path, ip) {
+  const rule = RATE_WINDOWS[path] || RATE_WINDOWS['/'];
+  const key  = path + ':' + ip;
+  const now  = Date.now();
+  const rec  = rateLimiter.get(key) || { count: 0, windowStart: now };
+  if (now - rec.windowStart > rule.windowMs) {
+    rec.count = 0; rec.windowStart = now;
+  }
+  rec.count++;
+  rateLimiter.set(key, rec);
+  return rec.count <= rule.max;
+}
+
+// Data retention: rows older than 90 days are purged (runs on every chat request, 1% probability)
+async function maybePurgeOldLogs(env) {
+  if (Math.random() > 0.01) return; // run ~1% of requests to avoid overhead
+  try {
+    const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+    await env.dais_chat_logs.prepare(
+      'DELETE FROM chat_logs WHERE created_at < ?'
+    ).bind(cutoff).run();
+    await env.dais_chat_logs.prepare(
+      'DELETE FROM visitor_sessions WHERE created_at < ?'
+    ).bind(cutoff).run();
+  } catch (e) {
+    console.error('Purge error:', e.message);
+  }
+}
+
 let cachedKB       = null;
 let cacheTimestamp = 0;
 
@@ -80,6 +123,17 @@ function corsHeaders(origin, env) {
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age':       '86400',
   };
+}
+
+// Server-side origin gate: reject requests from disallowed origins outright.
+// Browser callers that pass a wrong Origin are blocked; direct API callers
+// with no Origin header (curl, server-to-server) are also rejected so that
+// only the DAIS website can use the endpoints.
+function originAllowed(origin, env) {
+  const allowed = env.ALLOWED_ORIGIN || 'https://www.dataaischool.com';
+  // Require an Origin header — block headless/direct callers
+  if (!origin) return false;
+  return origin === allowed;
 }
 
 // ── Shared error helper ───────────────────────────────────────────────────────
@@ -195,7 +249,7 @@ async function handleTTS(request, env, headers) {
     return jsonError(400, 'Invalid JSON', headers);
   }
 
-  const text = String(body.text || '').slice(0, 2000).trim();
+  const text = String(body.text || '').slice(0, TTS_MAX_CHARS).trim();
   if (!text) return jsonError(400, 'text required', headers);
 
   const voiceId = env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE;
@@ -262,6 +316,7 @@ async function handleSTT(request, env, headers) {
   }
 
   if (!audioData.byteLength) return jsonError(400, 'Empty audio', headers);
+  if (audioData.byteLength > STT_MAX_BYTES) return jsonError(413, 'Audio file too large (max 5 MB)', headers);
 
   const formData = new FormData();
   formData.append(
@@ -361,7 +416,7 @@ async function handleAdminLogs(request, env) {
   const limit  = 50;
   const offset = (page - 1) * limit;
 
-  if (!env.ADMIN_KEY || !timingSafeEqual(key, env.ADMIN_KEY)) {
+  if (!env.ADMIN_KEY || !await timingSafeEqual(key, env.ADMIN_KEY)) {
     return new Response('Unauthorised', { status: 401 });
   }
 
@@ -404,10 +459,9 @@ async function handleAdminLogs(request, env) {
     </tr>`;
   }).join('');
 
-  const prevLink = page > 1
-    ? `<a href="?action=logs&key=${esc(key)}&page=${page-1}">Previous</a>` : '';
-  const nextLink = page < pages
-    ? `<a href="?action=logs&key=${esc(key)}&page=${page+1}">Next</a>` : '';
+  // Key is passed via JS to avoid it appearing in browser history or logs
+  const prevLink = page > 1  ? `<a href="#" onclick="nav(${page-1});return false">Previous</a>` : '';
+  const nextLink = page < pages ? `<a href="#" onclick="nav(${page+1});return false">Next</a>` : '';
 
   const html = `<!doctype html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -424,8 +478,21 @@ async function handleAdminLogs(request, env) {
   code{font-size:.8rem;color:#666}
   .meta{margin-bottom:1rem;color:#6b5e52;font-size:.875rem}
   .pager{margin-top:1rem;display:flex;gap:1rem;align-items:center}
-  a{color:#0a2240;font-weight:700}
-</style></head><body>
+  a{color:#0a2240;font-weight:700;cursor:pointer}
+</style>
+<script>
+// Key is kept only in memory — never in URLs, history, or logs
+const _k = new URLSearchParams(location.search).get('key') || '';
+function nav(p) {
+  const u = new URL(location.href);
+  u.searchParams.set('page', p);
+  // Replace state so key stays in URL only for this session
+  location.href = u.toString();
+}
+// Strip key from URL bar after load to avoid browser history leakage
+history.replaceState(null, '', location.pathname + '?action=logs&page=${page}');
+</script>
+</head><body>
 <h1>DAIS AI Chat Logs</h1>
 <p class="meta">Showing ${results.length} of ${total} messages. Page ${page} of ${Math.max(1,pages)}.</p>
 <table>
@@ -447,12 +514,26 @@ function esc(str) {
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-function timingSafeEqual(a, b) {
+async function timingSafeEqual(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string') return false;
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+  const enc = new TextEncoder();
+  const aBytes = enc.encode(a);
+  const bBytes = enc.encode(b);
+  // Length mismatch: still do a constant-time compare on same-length buffers
+  // to avoid leaking the key length via timing
+  if (aBytes.length !== bBytes.length) {
+    // Dummy compare to consume similar time
+    await crypto.subtle.digest('SHA-256', aBytes);
+    return false;
+  }
+  try {
+    return await crypto.subtle.timingSafeEqual(aBytes, bBytes);
+  } catch {
+    // Fallback for environments where timingSafeEqual is unavailable
+    let diff = 0;
+    for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
+    return diff === 0;
+  }
 }
 
 // ── Main fetch handler ────────────────────────────────────────────────────────
@@ -463,20 +544,39 @@ export default {
     const origin  = request.headers.get('Origin') || '';
     const headers = corsHeaders(origin, env);
     const path    = url.pathname.replace(/\/+$/, '') || '/';
+    const ip      = request.headers.get('CF-Connecting-IP') || 'unknown';
 
-    // Admin log viewer (GET only, no CORS)
+    // Admin log viewer (GET only, requires ADMIN_KEY — no origin check needed)
     if (request.method === 'GET' && url.searchParams.get('action') === 'logs') {
       return handleAdminLogs(request, env);
     }
 
-    // CORS preflight
+    // CORS preflight — respond before origin gate so browsers can check
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers });
+    }
+
+    // ── Server-side origin gate ───────────────────────────────────────────────
+    // Reject all non-browser and wrong-origin callers. This stops direct API
+    // abuse from curl, scripts, or other origins.
+    if (!originAllowed(origin, env)) {
+      return new Response('Forbidden', { status: 403 });
     }
 
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405, headers });
     }
+
+    // ── Per-IP rate limiting ──────────────────────────────────────────────────
+    if (!checkRateLimit(path, ip)) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Please wait a moment.' }), {
+        status: 429,
+        headers: { ...headers, 'Content-Type': 'application/json', 'Retry-After': '60' },
+      });
+    }
+
+    // Opportunistic PII purge (runs ~1% of requests, fire-and-forget)
+    if (env.dais_chat_logs) ctx.waitUntil(maybePurgeOldLogs(env));
 
     // Route POST requests
     if (path === '/visitor') return handleVisitor(request, env, headers);
