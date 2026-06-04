@@ -1597,6 +1597,75 @@ html[data-theme="dark"] .values-list .value-icon {
 .blog-cta h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
 .blog-cta p { color: var(--text-muted); margin-bottom: 1.25rem; }
 
+/* ── Blog share buttons ──────────────────────────────────────────────────────── */
+.blog-share {
+  margin: 1.75rem 0;
+}
+.blog-share-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.blog-share-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-right: 0.25rem;
+}
+.blog-share-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.blog-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+  color: #fff;
+}
+.blog-share-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.blog-share-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.blog-share-btn:active { transform: translateY(0); }
+
+/* Platform colours */
+.blog-share-facebook  { background: #1877F2; }
+.blog-share-linkedin  { background: #0A66C2; }
+.blog-share-twitter   { background: #000; }
+.blog-share-whatsapp  { background: #25D366; }
+.blog-share-email     { background: var(--accent); }
+.blog-share-copy      { background: var(--bg-card); color: var(--text); border: 1.5px solid var(--border); }
+.blog-share-copy:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-card); }
+.blog-share-copied    { background: #22c55e !important; color: #fff !important; border-color: #22c55e !important; }
+
+/* Mobile: tighten */
+@media (max-width: 560px) {
+  .blog-share-inner { padding: 0.875rem 1rem; gap: 0.5rem; }
+  .blog-share-label { width: 100%; margin-right: 0; }
+  .blog-share-btn { padding: 8px 12px; font-size: 0.8rem; min-height: 40px; }
+}
+
 /* ─── Cookie Consent Banner ──────────────────────────────────────────────────── */
 #cookie-banner {
   position: fixed;
