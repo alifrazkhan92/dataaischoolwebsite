@@ -237,11 +237,11 @@ a:hover { color: var(--accent-hover); }
   flex-shrink: 0;
 }
 .logo-img {
-  height: 48px;
+  height: 56px;
   width: auto;
   display: block;
   flex-shrink: 0;
-  border-radius: 10px;   /* matches the pill corners on the new logo PNG */
+  border-radius: 10px;
 }
 
 .nav-main {
