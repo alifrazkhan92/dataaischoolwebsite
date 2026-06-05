@@ -237,7 +237,7 @@ a:hover { color: var(--accent-hover); }
   flex-shrink: 0;
 }
 .logo-img {
-  height: 44px;
+  height: 60px;
   width: auto;
   display: block;
   flex-shrink: 0;
@@ -998,9 +998,9 @@ html[data-theme="dark"] .values-list .value-icon {
   .hero { padding: 3.5rem 0 2.5rem; }
 
   /* Touch targets: minimum 44px height for all interactive elements */
-  .btn { min-height: 44px; }
-  .nav-main a { min-height: 44px; display: flex; align-items: center; }
-  input:not([type="radio"]):not([type="checkbox"]), select, textarea { min-height: 44px; }
+  .btn { min-height: 60px; }
+  .nav-main a { min-height: 60px; display: flex; align-items: center; }
+  input:not([type="radio"]):not([type="checkbox"]), select, textarea { min-height: 60px; }
 }
 
 /* ─── Responsive — mobile (≤768px) ──────────────────────────────────────────── */
@@ -1018,7 +1018,7 @@ html[data-theme="dark"] .values-list .value-icon {
     margin-top: 0.5rem;
   }
   .nav-main.is-open { display: flex; }
-  .nav-main a { padding: 0.85rem 0.75rem; font-size: 1rem; min-height: 44px; }
+  .nav-main a { padding: 0.85rem 0.75rem; font-size: 1rem; min-height: 60px; }
   .header-inner { flex-direction: column; align-items: stretch; }
   .nav-portal-item { margin-left: 0; margin-top: 0.25rem; }
   .nav-portal-btn {
@@ -1027,7 +1027,7 @@ html[data-theme="dark"] .values-list .value-icon {
     width: 100%;
     padding: 0.85rem 0.75rem !important;
     font-size: 1rem !important;
-    min-height: 44px;
+    min-height: 60px;
     border-radius: var(--radius);
   }
 
@@ -1111,7 +1111,7 @@ html[data-theme="dark"] .values-list .value-icon {
     gap: 0.6rem;
   }
   .radio-group label, .check-group label {
-    min-height: 44px;
+    min-height: 60px;
     align-items: center;
   }
 
@@ -1121,10 +1121,10 @@ html[data-theme="dark"] .values-list .value-icon {
   /* Footer */
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .footer-nav { flex-wrap: wrap; gap: 0.25rem 1rem; }
-  .footer-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .footer-nav a { min-height: 60px; display: inline-flex; align-items: center; }
 
   /* Buttons: minimum touch target */
-  .btn { min-height: 44px; }
+  .btn { min-height: 60px; }
 }
 
 /* ─── Responsive — small mobile (≤480px) ────────────────────────────────────── */
@@ -1180,7 +1180,7 @@ html[data-theme="dark"] .values-list .value-icon {
   .values-list .value-icon { width: 34px; height: 34px; min-width: 34px; font-size: 0.875rem; }
 
   /* FAQ */
-  .faq-item summary { font-size: 0.875rem; padding: 0.875rem 1rem; min-height: 44px; }
+  .faq-item summary { font-size: 0.875rem; padding: 0.875rem 1rem; min-height: 60px; }
 
   /* Forms */
   .form-group input,
