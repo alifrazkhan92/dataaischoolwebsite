@@ -221,7 +221,7 @@ a:hover { color: var(--accent-hover); }
 .header-inner {
   max-width: var(--site-width);
   margin: 0 auto;
-  padding: 0.55rem var(--side-pad);
+  padding: 0.4rem var(--side-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -237,7 +237,7 @@ a:hover { color: var(--accent-hover); }
   flex-shrink: 0;
 }
 .logo-img {
-  height: 56px;
+  height: 44px;
   width: auto;
   display: block;
   flex-shrink: 0;
