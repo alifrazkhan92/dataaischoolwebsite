@@ -16,7 +16,11 @@
     '<header class="site-header">' +
     '<div class="header-inner">' +
     '<a href="index.html" class="logo">' +
-    '<img src="images/logo-dais.png" alt="The Data and AI School of London" class="logo-img">' +
+    '<img src="images/logo-dais.png" alt="DAIS" class="logo-img">' +
+    '<span class="logo-text">' +
+    '<span class="logo-name">The Data and AI School</span>' +
+    '<span class="logo-location">of London</span>' +
+    '</span>' +
     '</a>' +
     '<button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>' +
     '<nav id="nav-main">' +

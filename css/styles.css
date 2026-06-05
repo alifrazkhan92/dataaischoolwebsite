@@ -221,7 +221,7 @@ a:hover { color: var(--accent-hover); }
 .header-inner {
   max-width: var(--site-width);
   margin: 0 auto;
-  padding: 0.4rem var(--side-pad);
+  padding: 0.55rem var(--side-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -233,15 +233,41 @@ a:hover { color: var(--accent-hover); }
 .logo {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
   text-decoration: none;
   flex-shrink: 0;
 }
 .logo-img {
-  height: 60px;
+  height: 44px;
   width: auto;
   display: block;
   flex-shrink: 0;
-  border-radius: 10px;
+  border-radius: 8px;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.logo-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+}
+.logo-location {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+html[data-theme="dark"] .logo-name     { color: var(--gold); }
+html[data-theme="dark"] .logo-location { color: rgba(255,255,255,0.55); }
+
+/* Hide text on very small screens to avoid overflow */
+@media (max-width: 360px) {
+  .logo-text { display: none; }
 }
 
 .nav-main {
