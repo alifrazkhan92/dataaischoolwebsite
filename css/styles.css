@@ -119,6 +119,57 @@ html[data-theme="dark"] {
   }
 }
 
+/* ─── System-dark overrides ─────────────────────────────────────────────────── */
+/* Mirror every html[data-theme="dark"] element override for system dark mode.   */
+/* CSS variables are already handled by the @media block above; only hard-coded  */
+/* rgba/hex values need explicit system selectors.                                */
+@media (prefers-color-scheme: dark) {
+  html[data-theme="system"] .logo-location { color: rgba(255,255,255,0.55); }
+
+  html[data-theme="system"] .nav-portal-btn {
+    background: #C89930;
+    border-color: #C89930;
+    color: #0A2240 !important;
+  }
+  html[data-theme="system"] .nav-portal-btn:hover {
+    background: #DFB040 !important;
+    border-color: #DFB040 !important;
+    color: #0A2240 !important;
+  }
+
+  html[data-theme="system"] .hero::after {
+    background-image: radial-gradient(circle, rgba(200,153,48,0.12) 1.5px, transparent 1.5px);
+  }
+  html[data-theme="system"] .hero-school-badge {
+    border-color: rgba(200,153,48,0.25);
+  }
+  html[data-theme="system"] .tech-chip {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  html[data-theme="system"] .hero-stats-row {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  html[data-theme="system"] .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(200,153,48,0.3);
+  }
+  html[data-theme="system"] .course-card .badge {
+    border-color: rgba(200,153,48,0.25);
+  }
+  html[data-theme="system"] .values-list .value-icon {
+    border-color: rgba(200,153,48,0.2);
+  }
+  html[data-theme="system"] .form-feedback.success {
+    color: #4ade80;
+    background: rgba(34,197,94,0.12);
+    border-color: rgba(34,197,94,0.3);
+  }
+  html[data-theme="system"] .form-feedback.error {
+    color: #f87171;
+    background: rgba(239,68,68,0.12);
+    border-color: rgba(239,68,68,0.3);
+  }
+}
+
 /* ─── Cross-browser normalisation ───────────────────────────────────────────── */
 /* Ensures consistent rendering across Chrome, Safari, Firefox, Brave, Edge     */
 

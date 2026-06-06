@@ -23,8 +23,9 @@
  const btn = document.querySelector(".theme-toggle");
  if (btn) {
  btn.setAttribute("aria-label", "Theme: " + theme);
+ const THEME_LABELS = { dark: "Dark", light: "Light", system: "Auto" };
  btn.querySelector(".theme-toggle-label").textContent =
- theme.charAt(0).toUpperCase() + theme.slice(1);
+ THEME_LABELS[theme] || theme.charAt(0).toUpperCase() + theme.slice(1);
  }
  }
 
