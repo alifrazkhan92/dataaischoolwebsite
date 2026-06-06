@@ -31,8 +31,9 @@ NCFE Level 4 Diploma: Data Analyst HTQ · Remote
 "I was sceptical about online learning after bad experiences elsewhere. This was completely different. The support team responds fast, the IQA process is rigorous, and the NCFE qualification is something I can actually put on my CV and have employers recognise. Highly recommended."
 NCFE Level 3 Certificate in Cyber Security Practices · Manchester
 ⚠️ Testimonials are illustrative. Replace with verified reviews from your learners before publishing.
-Why Everyone Needs to Learn AI Implementation in 2026
-AI implementation has shifted from a specialist skill to a baseline professional skill. A practical guide for UK professionals: what to learn first, the common pitfalls, and how long it really takes.
+Will AI Replace Data Scientists in the UK? The Honest Answer for 2026
+The UK data job market is shifting fast. Here is what AI will replace, what stays human, and how to future-proof your career in 2026.
+By Ali Fraz Khan, FHEA, CEO & Principal, The Data and AI School of London
 Quick answers about our qualifications and how we work.
 What qualifications does The Data and AI School of London offer?
 We offer NCFE regulated qualifications across five subject areas: Programming (Python, Java, C#, PHP), Cyber Security , Data Science and Analytics , Cloud and Digital Support , and Functional Skills English . Qualifications range from Entry Level to Level 5 on the Regulated Qualifications Framework (RQF).
