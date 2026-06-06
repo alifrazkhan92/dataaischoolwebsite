@@ -47,6 +47,32 @@ jobs:
         if: steps.detect.outputs.new_files != ''
         run: pip install requests beautifulsoup4
 
+      - name: Wait for GitHub Pages to deploy
+        if: steps.detect.outputs.new_files != ''
+        env:
+          NEW_FILES: ${{ steps.detect.outputs.new_files }}
+        run: |
+          # Extract the first new blog file and build its live URL
+          FIRST_FILE=$(echo "$NEW_FILES" | tr ' ' '\n' | grep -v '^$' | head -1)
+          FILENAME=$(basename "$FIRST_FILE")
+          PAGE_URL="https://www.dataaischool.com/blog/${FILENAME}"
+          echo "Waiting for GitHub Pages to serve: $PAGE_URL"
+
+          MAX_WAIT=600   # 10 minutes
+          INTERVAL=15
+          ELAPSED=0
+
+          until curl -sf --max-time 10 "$PAGE_URL" -o /dev/null; do
+            if [ "$ELAPSED" -ge "$MAX_WAIT" ]; then
+              echo "Timed out after ${MAX_WAIT}s — page may not be live yet."
+              exit 1
+            fi
+            echo "Not live yet (${ELAPSED}s elapsed). Retrying in ${INTERVAL}s…"
+            sleep "$INTERVAL"
+            ELAPSED=$((ELAPSED + INTERVAL))
+          done
+          echo "Page is live after ${ELAPSED}s. Proceeding to share."
+
       - name: Share to Facebook, Instagram and LinkedIn
         if: steps.detect.outputs.new_files != ''
         env:
