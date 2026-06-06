@@ -40,6 +40,7 @@ const RATE_WINDOWS = {
   '/visitor': { max: 5,   windowMs: 60_000 },  // visitor reg: 5 req/min
   '/tts':     { max: 15,  windowMs: 60_000 },  // TTS: 15 req/min
   '/stt':     { max: 10,  windowMs: 60_000 },  // STT: 10 req/min
+  '/enquiry': { max: 10,  windowMs: 60_000 },  // enquiry: 10 req/min
 };
 
 function checkRateLimit(path, ip) {
@@ -66,6 +67,14 @@ async function maybePurgeOldLogs(env) {
     await env.dais_chat_logs.prepare(
       'DELETE FROM visitor_sessions WHERE created_at < ?'
     ).bind(cutoff).run();
+    // Enquiries kept for 2 years (business records)
+    const enqCutoff = new Date(Date.now() - 730 * 24 * 60 * 60 * 1000).toISOString();
+    await env.dais_chat_logs.prepare(
+      'DELETE FROM wa_messages WHERE created_at < ?'
+    ).bind(enqCutoff).run();
+    await env.dais_chat_logs.prepare(
+      'DELETE FROM enquiries WHERE created_at < ?'
+    ).bind(enqCutoff).run();
   } catch (e) {
     console.error('Purge error:', e.message);
   }
@@ -454,6 +463,235 @@ async function handleVisitor(request, env, headers) {
   });
 }
 
+// ── WhatsApp helpers ──────────────────────────────────────────────────────────
+
+/**
+ * Normalise a raw phone string to E.164 (+44...) format.
+ * Returns null if the result looks obviously wrong.
+ */
+function normalizePhone(raw) {
+  let n = String(raw || '').replace(/[\s\-().​]/g, '');
+  if (!n) return null;
+  if (n.startsWith('00'))  n = '+' + n.slice(2);
+  if (/^07\d{9}$/.test(n)) n = '+44' + n.slice(1);   // UK mobile without country code
+  else if (/^0\d{10}$/.test(n)) n = '+44' + n.slice(1); // UK landline without country code
+  else if (!n.startsWith('+')) n = '+' + n;
+  // Must start with + followed by at least 7 digits
+  if (!/^\+\d{7,15}$/.test(n)) return null;
+  return n;
+}
+
+/**
+ * Send a pre-approved WhatsApp template message to the enquirer.
+ * Template "dais_enquiry_confirmation" must be approved in Meta Business Manager.
+ * Variables: {{1}} = first name, {{2}} = courses URL.
+ */
+async function sendWhatsAppTemplate(env, phone, name) {
+  try {
+    const resp = await fetch(
+      `https://graph.facebook.com/v22.0/${env.WA_PHONE_ID}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.WA_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          to: phone,
+          type: 'template',
+          template: {
+            name: 'dais_enquiry_confirmation',
+            language: { code: 'en_GB' },
+            components: [{
+              type: 'body',
+              parameters: [
+                { type: 'text', text: name.split(' ')[0] },   // first name only
+                { type: 'text', text: 'https://www.dataaischool.com/courses.html' },
+              ],
+            }],
+          },
+        }),
+      }
+    );
+    const data = await resp.json();
+    if (resp.ok && data.messages?.[0]?.id) {
+      console.log('WhatsApp sent:', data.messages[0].id);
+      return { ok: true, msgId: data.messages[0].id };
+    }
+    const err = data.error || {};
+    console.error(`WhatsApp template error [${err.code}]: ${err.message}`);
+    return { ok: false };
+  } catch (e) {
+    console.error('WhatsApp send error:', e.message);
+    return { ok: false };
+  }
+}
+
+/**
+ * Verify the HMAC-SHA256 signature Meta attaches to webhook POSTs.
+ */
+async function verifyWASignature(body, signature, secret) {
+  try {
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    const raw = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body));
+    const hex = Array.from(new Uint8Array(raw)).map(b => b.toString(16).padStart(2, '0')).join('');
+    const expected = 'sha256=' + hex;
+    if (signature.length !== expected.length) return false;
+    const enc = new TextEncoder();
+    try {
+      return await crypto.subtle.timingSafeEqual(enc.encode(signature), enc.encode(expected));
+    } catch {
+      let diff = 0;
+      const a = enc.encode(signature), b = enc.encode(expected);
+      for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+      return diff === 0;
+    }
+  } catch (e) {
+    console.error('WA signature error:', e.message);
+    return false;
+  }
+}
+
+// ── Enquiry handler ───────────────────────────────────────────────────────────
+
+async function handleEnquiry(request, env, headers) {
+  const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+  if (contentLength > POST_MAX_BYTES) return jsonError(413, 'Request body too large', headers);
+
+  let body;
+  try { body = await request.json(); }
+  catch { return jsonError(400, 'Invalid JSON', headers); }
+
+  const name    = String(body.name    || '').trim().slice(0, 100);
+  const email   = String(body.email   || '').trim().slice(0, 200);
+  const phone   = String(body.phone   || '').trim().slice(0, 50);
+  const subject = String(body.subject || '').trim().slice(0, 200);
+  const message = String(body.message || '').trim().slice(0, 2000);
+
+  if (!name || !email || !message) {
+    return jsonError(400, 'name, email and message are required', headers);
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return jsonError(400, 'Invalid email address', headers);
+  }
+
+  if (!env.dais_chat_logs) return jsonError(503, 'D1 not configured', headers);
+
+  const now           = new Date().toISOString();
+  const normalPhone   = normalizePhone(phone);
+  const initialStatus = normalPhone ? 'pending' : 'no_phone';
+
+  // Store enquiry
+  let enquiryId;
+  try {
+    const result = await env.dais_chat_logs.prepare(
+      `INSERT INTO enquiries (created_at, name, email, phone, subject, message, wa_status)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    ).bind(now, name, email, phone || null, subject || null, message, initialStatus).run();
+    enquiryId = result.meta.last_row_id;
+  } catch (e) {
+    console.error('Enquiry insert error:', e.message);
+    return jsonError(500, 'Could not save enquiry', headers);
+  }
+
+  // Send WhatsApp confirmation
+  if (normalPhone && env.WA_TOKEN && env.WA_PHONE_ID) {
+    const result = await sendWhatsAppTemplate(env, normalPhone, name);
+    const waStatus = result.ok ? 'sent' : 'failed';
+
+    await env.dais_chat_logs.prepare(
+      'UPDATE enquiries SET wa_status = ? WHERE id = ?'
+    ).bind(waStatus, enquiryId).run().catch(() => {});
+
+    if (result.ok) {
+      const confirmText = `Hi ${name.split(' ')[0]}, thank you for your enquiry at The Data and AI School of London. We have received your message and will reply within two working days. Explore our courses: https://www.dataaischool.com/courses.html`;
+      await env.dais_chat_logs.prepare(
+        `INSERT INTO wa_messages (enquiry_id, created_at, direction, wa_phone, message_text, wa_msg_id)
+         VALUES (?, ?, 'outbound', ?, ?, ?)`
+      ).bind(enquiryId, now, normalPhone, confirmText, result.msgId || null).run().catch(() => {});
+    }
+  }
+
+  return new Response(JSON.stringify({ ok: true }), {
+    status: 200,
+    headers: { ...headers, 'Content-Type': 'application/json' },
+  });
+}
+
+// ── WhatsApp webhook handlers ─────────────────────────────────────────────────
+
+/** GET /wa-webhook — Meta calls this once to verify the endpoint. */
+async function handleWAWebhookVerify(request, env) {
+  const url       = new URL(request.url);
+  const mode      = url.searchParams.get('hub.mode');
+  const token     = url.searchParams.get('hub.verify_token');
+  const challenge = url.searchParams.get('hub.challenge');
+  if (mode === 'subscribe' && token === env.WA_VERIFY_TOKEN) {
+    return new Response(challenge, { status: 200, headers: { 'Content-Type': 'text/plain' } });
+  }
+  return new Response('Forbidden', { status: 403 });
+}
+
+/** POST /wa-webhook — receives incoming WhatsApp messages from users. */
+async function handleWAWebhookEvent(request, env) {
+  const rawBody = await request.text();
+
+  // Verify Meta signature
+  if (env.WA_APP_SECRET) {
+    const sig   = request.headers.get('X-Hub-Signature-256') || '';
+    const valid = await verifyWASignature(rawBody, sig, env.WA_APP_SECRET);
+    if (!valid) {
+      console.error('WA webhook signature mismatch');
+      return new Response('Forbidden', { status: 403 });
+    }
+  }
+
+  let data;
+  try { data = JSON.parse(rawBody); }
+  catch { return new Response('OK', { status: 200 }); }
+
+  if (data.object !== 'whatsapp_business_account') {
+    return new Response('OK', { status: 200 });
+  }
+
+  const now = new Date().toISOString();
+  for (const entry of (data.entry || [])) {
+    for (const change of (entry.changes || [])) {
+      for (const msg of (change.value?.messages || [])) {
+        if (msg.type !== 'text') continue;
+        const fromPhone  = '+' + msg.from;   // Meta omits the +
+        const text       = msg.text?.body || '';
+        const waMsgId    = msg.id;
+
+        try {
+          // Match to most recent enquiry with this phone number (last 9 digits match)
+          const tail    = msg.from.slice(-9);
+          const enquiry = await env.dais_chat_logs.prepare(
+            `SELECT id FROM enquiries WHERE replace(replace(phone,'+',''),' ','') LIKE ? ORDER BY created_at DESC LIMIT 1`
+          ).bind('%' + tail).first();
+
+          await env.dais_chat_logs.prepare(
+            `INSERT INTO wa_messages (enquiry_id, created_at, direction, wa_phone, message_text, wa_msg_id)
+             VALUES (?, ?, 'inbound', ?, ?, ?)`
+          ).bind(enquiry?.id || null, now, fromPhone, text, waMsgId).run();
+        } catch (e) {
+          console.error('WA message store error:', e.message);
+        }
+      }
+    }
+  }
+
+  // Always return 200 immediately — Meta retries on any other status
+  return new Response('OK', { status: 200 });
+}
+
 // ── Admin log viewer ──────────────────────────────────────────────────────────
 
 async function handleAdminLogs(request, env) {
@@ -576,7 +814,11 @@ function nav(p) {
 }
 </script>
 </head><body>
-<h1>DAIS AI Chat Logs</h1>
+<h1>DAIS Admin</h1>
+<nav style="display:flex;gap:1rem;margin-bottom:1.5rem">
+  <a href="?action=logs" style="background:#0a2240;color:#fff;padding:.4rem 1rem;border-radius:6px;text-decoration:none;font-weight:600">Chat logs</a>
+  <a href="?action=enquiries" style="background:#e5e0d8;color:#0a2240;padding:.4rem 1rem;border-radius:6px;text-decoration:none;font-weight:600">Enquiries &amp; WhatsApp</a>
+</nav>
 <p class="meta">Showing ${results.length} of ${total} messages. Page ${page} of ${Math.max(1,pages)}.</p>
 <table>
 <thead><tr><th>Timestamp</th><th>Session</th><th>Turn</th><th>Visitor</th><th>Visitor message</th><th>AI reply</th></tr></thead>
@@ -592,6 +834,140 @@ function nav(p) {
       'X-Robots-Tag':  'noindex',
       ...ADMIN_SECURITY_HEADERS,
     },
+  });
+}
+
+// ── Admin enquiries viewer ────────────────────────────────────────────────────
+
+async function handleAdminEnquiries(request, env) {
+  const url   = new URL(request.url);
+  const page  = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
+  const limit = 30, offset = (page - 1) * limit;
+
+  const authHeader = request.headers.get('Authorization') || '';
+  let key = url.searchParams.get('key') || '';
+  if (!key && authHeader.startsWith('Bearer ')) key = authHeader.slice(7).trim();
+
+  if (!env.ADMIN_KEY || !await timingSafeEqual(key, env.ADMIN_KEY)) {
+    return new Response('Unauthorised', { status: 401, headers: ADMIN_SECURITY_HEADERS });
+  }
+  if (!env.dais_chat_logs) return new Response('D1 not configured', { status: 503 });
+
+  const { results } = await env.dais_chat_logs.prepare(
+    `SELECT id, created_at, name, email, phone, subject, message, wa_status
+     FROM enquiries ORDER BY created_at DESC LIMIT ? OFFSET ?`
+  ).bind(limit, offset).all();
+
+  const { results: countRes } = await env.dais_chat_logs.prepare(
+    'SELECT COUNT(*) as total FROM enquiries'
+  ).all();
+  const total = countRes[0]?.total || 0;
+  const pages = Math.ceil(total / limit);
+
+  // Fetch WhatsApp threads for every enquiry on this page in one query
+  const ids = (results || []).map(r => r.id);
+  let threads = {};
+  if (ids.length) {
+    const placeholders = ids.map(() => '?').join(',');
+    const { results: msgs } = await env.dais_chat_logs.prepare(
+      `SELECT enquiry_id, direction, created_at, message_text FROM wa_messages
+       WHERE enquiry_id IN (${placeholders}) ORDER BY created_at ASC`
+    ).bind(...ids).all();
+    for (const m of (msgs || [])) {
+      if (!threads[m.enquiry_id]) threads[m.enquiry_id] = [];
+      threads[m.enquiry_id].push(m);
+    }
+  }
+
+  const waStatusBadge = s => {
+    const map = { sent: '#22c55e', failed: '#ef4444', no_phone: '#9ca3af', pending: '#f59e0b' };
+    return `<span style="background:${map[s]||'#9ca3af'};color:#fff;border-radius:4px;padding:2px 7px;font-size:.75rem;font-weight:700">${esc(s)}</span>`;
+  };
+
+  const rows = (results || []).map(r => {
+    const thread = (threads[r.id] || []).map(m => {
+      const align = m.direction === 'outbound' ? 'right' : 'left';
+      const bg    = m.direction === 'outbound' ? '#dcf8c6' : '#fff';
+      return `<div style="text-align:${align};margin:4px 0">
+        <span style="display:inline-block;background:${bg};border:1px solid #e5e7eb;border-radius:8px;padding:4px 10px;max-width:80%;font-size:.8rem;text-align:left">
+          <strong style="font-size:.7rem;color:#6b7280">${m.direction === 'outbound' ? 'DAIS' : 'Enquirer'} ${esc(m.created_at.slice(0,16).replace('T',' '))}</strong><br>
+          ${esc(m.message_text)}
+        </span>
+      </div>`;
+    }).join('') || '<em style="color:#9ca3af;font-size:.8rem">No WhatsApp messages yet.</em>';
+
+    return `<tr>
+      <td>${esc(r.created_at.replace('T',' ').slice(0,16))} UTC</td>
+      <td><strong>${esc(r.name)}</strong><br>
+          <a href="mailto:${esc(r.email)}">${esc(r.email)}</a><br>
+          ${r.phone ? `<a href="https://wa.me/${esc(r.phone.replace('+',''))}">${esc(r.phone)}</a>` : '<span style="color:#9ca3af">no phone</span>'}</td>
+      <td>${esc(r.subject || 'General enquiry')}</td>
+      <td style="max-width:260px;word-break:break-word">${esc(r.message)}</td>
+      <td>${waStatusBadge(r.wa_status)}</td>
+      <td style="min-width:200px">${thread}</td>
+    </tr>`;
+  }).join('');
+
+  const prevLink = page > 1     ? `<button onclick="nav(${page-1})">&#8592; Previous</button>` : '';
+  const nextLink = page < pages ? `<button onclick="nav(${page+1})">Next &#8594;</button>` : '';
+
+  const html = `<!doctype html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>DAIS Enquiries</title>
+<style>
+  body{font-family:system-ui,sans-serif;padding:2rem;background:#f5f0e8;color:#1b1612}
+  h1{color:#0a2240}.tabs{display:flex;gap:1rem;margin-bottom:1.5rem}
+  .tabs a{background:#e5e0d8;color:#0a2240;padding:.4rem 1rem;border-radius:6px;text-decoration:none;font-weight:600}
+  .tabs a.active{background:#0a2240;color:#fff}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(10,34,64,.08)}
+  th{background:#0a2240;color:#fff;padding:10px 12px;text-align:left;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+  td{padding:9px 12px;border-bottom:1px solid #e8e0d4;font-size:.875rem;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#f9f5ef}
+  .meta{margin-bottom:1rem;color:#6b5e52;font-size:.875rem}
+  .pager{margin-top:1rem;display:flex;gap:1rem}
+  button{background:#0a2240;color:#fff;border:none;padding:.45rem 1rem;border-radius:6px;cursor:pointer;font-weight:700}
+  button:hover{background:#0e2e5a}
+</style>
+<script>
+(function(){
+  var p=new URLSearchParams(location.search);
+  var k=p.get('key')||sessionStorage.getItem('_daisAdminKey')||'';
+  if(k) sessionStorage.setItem('_daisAdminKey',k);
+  p.delete('key');
+  history.replaceState(null,'',location.pathname+'?'+p.toString());
+})();
+function nav(p){
+  var k=sessionStorage.getItem('_daisAdminKey')||'';
+  fetch('?action=enquiries&page='+p,{headers:{'Authorization':'Bearer '+k}})
+  .then(r=>r.text()).then(html=>{
+    var doc=new DOMParser().parseFromString(html,'text/html');
+    ['table','.meta','.pager'].forEach(sel=>{
+      var a=document.querySelector(sel),b=doc.querySelector(sel);
+      if(a&&b) a.outerHTML=b.outerHTML;
+    });
+    history.pushState(null,'','?action=enquiries&page='+p);
+  }).catch(e=>alert('Error: '+e.message));
+}
+</script>
+</head><body>
+<h1>DAIS Admin</h1>
+<nav class="tabs">
+  <a href="?action=logs">Chat logs</a>
+  <a href="?action=enquiries" class="active">Enquiries &amp; WhatsApp</a>
+</nav>
+<p class="meta">Showing ${(results||[]).length} of ${total} enquiries. Page ${page} of ${Math.max(1,pages)}.</p>
+<table>
+<thead><tr><th>Date</th><th>Contact</th><th>Subject</th><th>Message</th><th>WhatsApp</th><th>Conversation</th></tr></thead>
+<tbody>${rows || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#999">No enquiries yet.</td></tr>'}</tbody>
+</table>
+<div class="pager">${prevLink} ${nextLink}</div>
+</body></html>`;
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html;charset=UTF-8', 'X-Robots-Tag': 'noindex', ...ADMIN_SECURITY_HEADERS },
   });
 }
 
@@ -633,9 +1009,19 @@ export default {
     const path    = url.pathname.replace(/\/+$/, '') || '/';
     const ip      = request.headers.get('CF-Connecting-IP') || 'unknown';
 
+    // ── WhatsApp webhook (Meta calls this — no DAIS Origin header) ───────────
+    if (path === '/wa-webhook') {
+      if (request.method === 'GET')  return handleWAWebhookVerify(request, env);
+      if (request.method === 'POST') return handleWAWebhookEvent(request, env);
+      return new Response('Method not allowed', { status: 405 });
+    }
+
     // Admin log viewer (GET only, requires ADMIN_KEY — no origin check needed)
     if (request.method === 'GET' && url.searchParams.get('action') === 'logs') {
       return handleAdminLogs(request, env);
+    }
+    if (request.method === 'GET' && url.searchParams.get('action') === 'enquiries') {
+      return handleAdminEnquiries(request, env);
     }
 
     // CORS preflight — respond before origin gate so browsers can check
@@ -666,6 +1052,7 @@ export default {
     if (env.dais_chat_logs) ctx.waitUntil(maybePurgeOldLogs(env));
 
     // Route POST requests
+    if (path === '/enquiry') return handleEnquiry(request, env, headers);
     if (path === '/visitor') return handleVisitor(request, env, headers);
     if (path === '/tts')     return handleTTS(request, env, headers);
     if (path === '/stt')     return handleSTT(request, env, headers);

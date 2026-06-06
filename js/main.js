@@ -316,6 +316,22 @@
  document.body.appendChild(tempForm);
  tempForm.submit();
 
+ // Fire enquiry to Cloudflare Worker (stores in D1, sends WhatsApp confirmation).
+ // Fire-and-forget: do not block the UX on this.
+ if (isContact) {
+   fetch('https://dais-chat.alifrazkhan92.workers.dev/enquiry', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({
+       name:    fields.name,
+       email:   fields.email,
+       phone:   fields.phone,
+       subject: fields.subject,
+       message: fields.message,
+     }),
+   }).catch(function () {}); // silent — Google Sheets submission already confirmed success
+ }
+
  // Can't read iframe response (cross-origin) so show success after delay.
  // Apps Script typically responds in under 2 seconds.
  setTimeout(function () {

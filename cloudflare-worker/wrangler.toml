@@ -14,6 +14,10 @@ ELEVENLABS_VOICE_ID = "Xb7hH8MSUJpSbSDYk0k2"  # Alice — British female, works 
 #   ANTHROPIC_API_KEY    — Anthropic API key
 #   ELEVENLABS_API_KEY   — ElevenLabs API key
 #   ADMIN_KEY            — password to view conversation logs
+#   WA_TOKEN             — WhatsApp Cloud API permanent token (Meta Developer console)
+#   WA_PHONE_ID          — WhatsApp phone number ID (Meta Developer console)
+#   WA_VERIFY_TOKEN      — random string you choose; must match Meta webhook config
+#   WA_APP_SECRET        — Meta App Secret (for webhook signature verification)
 
 # SEC-003 note: the database_id below is in this public repository.
 # The ID alone does not grant data access (a scoped Cloudflare API token is also required),
