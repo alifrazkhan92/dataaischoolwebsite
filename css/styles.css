@@ -973,13 +973,19 @@ input[type="month"] {
   color: var(--footer-text);
   font-size: 0.875rem;
 }
-.footer-inner p a {
-  color: var(--footer-text-hover);   /* gold — visible on the navy footer */
+/* Footer links are always on a navy background in every theme,
+   so use a hard-coded gold rather than a theme variable.
+   Include :link and :visited so the browser's default visited-link
+   colour never overrides us. */
+.site-footer .footer-inner p a:link,
+.site-footer .footer-inner p a:visited {
+  color: #C89930;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.footer-inner p a:hover {
-  color: #fff;
+.site-footer .footer-inner p a:hover,
+.site-footer .footer-inner p a:focus {
+  color: #ffffff;
 }
 .footer-inner strong {
   color: var(--footer-text-hover);
