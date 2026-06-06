@@ -1,0 +1,11 @@
+/*
+  # SEC-014: Genuine HTTP security headers
+  # These take effect on Cloudflare Pages or any host that supports _headers files.
+  # GitHub Pages ignores this file — headers must be set via Cloudflare Transform Rules
+  # in the Cloudflare dashboard for the www.dataaischool.com zone.
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  # Note: Content-Security-Policy with unsafe-inline is set per-page as a meta tag.
+  # To harden further, migrate inline scripts to external files and use hash-based CSP here.

@@ -17,6 +17,7 @@ import math
 import textwrap
 import datetime
 import re
+import ssl
 import urllib.request
 import urllib.parse
 
@@ -202,9 +203,79 @@ Write only the blog body HTML content, starting with a <p> tag and ending after 
         },
         method="POST"
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
+    # SEC-013: explicit TLS context — enforce certificate verification
+    tls_ctx = ssl.create_default_context()
+    tls_ctx.check_hostname = True
+    tls_ctx.verify_mode = ssl.CERT_REQUIRED
+    with urllib.request.urlopen(req, timeout=120, context=tls_ctx) as resp:
         data = json.load(resp)
-    return data["content"][0]["text"]
+    raw_html = data["content"][0]["text"]
+    return sanitise_blog_html(raw_html)
+
+
+# ---------------------------------------------------------------------------
+# SEC-002: HTML sanitiser for LLM output
+# Strips dangerous tags and attributes before inserting AI-generated HTML
+# into the page template, preventing stored XSS from prompt injection.
+# ---------------------------------------------------------------------------
+_ALLOWED_TAGS = {
+    "p", "br", "strong", "b", "em", "i", "u", "s",
+    "h2", "h3", "h4",
+    "ul", "ol", "li",
+    "blockquote", "pre", "code",
+    "table", "thead", "tbody", "tr", "th", "td",
+    "a", "img",
+    "div", "span", "details", "summary",
+    "time", "figcaption", "figure",
+}
+
+_DANGEROUS_ATTRS = re.compile(
+    r'\s+on\w+\s*=',                          # on* event handlers
+    _re.IGNORECASE,
+)
+_DANGEROUS_URLS = re.compile(
+    r'href\s*=\s*["\']?\s*javascript:',       # javascript: links
+    _re.IGNORECASE,
+)
+_SCRIPT_TAG = re.compile(
+    r'<\s*script[\s>].*?</\s*script\s*>',
+    _re.IGNORECASE | _re.DOTALL,
+)
+_STYLE_TAG = re.compile(
+    r'<\s*style[\s>].*?</\s*style\s*>',
+    _re.IGNORECASE | _re.DOTALL,
+)
+_IFRAME_TAG = re.compile(
+    r'<\s*iframe[\s>].*?</\s*iframe\s*>',
+    _re.IGNORECASE | _re.DOTALL,
+)
+_BASE_TAG = re.compile(r'<\s*base[\s>][^>]*>', _re.IGNORECASE)
+_FORM_TAG = re.compile(
+    r'<\s*form[\s>].*?</\s*form\s*>',
+    _re.IGNORECASE | _re.DOTALL,
+)
+
+
+def sanitise_blog_html(html: str) -> str:
+    """
+    Remove script/iframe/style/form tags and dangerous attributes from
+    AI-generated HTML before committing it to the repository.
+    Not a full sanitiser (use bleach in production) but catches the
+    most critical stored-XSS vectors.
+    """
+    html = _SCRIPT_TAG.sub('', html)
+    html = _STYLE_TAG.sub('', html)
+    html = _IFRAME_TAG.sub('', html)
+    html = _BASE_TAG.sub('', html)
+    html = _FORM_TAG.sub('', html)
+    html = _DANGEROUS_ATTRS.sub(' data-removed=', html)
+    html = _DANGEROUS_URLS.sub('href="about:blank"', html)
+    # Warn if any remaining unknown tags found
+    unknown = re.findall(r'<(\w+)', html)
+    for tag in set(unknown):
+        if tag.lower() not in _ALLOWED_TAGS:
+            print(f"WARNING: Unexpected HTML tag in LLM output: <{tag}>")
+    return html
 
 
 # ---------------------------------------------------------------------------

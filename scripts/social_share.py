@@ -79,8 +79,9 @@ def post_text(post):
 
 def share_facebook(post, token, page_id):
     """Post to a Facebook Page feed with a link preview."""
+    # SEC-011: updated from deprecated v19.0 to v22.0
     resp = requests.post(
-        f'https://graph.facebook.com/v19.0/{page_id}/feed',
+        f'https://graph.facebook.com/v22.0/{page_id}/feed',
         data={
             'message':      post_text(post),
             'link':         post['url'],
@@ -92,7 +93,9 @@ def share_facebook(post, token, page_id):
     if resp.ok and 'id' in data:
         print(f'  Facebook posted: {data["id"]}')
         return True
-    print(f'  Facebook error: {data.get("error", data)}')
+    # SEC-010: log only the error message field, not raw token-bearing error response
+    err = data.get('error', {})
+    print(f'  Facebook error [{err.get("code","?")}]: {err.get("message","unknown")}')
     return False
 
 
@@ -113,8 +116,9 @@ def share_instagram(post, token, ig_user_id):
     )
 
     # Step 1: create media container
+    # SEC-011: updated from deprecated v19.0 to v22.0
     r1 = requests.post(
-        f'https://graph.facebook.com/v19.0/{ig_user_id}/media',
+        f'https://graph.facebook.com/v22.0/{ig_user_id}/media',
         data={
             'image_url':    post['image'],
             'caption':      caption,
@@ -124,17 +128,21 @@ def share_instagram(post, token, ig_user_id):
     )
     d1 = r1.json()
     if not r1.ok or 'id' not in d1:
-        print(f'  Instagram container error: {d1.get("error", d1)}')
+        # SEC-010: log only the error message, not raw response (may contain token metadata)
+        err = d1.get('error', {})
+        print(f'  Instagram container error [{err.get("code","?")}]: {err.get("message","unknown")}')
         return False
 
     container_id = d1['id']
 
     # Wait for the media to be processed by Meta's servers
+    # SEC-012: added max 20 attempts (100s total) to prevent infinite loop
     print('  Instagram: waiting for media processing...')
-    for attempt in range(6):
+    MAX_POLL_ATTEMPTS = 20
+    for attempt in range(MAX_POLL_ATTEMPTS):
         time.sleep(5)
         status_resp = requests.get(
-            f'https://graph.facebook.com/v19.0/{container_id}',
+            f'https://graph.facebook.com/v22.0/{container_id}',
             params={'fields': 'status_code', 'access_token': token},
             timeout=15,
         )
@@ -144,10 +152,14 @@ def share_instagram(post, token, ig_user_id):
         if status == 'ERROR':
             print(f'  Instagram: media processing failed (attempt {attempt+1})')
             return False
+        if attempt == MAX_POLL_ATTEMPTS - 1:
+            print(f'  Instagram: media processing timed out after {MAX_POLL_ATTEMPTS} attempts')
+            return False
 
     # Step 2: publish the container
+    # SEC-011: updated from deprecated v19.0 to v22.0
     r2 = requests.post(
-        f'https://graph.facebook.com/v19.0/{ig_user_id}/media_publish',
+        f'https://graph.facebook.com/v22.0/{ig_user_id}/media_publish',
         data={
             'creation_id':  container_id,
             'access_token': token,
@@ -158,7 +170,9 @@ def share_instagram(post, token, ig_user_id):
     if r2.ok and 'id' in d2:
         print(f'  Instagram posted: {d2["id"]}')
         return True
-    print(f'  Instagram publish error: {d2.get("error", d2)}')
+    # SEC-010: log only safe error fields
+    err2 = d2.get('error', {})
+    print(f'  Instagram publish error [{err2.get("code","?")}]: {err2.get("message","unknown")}')
     return False
 
 
@@ -208,7 +222,12 @@ def share_linkedin(post, token, author_urn):
         post_id = resp.headers.get('X-RestLi-Id', resp.headers.get('Location', 'ok'))
         print(f'  LinkedIn posted: {post_id}')
         return True
-    print(f'  LinkedIn error {resp.status_code}: {resp.text[:300]}')
+    # SEC-010: only log status code and the 'message' field — never raw response body
+    try:
+        err_msg = resp.json().get('message', 'no message field')
+    except Exception:
+        err_msg = '(non-JSON response)'
+    print(f'  LinkedIn error {resp.status_code}: {err_msg}')
     return False
 
 

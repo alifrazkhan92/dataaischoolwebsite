@@ -29,6 +29,8 @@ const EL_TTS_MODEL    = 'eleven_multilingual_v2'; // 29 languages, natural accen
 // Security limits
 const STT_MAX_BYTES   = 5 * 1024 * 1024; // 5 MB audio upload cap
 const TTS_MAX_CHARS   = 1000;            // max chars forwarded to ElevenLabs per request
+const KB_MAX_BYTES    = 512 * 1024;      // 512 KB knowledge-base response cap (SEC-005)
+const POST_MAX_BYTES  = 32 * 1024;       // 32 KB max POST body for chat/visitor (SEC-018)
 
 // In-memory rate limiter (best-effort; resets per isolate restart)
 // For strict distributed limiting add a Cloudflare Rate Limiting rule in the dashboard.
@@ -82,10 +84,29 @@ async function getKnowledgeBase(env) {
       'https://raw.githubusercontent.com/alifrazkhan92/dataaischoolwebsite/main/ai-knowledge-base.txt';
     const res = await fetch(url, { cf: { cacheTtl: 3600, cacheEverything: true } });
     if (!res.ok) throw new Error('KB fetch failed: ' + res.status);
-    cachedKB       = await res.text();
+
+    // SEC-005: enforce a hard 512 KB cap on the knowledge base to prevent memory exhaustion
+    const contentLength = parseInt(res.headers.get('content-length') || '0', 10);
+    if (contentLength > KB_MAX_BYTES) throw new Error('KB response too large');
+
+    // Read with byte limit enforced during streaming
+    const reader = res.body.getReader();
+    const chunks = [];
+    let totalBytes = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      totalBytes += value.byteLength;
+      if (totalBytes > KB_MAX_BYTES) throw new Error('KB response exceeded size limit');
+      chunks.push(value);
+    }
+    cachedKB       = new TextDecoder().decode(
+      chunks.reduce((acc, c) => { const m = new Uint8Array(acc.length + c.length); m.set(acc); m.set(c, acc.length); return m; }, new Uint8Array(0))
+    );
     cacheTimestamp = now;
     return cachedKB;
   } catch (e) {
+    console.error('KB fetch error:', e.message);
     return cachedKB || 'You are an AI assistant for The Data and AI School of London (DAIS). Answer questions about DAIS qualifications, admissions and contact. If unsure, direct visitors to www.dataaischool.com or +44 207 0990 956.';
   }
 }
@@ -112,6 +133,22 @@ KNOWLEDGE BASE:
 ${kb}`;
 }
 
+// ── Security response headers ─────────────────────────────────────────────────
+// Applied to every response (API + admin). Varies per response type.
+
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',          // SEC-009: prevent MIME sniffing
+  'X-Frame-Options':        'DENY',             // SEC-009: block iframe embedding
+  'Referrer-Policy':        'strict-origin-when-cross-origin',
+};
+
+const ADMIN_SECURITY_HEADERS = {
+  ...SECURITY_HEADERS,
+  'Cache-Control':           'no-store, no-cache, private',  // SEC-006: never cache PII
+  'Pragma':                  'no-cache',
+  'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; frame-ancestors 'none';",  // SEC-007
+};
+
 // ── CORS ──────────────────────────────────────────────────────────────────────
 
 function corsHeaders(origin, env) {
@@ -122,6 +159,8 @@ function corsHeaders(origin, env) {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age':       '86400',
+    'Vary':                         'Origin',   // SEC-008: prevent CORS cache poisoning
+    ...SECURITY_HEADERS,
   };
 }
 
@@ -163,6 +202,10 @@ async function logConversation(env, sessionId, turn, visitorMsg, aiReply) {
 // ── Chat handler ──────────────────────────────────────────────────────────────
 
 async function handleChat(request, env, ctx, headers) {
+  // SEC-018: enforce POST body size limit
+  const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+  if (contentLength > POST_MAX_BYTES) return jsonError(413, 'Request body too large', headers);
+
   let body;
   try {
     body = await request.json();
@@ -365,6 +408,10 @@ async function ensureVisitorTable(env) {
 }
 
 async function handleVisitor(request, env, headers) {
+  // SEC-018: enforce POST body size limit
+  const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+  if (contentLength > POST_MAX_BYTES) return jsonError(413, 'Request body too large', headers);
+
   let body;
   try { body = await request.json(); }
   catch { return jsonError(400, 'Invalid JSON', headers); }
@@ -411,13 +458,26 @@ async function handleVisitor(request, env, headers) {
 
 async function handleAdminLogs(request, env) {
   const url    = new URL(request.url);
-  const key    = url.searchParams.get('key') || '';
   const page   = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit  = 50;
   const offset = (page - 1) * limit;
 
+  // SEC-001: accept key from URL param (entry point) OR Authorization header (pagination AJAX)
+  // Key is stored in sessionStorage client-side and sent as a header on subsequent requests.
+  const authHeader = request.headers.get('Authorization') || '';
+  let key = url.searchParams.get('key') || '';
+  if (!key && authHeader.startsWith('Bearer ')) {
+    key = authHeader.slice(7).trim();
+  }
+
   if (!env.ADMIN_KEY || !await timingSafeEqual(key, env.ADMIN_KEY)) {
-    return new Response('Unauthorised', { status: 401 });
+    return new Response(
+      '<!doctype html><html><head><title>Unauthorised</title></head><body style="font-family:system-ui;padding:2rem"><h2>401 Unauthorised</h2><p>Invalid or missing admin key.</p></body></html>',
+      {
+        status: 401,
+        headers: { 'Content-Type': 'text/html;charset=UTF-8', 'WWW-Authenticate': 'Bearer realm="DAIS Admin"', ...ADMIN_SECURITY_HEADERS },
+      }
+    );
   }
 
   if (!env.dais_chat_logs) {
@@ -459,9 +519,9 @@ async function handleAdminLogs(request, env) {
     </tr>`;
   }).join('');
 
-  // Key is passed via JS to avoid it appearing in browser history or logs
-  const prevLink = page > 1  ? `<a href="#" onclick="nav(${page-1});return false">Previous</a>` : '';
-  const nextLink = page < pages ? `<a href="#" onclick="nav(${page+1});return false">Next</a>` : '';
+  // SEC-001: pagination links use AJAX so the key never re-appears in URL or browser history
+  const prevLink = page > 1     ? `<button onclick="nav(${page-1})">&#8592; Previous</button>` : '';
+  const nextLink = page < pages ? `<button onclick="nav(${page+1})">Next &#8594;</button>` : '';
 
   const html = `<!doctype html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -478,19 +538,42 @@ async function handleAdminLogs(request, env) {
   code{font-size:.8rem;color:#666}
   .meta{margin-bottom:1rem;color:#6b5e52;font-size:.875rem}
   .pager{margin-top:1rem;display:flex;gap:1rem;align-items:center}
-  a{color:#0a2240;font-weight:700;cursor:pointer}
+  button{background:#0a2240;color:#fff;border:none;padding:.45rem 1rem;border-radius:6px;cursor:pointer;font-weight:700}
+  button:hover{background:#0e2e5a}
 </style>
 <script>
-// Key is kept only in memory — never in URLs, history, or logs
-const _k = new URLSearchParams(location.search).get('key') || '';
+/* SEC-001 fix: key extracted from URL once, stored only in sessionStorage,
+   then immediately stripped from URL bar and never put back. Pagination
+   uses fetch() with Authorization header so the key never appears in any URL. */
+(function() {
+  var params = new URLSearchParams(location.search);
+  var k = params.get('key') || sessionStorage.getItem('_daisAdminKey') || '';
+  if (k) sessionStorage.setItem('_daisAdminKey', k);
+  // Strip key from URL bar immediately — prevents browser history capture
+  params.delete('key');
+  history.replaceState(null, '', location.pathname + '?' + params.toString());
+})();
+
 function nav(p) {
-  const u = new URL(location.href);
-  u.searchParams.set('page', p);
-  // Replace state so key stays in URL only for this session
-  location.href = u.toString();
+  var k = sessionStorage.getItem('_daisAdminKey') || '';
+  fetch('?action=logs&page=' + p, {
+    headers: { 'Authorization': 'Bearer ' + k }
+  })
+  .then(function(r) { return r.text(); })
+  .then(function(html) {
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html, 'text/html');
+    var newTable = doc.querySelector('table');
+    var newMeta  = doc.querySelector('.meta');
+    var newPager = doc.querySelector('.pager');
+    if (newTable) document.querySelector('table').outerHTML = newTable.outerHTML;
+    if (newMeta)  document.querySelector('.meta').textContent = newMeta.textContent;
+    if (newPager) document.querySelector('.pager').innerHTML  = newPager.innerHTML;
+    // Update URL without key
+    history.pushState(null, '', '?action=logs&page=' + p);
+  })
+  .catch(function(e) { alert('Failed to load page: ' + e.message); });
 }
-// Strip key from URL bar after load to avoid browser history leakage
-history.replaceState(null, '', location.pathname + '?action=logs&page=${page}');
 </script>
 </head><body>
 <h1>DAIS AI Chat Logs</h1>
@@ -504,7 +587,11 @@ history.replaceState(null, '', location.pathname + '?action=logs&page=${page}');
 
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html;charset=UTF-8', 'X-Robots-Tag': 'noindex' },
+    headers: {
+      'Content-Type':  'text/html;charset=UTF-8',
+      'X-Robots-Tag':  'noindex',
+      ...ADMIN_SECURITY_HEADERS,
+    },
   });
 }
 

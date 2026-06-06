@@ -15,6 +15,10 @@ ELEVENLABS_VOICE_ID = "Xb7hH8MSUJpSbSDYk0k2"  # Alice — British female, works 
 #   ELEVENLABS_API_KEY   — ElevenLabs API key
 #   ADMIN_KEY            — password to view conversation logs
 
+# SEC-003 note: the database_id below is in this public repository.
+# The ID alone does not grant data access (a scoped Cloudflare API token is also required),
+# but it reduces obscurity. Ensure the Cloudflare API token used in CI is scoped
+# to Workers deploy only and does NOT have D1 read/write permissions.
 [[d1_databases]]
 binding       = "dais_chat_logs"
 database_name = "dais-chat-logs"
