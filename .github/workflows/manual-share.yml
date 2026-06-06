@@ -1,14 +1,14 @@
 name: Manual Social Share
 
-# Use this to share any existing blog post on demand.
-# Go to Actions → Manual Social Share → Run workflow
-# Enter the blog filename (e.g. will-ai-replace-data-scientists-uk-2026.html)
+# Share any existing blog post to Facebook, Instagram and LinkedIn on demand.
+# Actions → Manual Social Share → Run workflow
+# Enter the blog filename, e.g.:  will-ai-replace-data-scientists-uk-2026.html
 
 on:
   workflow_dispatch:
     inputs:
       blog_file:
-        description: "Blog filename to share (e.g. will-ai-replace-data-scientists-uk-2026.html)"
+        description: "Blog filename (e.g. will-ai-replace-data-scientists-uk-2026.html)"
         required: true
         type: string
 
@@ -37,25 +37,55 @@ jobs:
         run: |
           FILE="blog/${{ github.event.inputs.blog_file }}"
           if [ ! -f "$FILE" ]; then
-            echo "ERROR: $FILE does not exist in the repository."
+            echo "::error::File not found: $FILE"
+            echo "Available blog posts:"
+            ls blog/*.html
             exit 1
           fi
-          echo "Sharing: $FILE"
-          echo "BLOG_FILE=$FILE" >> $GITHUB_ENV
+          echo "File found: $FILE"
 
-      - name: Share to Facebook, Instagram and LinkedIn
+      - name: Share to Facebook
+        continue-on-error: true
         env:
-          NEW_FILES:            ${{ env.BLOG_FILE }}
+          NEW_FILES:            "blog/${{ github.event.inputs.blog_file }}"
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:           ""
+          LI_ACCESS_TOKEN:      ""
+          LI_AUTHOR_URN:        ""
+        run: |
+          echo "Sharing to Facebook..."
+          python scripts/social_share.py
+
+      - name: Share to Instagram
+        continue-on-error: true
+        env:
+          NEW_FILES:            "blog/${{ github.event.inputs.blog_file }}"
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ""
           IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:      ""
+          LI_AUTHOR_URN:        ""
+        run: |
+          echo "Sharing to Instagram..."
+          python scripts/social_share.py
+
+      - name: Share to LinkedIn
+        continue-on-error: true
+        env:
+          NEW_FILES:            "blog/${{ github.event.inputs.blog_file }}"
+          FB_PAGE_ACCESS_TOKEN: ""
+          FB_PAGE_ID:           ""
+          IG_USER_ID:           ""
           LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
           LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
-        run: python scripts/social_share.py
+        run: |
+          echo "Sharing to LinkedIn..."
+          python scripts/social_share.py
 
-      - name: Update homepage latest post section
+      - name: Update homepage latest post
         env:
-          NEW_FILES: ${{ env.BLOG_FILE }}
+          NEW_FILES: "blog/${{ github.event.inputs.blog_file }}"
         run: python scripts/update_homepage_post.py
 
       - name: Commit homepage update
@@ -64,7 +94,7 @@ jobs:
           git config user.email "actions@dataaischool.com"
           git add index.html
           if git diff --staged --quiet; then
-            echo "Homepage already up to date."
+            echo "Homepage already up to date — nothing to commit."
           else
             git commit -m "chore: update homepage latest post [skip ci]"
             git push origin main
