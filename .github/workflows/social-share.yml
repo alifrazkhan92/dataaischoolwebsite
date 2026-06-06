@@ -128,10 +128,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add index.html
+          git add index.html blog.html
           if git diff --staged --quiet; then
-            echo "No changes to homepage."
+            echo "No changes to homepage or blog listing."
           else
-            git commit -m "chore: update homepage with latest blog post [skip ci]"
+            git commit -m "chore: update homepage and blog listing with latest post [skip ci]"
             git push
           fi

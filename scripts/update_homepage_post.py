@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
-Update the Latest Post section on index.html.
+Update the Latest Post section on index.html AND prepend a card to blog.html.
 Called by the social-share GitHub Action after a new blog post is pushed.
-Replaces everything between <!-- LATEST-POST-START --> and <!-- LATEST-POST-END -->.
 
 Usage:
   python scripts/update_homepage_post.py blog/my-new-post.html
@@ -11,10 +10,12 @@ import os
 import sys
 from bs4 import BeautifulSoup
 
-BASE_URL   = 'https://www.dataaischool.com'
-INDEX_FILE = 'index.html'
-START_TAG  = '<!-- LATEST-POST-START -->'
-END_TAG    = '<!-- LATEST-POST-END -->'
+BASE_URL    = 'https://www.dataaischool.com'
+INDEX_FILE  = 'index.html'
+BLOG_FILE   = 'blog.html'
+GRID_MARKER = '<div class="blog-grid"'
+START_TAG   = '<!-- LATEST-POST-START -->'
+END_TAG     = '<!-- LATEST-POST-END -->'
 
 
 def parse_post(filepath):
@@ -117,6 +118,68 @@ def update_index(new_section):
     return True
 
 
+def build_blog_card(p):
+    """HTML card for blog.html grid."""
+    filename = os.path.basename(p['url'])
+    img_src  = p['image_local']
+    read_time_html = (
+        f'\n <span class="blog-read-time">{p["read_time"]}</span>'
+        if p['read_time'] else ''
+    )
+    return (
+        f'\n <!-- Auto-added: {p["title"]} -->\n'
+        f' <article class="blog-card">\n'
+        f' <div class="blog-card-img">\n'
+        f' <img src="{img_src}" alt="{p["title"]}" loading="lazy"/>\n'
+        f' </div>\n'
+        f' <div class="blog-card-body">\n'
+        f' <div class="blog-card-meta">\n'
+        f' <span class="blog-tag">{p["tag"]}</span>\n'
+        f' <time class="blog-date" datetime="{p["date_iso"]}">{p["date_disp"]}</time>{read_time_html}\n'
+        f' </div>\n'
+        f' <h2><a href="{p["url"]}">{p["title"]}</a></h2>\n'
+        f' <p>{p["desc"]}</p>\n'
+        f' <div class="blog-card-footer">\n'
+        f' <span class="blog-author">{p["author"]}</span>\n'
+        f' <a href="{p["url"]}" class="blog-read-more">Read more &#8594;</a>\n'
+        f' </div>\n'
+        f' </div>\n'
+        f' </article>\n'
+    )
+
+
+def update_blog_listing(p):
+    """Prepend a blog card to blog.html if the post isn't already listed."""
+    if not os.path.exists(BLOG_FILE):
+        print(f'Warning: {BLOG_FILE} not found — skipping blog listing update')
+        return False
+
+    with open(BLOG_FILE, encoding='utf-8') as f:
+        content = f.read()
+
+    filename = os.path.basename(p['url'])
+    if filename in content:
+        print(f'{BLOG_FILE} already contains {filename} — skipping')
+        return False
+
+    # Insert after the opening <div class="blog-grid" ...> line
+    grid_pos = content.find(GRID_MARKER)
+    if grid_pos == -1:
+        print(f'Warning: blog-grid marker not found in {BLOG_FILE} — skipping')
+        return False
+
+    # Find the end of that opening tag line
+    insert_pos = content.index('\n', grid_pos) + 1
+    card = build_blog_card(p)
+    updated = content[:insert_pos] + card + content[insert_pos:]
+
+    with open(BLOG_FILE, 'w', encoding='utf-8') as f:
+        f.write(updated)
+
+    print(f'Prepended blog card to {BLOG_FILE}')
+    return True
+
+
 def main():
     files = [f for f in sys.argv[1:] if f.endswith('.html') and os.path.exists(f)]
     if not files:
@@ -133,6 +196,7 @@ def main():
     post = parse_post(filepath)
     section = build_section(post)
     update_index(section)
+    update_blog_listing(post)
 
 
 if __name__ == '__main__':

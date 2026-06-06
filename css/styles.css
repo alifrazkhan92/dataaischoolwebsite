@@ -1686,6 +1686,28 @@ html[data-theme="dark"] .values-list .value-icon {
 .blog-share-copy:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-card); }
 .blog-share-copied    { background: #22c55e !important; color: #fff !important; border-color: #22c55e !important; }
 
+/* Mobile native share button — visible only on small screens */
+.mobile-share-btn {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  .mobile-share-btn { display: flex; }
+}
+
 /* Mobile: tighten */
 @media (max-width: 560px) {
   .blog-share-inner { padding: 0.875rem 1rem; gap: 0.5rem; }

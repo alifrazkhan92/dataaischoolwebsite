@@ -147,11 +147,11 @@ jobs:
         run: |
           git config user.name  "DAIS Blog Bot"
           git config user.email "actions@dataaischool.com"
-          git add index.html
+          git add index.html blog.html
           if git diff --staged --quiet; then
-            echo "Homepage already up to date."
+            echo "Homepage and blog listing already up to date."
           else
-            git commit -m "chore: update homepage latest post [skip ci]"
+            git commit -m "chore: update homepage and blog listing [skip ci]"
             git push origin main
           fi
 
