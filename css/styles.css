@@ -973,6 +973,14 @@ input[type="month"] {
   color: var(--footer-text);
   font-size: 0.875rem;
 }
+.footer-inner p a {
+  color: var(--footer-text-hover);   /* gold — visible on the navy footer */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-inner p a:hover {
+  color: #fff;
+}
 .footer-inner strong {
   color: var(--footer-text-hover);
 }
