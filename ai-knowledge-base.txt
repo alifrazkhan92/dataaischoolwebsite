@@ -228,6 +228,7 @@ Contact Us | The Data and AI School of London
 Have a question about our courses, admissions or partnerships? Send us a
 message and we’ll get back to you.
 We’re here to help, reach out anytime.
+Optional. If provided, we will send you a WhatsApp confirmation.
 NCFE Level 2 Certificate in Understanding Coding
 NCFE Level 3 Certificate in Coding Practices
 NCFE Level 2 Certificate in the Principles of Cyber Security
