@@ -1,0 +1,71 @@
+name: Manual Social Share
+
+# Use this to share any existing blog post on demand.
+# Go to Actions → Manual Social Share → Run workflow
+# Enter the blog filename (e.g. will-ai-replace-data-scientists-uk-2026.html)
+
+on:
+  workflow_dispatch:
+    inputs:
+      blog_file:
+        description: "Blog filename to share (e.g. will-ai-replace-data-scientists-uk-2026.html)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  share:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2f  # v5.3.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --quiet requests beautifulsoup4
+
+      - name: Validate blog file exists
+        run: |
+          FILE="blog/${{ github.event.inputs.blog_file }}"
+          if [ ! -f "$FILE" ]; then
+            echo "ERROR: $FILE does not exist in the repository."
+            exit 1
+          fi
+          echo "Sharing: $FILE"
+          echo "BLOG_FILE=$FILE" >> $GITHUB_ENV
+
+      - name: Share to Facebook, Instagram and LinkedIn
+        env:
+          NEW_FILES:            ${{ env.BLOG_FILE }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
+          LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
+        run: python scripts/social_share.py
+
+      - name: Update homepage latest post section
+        env:
+          NEW_FILES: ${{ env.BLOG_FILE }}
+        run: python scripts/update_homepage_post.py
+
+      - name: Commit homepage update
+        run: |
+          git config user.name  "DAIS Blog Bot"
+          git config user.email "actions@dataaischool.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "Homepage already up to date."
+          else
+            git commit -m "chore: update homepage latest post [skip ci]"
+            git push origin main
+          fi

@@ -1,19 +1,20 @@
 name: Weekly Blog Post
 
-# Runs every Monday at 08:00 UTC (09:00 BST / 10:00 during BST offset periods)
-# The blog post is generated with AI, committed, and pushed.
-# The existing social-share.yml workflow then detects the new blog/*.html file
-# and automatically posts to Facebook, Instagram, and LinkedIn.
+# Runs every Monday at 08:00 UTC (09:00 BST).
+#
+# WHY social sharing is done INLINE here (not via social-share.yml):
+# GitHub deliberately prevents workflows triggered by GITHUB_TOKEN from
+# triggering other workflows. Pushing from this workflow would therefore
+# never fire social-share.yml. Social sharing is run as steps here instead.
 
 on:
   schedule:
     - cron: "0 8 * * 1"   # Every Monday 08:00 UTC
 
-  # Allow manual trigger from the GitHub Actions UI (useful for testing)
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dry run: generate content but do not commit or push"
+        description: "Generate post but do NOT commit, push, or share (for testing)"
         required: false
         default: "false"
 
@@ -37,41 +38,74 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --quiet Pillow anthropic
+          pip install --quiet Pillow requests beautifulsoup4
 
       - name: Generate blog post
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          cd $GITHUB_WORKSPACE
           python scripts/generate_weekly_blog.py
 
-      - name: Check for new files
-        id: check_files
+      - name: Detect new blog files
+        id: detect
         run: |
-          git status --porcelain
-          if git status --porcelain | grep -q "blog/"; then
-            echo "new_post=true" >> $GITHUB_OUTPUT
+          # Find newly created blog HTML files
+          NEW=$(git status --porcelain | grep '?? blog/' | grep '\.html' | awk '{print $2}' | tr '\n' ' ')
+          echo "new_files=$NEW" >> "$GITHUB_OUTPUT"
+          if [ -n "$NEW" ]; then
+            echo "New blog post(s): $NEW"
+            echo "new_post=true" >> "$GITHUB_OUTPUT"
           else
-            echo "new_post=false" >> $GITHUB_OUTPUT
+            echo "No new blog post generated this run."
+            echo "new_post=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit and push (if not dry run)
-        if: steps.check_files.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+      - name: Commit and push
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
         run: |
           git config user.name  "DAIS Blog Bot"
           git config user.email "actions@dataaischool.com"
-          # Stage new blog HTML and image
-          git add blog/*.html images/blog-*.png images/blog-*.jpg sitemap.xml blog/BLOG_TOPICS_USED.json robots.txt 2>/dev/null || true
+          git add blog/ images/blog-*.png images/blog-*.jpg sitemap.xml 2>/dev/null || true
           git diff --cached --name-only
-          git commit -m "chore: weekly blog post $(date +%Y-%m-%d)"
+          git commit -m "chore: weekly blog post $(date +%Y-%m-%d) [skip ci]"
           git push origin main
+
+      # ── Social sharing (inline — cannot rely on social-share.yml being triggered) ──
+
+      - name: Share to Facebook, Instagram and LinkedIn
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          NEW_FILES:            ${{ steps.detect.outputs.new_files }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
+          LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
+        run: python scripts/social_share.py
+
+      - name: Update homepage latest post section
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          NEW_FILES: ${{ steps.detect.outputs.new_files }}
+        run: python scripts/update_homepage_post.py
+
+      - name: Commit homepage update
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "DAIS Blog Bot"
+          git config user.email "actions@dataaischool.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "Homepage already up to date."
+          else
+            git commit -m "chore: update homepage latest post [skip ci]"
+            git push origin main
+          fi
 
       - name: Summary
         run: |
-          echo "### Weekly Blog Generator Summary" >> $GITHUB_STEP_SUMMARY
-          echo "Date: $(date -u +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+          echo "### Weekly Blog Summary — $(date -u +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "New post committed: ${{ steps.check_files.outputs.new_post }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The social-share workflow will now detect the new blog post and post to Facebook, Instagram, and LinkedIn automatically." >> $GITHUB_STEP_SUMMARY
+          echo "- New post generated: **${{ steps.detect.outputs.new_post }}**" >> $GITHUB_STEP_SUMMARY
+          echo "- Files: ${{ steps.detect.outputs.new_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dry run: ${{ github.event.inputs.dry_run || 'false' }}" >> $GITHUB_STEP_SUMMARY
