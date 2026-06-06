@@ -72,6 +72,34 @@ jobs:
 
       # ── Social sharing (inline — cannot rely on social-share.yml being triggered) ──
 
+      - name: Pre-flight secrets check
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+        env:
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
+          LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
+        run: |
+          WARN=0
+          if [ -z "$FB_PAGE_ACCESS_TOKEN" ] || [ -z "$FB_PAGE_ID" ]; then
+            echo "::warning::Facebook secrets missing — FB posts will be skipped."
+            WARN=$((WARN+1))
+          fi
+          if [ -z "$IG_USER_ID" ]; then
+            echo "::warning::IG_USER_ID secret missing — Instagram posts will be skipped."
+            WARN=$((WARN+1))
+          fi
+          if [ -z "$LI_ACCESS_TOKEN" ] || [ -z "$LI_AUTHOR_URN" ]; then
+            echo "::warning::LinkedIn secrets missing — LinkedIn posts will be skipped."
+            WARN=$((WARN+1))
+          elif [[ "$LI_AUTHOR_URN" != urn:li:person:* && "$LI_AUTHOR_URN" != urn:li:organization:* ]]; then
+            echo "::error::LI_AUTHOR_URN has wrong format: '$LI_AUTHOR_URN'"
+            echo "  Must be: urn:li:organization:XXXXXXXX  (Page) or urn:li:person:XXXXXXXX (profile)"
+            exit 1
+          fi
+          echo "Pre-flight check passed."
+
       - name: Wait for GitHub Pages to deploy
         if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
         env:

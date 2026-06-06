@@ -95,7 +95,18 @@ def share_facebook(post, token, page_id):
         return True
     # SEC-010: log only the error message field, not raw token-bearing error response
     err = data.get('error', {})
-    print(f'  Facebook error [{err.get("code","?")}]: {err.get("message","unknown")}')
+    code = err.get('code', '?')
+    msg  = err.get('message', 'unknown')
+    print(f'  Facebook error [{code}]: {msg}')
+    if str(code) == '368':
+        print('  ACTION REQUIRED: Facebook has blocked posting — identity verification needed.')
+        print('  Fix: Open the Facebook app on your phone, complete any verification prompts,')
+        print('  then regenerate FB_PAGE_ACCESS_TOKEN and update the GitHub secret.')
+        print('  See: https://developers.facebook.com/tools/explorer/')
+    elif str(code) == '190':
+        print('  ACTION REQUIRED: FB_PAGE_ACCESS_TOKEN has expired or is invalid.')
+        print('  Fix: Regenerate the token at https://developers.facebook.com/tools/explorer/')
+        print('  and update the FB_PAGE_ACCESS_TOKEN GitHub secret.')
     return False
 
 
@@ -178,13 +189,41 @@ def share_instagram(post, token, ig_user_id):
 
 # ── LinkedIn ──────────────────────────────────────────────────────────────────
 
+def _validate_li_author_urn(urn):
+    """Return an error string if the URN is malformed, or None if it looks valid."""
+    valid_prefixes = ('urn:li:person:', 'urn:li:organization:')
+    if not any(urn.startswith(p) for p in valid_prefixes):
+        return (
+            f'LI_AUTHOR_URN "{urn}" has an invalid format.\n'
+            '  Expected:  urn:li:organization:XXXXXXXX  (for a LinkedIn Page/company)\n'
+            '          or urn:li:person:XXXXXXXX         (for a personal profile)\n'
+            '  Common mistake: using "urn:li:company:" — the correct prefix is "urn:li:organization:"\n'
+            '  Find your organization ID: go to your LinkedIn Page admin URL,\n'
+            '  e.g. linkedin.com/company/SLUG/admin/ → the numeric ID is in Settings.'
+        )
+    id_part = urn.split(':', 3)[-1]
+    if not id_part.isdigit():
+        return (
+            f'LI_AUTHOR_URN "{urn}" has a non-numeric ID part "{id_part}".\n'
+            '  The ID must be a number, e.g. urn:li:organization:12345678'
+        )
+    return None
+
+
 def share_linkedin(post, token, author_urn):
     """
     Share an article on LinkedIn using the UGC Posts API.
     author_urn can be:
       urn:li:person:XXXXXX          — personal profile
       urn:li:organization:XXXXXX    — company / school page
+    Requires scope w_member_social (personal) or w_organization_social (page).
     """
+    urn_error = _validate_li_author_urn(author_urn)
+    if urn_error:
+        print(f'  LinkedIn: invalid LI_AUTHOR_URN — skipping to avoid wasting API call.')
+        print(f'  {urn_error}')
+        return False
+
     payload = {
         'author': author_urn,
         'lifecycleState': 'PUBLISHED',
@@ -224,10 +263,21 @@ def share_linkedin(post, token, author_urn):
         return True
     # SEC-010: only log status code and the 'message' field — never raw response body
     try:
-        err_msg = resp.json().get('message', 'no message field')
+        body    = resp.json()
+        err_msg = body.get('message', 'no message field')
     except Exception:
         err_msg = '(non-JSON response)'
     print(f'  LinkedIn error {resp.status_code}: {err_msg}')
+    if resp.status_code == 403 and '/author' in err_msg:
+        print('  Likely cause: LI_AUTHOR_URN is wrong or the token lacks the required OAuth scope.')
+        print('  For a LinkedIn Page: LI_AUTHOR_URN must be urn:li:organization:XXXXXXXX')
+        print('  Token scope needed: w_organization_social  (for pages)')
+        print('                   or w_member_social        (for personal profiles)')
+        print('  Regenerate your token at https://www.linkedin.com/developers/apps and')
+        print('  ensure the correct scopes are approved, then update the LI_ACCESS_TOKEN secret.')
+    elif resp.status_code == 401:
+        print('  ACTION REQUIRED: LI_ACCESS_TOKEN has expired (LinkedIn tokens last ~60 days).')
+        print('  Fix: Regenerate at https://www.linkedin.com/developers/apps and update the secret.')
     return False
 
 

@@ -44,6 +44,27 @@ jobs:
           fi
           echo "File found: $FILE"
 
+      - name: Pre-flight secrets check
+        env:
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+          LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
+          LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
+        run: |
+          if [ -z "$FB_PAGE_ACCESS_TOKEN" ] || [ -z "$FB_PAGE_ID" ]; then
+            echo "::warning::Facebook secrets missing — FB share step will be skipped."
+          fi
+          if [ -z "$IG_USER_ID" ]; then
+            echo "::warning::IG_USER_ID secret missing — Instagram share step will be skipped."
+          fi
+          if [ -n "$LI_AUTHOR_URN" ] && [[ "$LI_AUTHOR_URN" != urn:li:person:* && "$LI_AUTHOR_URN" != urn:li:organization:* ]]; then
+            echo "::error::LI_AUTHOR_URN has wrong format: '$LI_AUTHOR_URN'"
+            echo "  Must be: urn:li:organization:XXXXXXXX  (Page) or urn:li:person:XXXXXXXX (profile)"
+            exit 1
+          fi
+          echo "Pre-flight check passed."
+
       - name: Share to Facebook
         continue-on-error: true
         env:
