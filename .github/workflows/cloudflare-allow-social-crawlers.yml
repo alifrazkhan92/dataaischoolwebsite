@@ -1,0 +1,133 @@
+name: Allow social media crawlers in Cloudflare WAF
+
+# One-time setup: creates a WAF Custom Rule that bypasses Bot Fight Mode
+# for Facebook, LinkedIn, Twitter/X and other social scrapers so that
+# og:image and og:description show up when sharing blog posts.
+# Run manually from Actions → Allow social media crawlers → Run workflow.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  allow-social-crawlers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Cloudflare Zone ID for dataaischool.com
+        id: zone
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          ZONE_ID=$(curl -sf "https://api.cloudflare.com/client/v4/zones?name=dataaischool.com" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            | python3 -c "import sys,json; data=json.load(sys.stdin); print(data['result'][0]['id'])")
+          if [ -z "$ZONE_ID" ]; then
+            echo "::error::Could not find Zone ID for dataaischool.com — check CLOUDFLARE_API_TOKEN secret"
+            exit 1
+          fi
+          echo "zone_id=$ZONE_ID" >> "$GITHUB_OUTPUT"
+          echo "Found Zone ID: $ZONE_ID"
+
+      - name: Check if bypass rule already exists
+        id: check
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ZONE_ID: ${{ steps.zone.outputs.zone_id }}
+        run: |
+          EXISTING=$(curl -sf "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/firewall/rules" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            | python3 -c "
+          import sys,json
+          data=json.load(sys.stdin)
+          rules=[r for r in data.get('result',[]) if 'social' in r.get('description','').lower()]
+          print(len(rules))
+          ")
+          echo "existing=$EXISTING" >> "$GITHUB_OUTPUT"
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "Bypass rule already exists — skipping creation."
+          else
+            echo "No existing bypass rule found — will create."
+          fi
+
+      - name: Create WAF bypass rule for social crawlers
+        if: steps.check.outputs.existing == '0'
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ZONE_ID: ${{ steps.zone.outputs.zone_id }}
+        run: |
+          # First create the filter expression
+          FILTER_RESP=$(curl -sf -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/filters" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "expression": "(http.user_agent contains \"facebookexternalhit\") or (http.user_agent contains \"Facebot\") or (http.user_agent contains \"LinkedInBot\") or (http.user_agent contains \"Twitterbot\") or (http.user_agent contains \"WhatsApp\") or (http.user_agent contains \"Slackbot\") or (http.user_agent contains \"TelegramBot\")",
+              "description": "Social media crawlers — allow og:tag scraping"
+            }')
+
+          FILTER_ID=$(echo "$FILTER_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin)['result'][0]['id'])")
+          if [ -z "$FILTER_ID" ]; then
+            echo "::error::Failed to create filter. Response: $FILTER_RESP"
+            exit 1
+          fi
+          echo "Created filter: $FILTER_ID"
+
+          # Now create the firewall rule using the filter (action: allow)
+          RULE_RESP=$(curl -sf -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/firewall/rules" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "[{
+              \"filter\": {\"id\": \"$FILTER_ID\"},
+              \"action\": \"allow\",
+              \"description\": \"Allow social media crawlers (og:tag scraping for FB/LinkedIn/Twitter)\"
+            }]")
+
+          echo "$RULE_RESP" | python3 -c "
+          import sys,json
+          data=json.load(sys.stdin)
+          if data.get('success'):
+              print('WAF rule created successfully:', data['result'][0]['id'])
+          else:
+              print('ERROR:', json.dumps(data.get('errors',[])))
+              sys.exit(1)
+          "
+
+      - name: Verify crawlers can now access the site
+        run: |
+          echo "Waiting 10s for WAF rule to propagate..."
+          sleep 10
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -A "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)" \
+            "https://www.dataaischool.com/blog/will-ai-replace-data-scientists-uk-2026.html")
+          echo "HTTP status with facebookexternalhit user agent: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "Success — Facebook crawler can now access the page."
+          else
+            echo "::warning::Still getting $STATUS — WAF rule may need more time to propagate, or Bot Fight Mode needs to be disabled in Cloudflare dashboard."
+          fi
+
+      - name: Force Facebook to re-scrape the blog post URL
+        env:
+          FB_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+        run: |
+          URL="https://www.dataaischool.com/blog/will-ai-replace-data-scientists-uk-2026.html"
+          if [ -z "$FB_TOKEN" ]; then
+            echo "::warning::FB_PAGE_ACCESS_TOKEN not set — cannot force Facebook re-scrape via API."
+            echo "Manual fix: go to https://developers.facebook.com/tools/debug/ and paste the URL → Scrape Again"
+          else
+            RESP=$(curl -sf -X POST \
+              "https://graph.facebook.com/?id=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$URL")&scrape=true&access_token=$FB_TOKEN")
+            echo "Facebook scrape response: $RESP"
+          fi
+
+      - name: Summary
+        run: |
+          echo "### Cloudflare Social Crawler Setup" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- WAF bypass rule created for: facebookexternalhit, LinkedInBot, Twitterbot, WhatsApp, Slackbot, TelegramBot" >> $GITHUB_STEP_SUMMARY
+          echo "- Facebook re-scrape triggered for the blog post URL" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next step:** Open the blog post on your phone and tap Share → Facebook. The image and content should now appear." >> $GITHUB_STEP_SUMMARY
