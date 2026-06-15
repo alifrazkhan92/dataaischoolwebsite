@@ -2,18 +2,17 @@
 """
 DAIS Weekly Blog Generator
 Generates a new SEO-optimised blog post each week using the Anthropic API,
-creates a contextual AI hero image via DALL-E 3, updates blog.html and
+creates a contextual hero image via Google Imagen 3, updates blog.html and
 sitemap.xml, and saves the HTML file to blog/.
 
 Required GitHub secrets:
   ANTHROPIC_API_KEY   -- Claude Sonnet (blog content)
-  OPENAI_API_KEY      -- DALL-E 3 (hero image); falls back to Pillow if absent
+  GEMINI_API_KEY      -- Google Imagen 3 (hero image); falls back to Pillow if absent
 """
 
 import os
 import sys
 import json
-import base64
 import math
 import textwrap
 import datetime
@@ -21,6 +20,14 @@ import re
 import ssl
 import urllib.request
 import urllib.parse
+
+try:
+    from google import genai as google_genai
+    from google.genai import types as google_genai_types
+    GOOGLE_GENAI_AVAILABLE = True
+except ImportError:
+    GOOGLE_GENAI_AVAILABLE = False
+    print("WARNING: google-genai not installed. Imagen 3 unavailable; will use Pillow fallback.")
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -462,57 +469,44 @@ def sanitise_blog_html(html: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Hero image: DALL-E 3 (contextual) with Pillow fallback
+# Hero image: Google Imagen 3 (contextual) with Pillow fallback
 # ---------------------------------------------------------------------------
-def generate_hero_image_dalle(topic, openai_key):
-    """Generate a contextual 1792x1024 hero image via DALL-E 3."""
+def generate_hero_image_imagen(topic, gemini_key):
+    """Generate a contextual 16:9 hero image via Google Imagen 3."""
+    if not GOOGLE_GENAI_AVAILABLE:
+        raise RuntimeError("google-genai package not installed")
+
     slug = topic["slug"]
-    fname = f"blog-{slug}.jpg"
+    fname = f"blog-{slug}.png"
     out_path = os.path.join(IMAGES_DIR, fname)
 
-    # Build a context-aware prompt from the topic
     prompt = (
-        f"Professional hero image for a UK education blog article: '{topic['title']}'. "
-        f"Context: {topic['og_description']} "
-        f"Visual concept: {topic.get('image_prompt', 'Modern UK professional education and technology setting, navy blue and gold colour scheme')}. "
-        "Style: photorealistic, high quality, corporate professional. "
-        "No text, no words, no logos in the image. Wide landscape format."
+        f"Professional hero image for a UK education and technology blog article: '{topic['title']}'. "
+        f"{topic.get('image_prompt', 'Modern UK professional education and technology setting, navy blue and gold colour scheme')}. "
+        "Photorealistic, high quality, corporate professional style. "
+        "No text, no words, no logos in the image."
     )
 
-    payload = json.dumps({
-        "model": "dall-e-3",
-        "prompt": prompt[:3900],
-        "n": 1,
-        "size": "1792x1024",
-        "quality": "standard",
-        "response_format": "b64_json",
-    }).encode()
-
-    req = urllib.request.Request(
-        "https://api.openai.com/v1/images/generations",
-        data=payload,
-        headers={
-            "Authorization": f"Bearer {openai_key}",
-            "Content-Type": "application/json",
-        },
-        method="POST"
+    client = google_genai.Client(api_key=gemini_key)
+    response = client.models.generate_images(
+        model="imagen-3.0-generate-002",
+        prompt=prompt[:2000],
+        config=google_genai_types.GenerateImagesConfig(
+            number_of_images=1,
+            aspect_ratio="16:9",
+        )
     )
-    tls_ctx = ssl.create_default_context()
-    tls_ctx.check_hostname = True
-    tls_ctx.verify_mode = ssl.CERT_REQUIRED
-    with urllib.request.urlopen(req, timeout=120, context=tls_ctx) as resp:
-        data = json.load(resp)
 
-    image_bytes = base64.b64decode(data["data"][0]["b64_json"])
+    image_bytes = response.generated_images[0].image.image_bytes
     with open(out_path, "wb") as f:
         f.write(image_bytes)
     size_kb = os.path.getsize(out_path) // 1024
-    print(f"DALL-E 3 image saved: {fname} ({size_kb}KB)")
+    print(f"Imagen 3 image saved: {fname} ({size_kb}KB)")
     return fname
 
 
 def generate_hero_image_pillow(topic):
-    """Branded fallback image using Pillow when DALL-E is unavailable."""
+    """Branded fallback image using Pillow when Imagen 3 is unavailable."""
     if not PIL_AVAILABLE:
         return None
 
@@ -579,15 +573,15 @@ def generate_hero_image_pillow(topic):
 
 
 def generate_hero_image(topic):
-    """Try DALL-E 3 first; fall back to Pillow if key is absent or call fails."""
-    openai_key = os.environ.get("OPENAI_API_KEY", "")
-    if openai_key:
+    """Try Imagen 3 first; fall back to Pillow if key is absent or call fails."""
+    gemini_key = os.environ.get("GEMINI_API_KEY", "")
+    if gemini_key:
         try:
-            return generate_hero_image_dalle(topic, openai_key)
+            return generate_hero_image_imagen(topic, gemini_key)
         except Exception as exc:
-            print(f"DALL-E 3 failed ({exc}). Falling back to Pillow.")
+            print(f"Imagen 3 failed ({exc}). Falling back to Pillow.")
     else:
-        print("OPENAI_API_KEY not set. Using Pillow fallback image.")
+        print("GEMINI_API_KEY not set. Using Pillow fallback image.")
     return generate_hero_image_pillow(topic)
 
 
