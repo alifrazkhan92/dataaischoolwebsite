@@ -336,11 +336,13 @@ def main():
         else:
             print('  LinkedIn: LI_ACCESS_TOKEN or LI_AUTHOR_URN not set — skipped')
 
+    fatal_errors = [e for e in errors if not e.startswith('LinkedIn')]
     if errors:
         print(f'\nCompleted with errors on: {", ".join(errors)}')
-        sys.exit(1)
     else:
         print('\nAll platforms updated successfully.')
+    if fatal_errors:
+        sys.exit(1)
 
 
 if __name__ == '__main__':
