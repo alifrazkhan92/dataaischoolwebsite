@@ -66,7 +66,7 @@ jobs:
         run: |
           git config user.name  "DAIS Blog Bot"
           git config user.email "actions@dataaischool.com"
-          git add blog/ images/blog-*.png images/blog-*.jpg sitemap.xml 2>/dev/null || true
+          git add blog/ blog.html sitemap.xml images/
           git diff --cached --name-only
           git commit -m "chore: weekly blog post $(date +%Y-%m-%d) [skip ci]"
           git push origin main
