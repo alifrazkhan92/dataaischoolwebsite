@@ -15,8 +15,8 @@
   var NAV_HTML =
     '<header class="site-header">' +
     '<div class="header-inner">' +
-    '<a href="index.html" class="logo">' +
-    '<img src="images/logo-dais.png" alt="DAIS" class="logo-img">' +
+    '<a href="/index.html" class="logo">' +
+    '<img src="/images/logo-dais.png" alt="DAIS" class="logo-img">' +
     '<span class="logo-text">' +
     '<span class="logo-name">The Data and AI School</span>' +
     '<span class="logo-location">of London</span>' +
@@ -25,12 +25,12 @@
     '<button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>' +
     '<nav id="nav-main">' +
     '<ul class="nav-main">' +
-    '<li><a href="index.html">Home</a></li>' +
-    '<li><a href="about.html">About</a></li>' +
-    '<li><a href="courses.html">Courses</a></li>' +
-    '<li><a href="blog.html">Blog</a></li>' +
-    '<li><a href="apply.html">Apply</a></li>' +
-    '<li><a href="contact.html">Contact</a></li>' +
+    '<li><a href="/index.html">Home</a></li>' +
+    '<li><a href="/about.html">About</a></li>' +
+    '<li><a href="/courses.html">Courses</a></li>' +
+    '<li><a href="/blog.html">Blog</a></li>' +
+    '<li><a href="/apply.html">Apply</a></li>' +
+    '<li><a href="/contact.html">Contact</a></li>' +
     '<li class="nav-portal-item">' +
     '<a href="https://learn.dataaischool.com" class="nav-portal-btn" target="_blank" rel="noopener noreferrer">&#127891; Student Portal</a>' +
     '</li>' +

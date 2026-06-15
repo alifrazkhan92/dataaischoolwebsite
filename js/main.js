@@ -191,7 +191,7 @@
 
  var currentPath = window.location.pathname.replace(/^\//, "") || "index.html";
  document.querySelectorAll(".nav-main a").forEach(function (link) {
- var href = link.getAttribute("href") || "";
+ var href = (link.getAttribute("href") || "").replace(/^\//, "");
  if (href === currentPath || (currentPath === "" && href === "index.html")) {
  link.setAttribute("aria-current", "page");
  }
