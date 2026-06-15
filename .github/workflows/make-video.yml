@@ -1,0 +1,54 @@
+name: Generate YouTube Video
+
+# Manually triggered workflow to generate and upload a YouTube video
+# from an existing blog post without creating a new post.
+#
+# Usage:
+#   Actions > Generate YouTube Video > Run workflow
+#   Set "blog_file" to the path of the existing blog HTML, e.g.
+#     blog/ncfe-vs-pearson-btec-ai-data-uk.html
+
+on:
+  workflow_dispatch:
+    inputs:
+      blog_file:
+        description: "Blog HTML file path (e.g. blog/my-post.html)"
+        required: true
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  make-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install system fonts
+        run: |
+          sudo apt-get install -y --no-install-recommends fonts-liberation 2>/dev/null || true
+
+      - name: Install Python dependencies
+        run: |
+          pip install --quiet Pillow requests beautifulsoup4 anthropic google-api-python-client google-auth
+
+      - name: Generate and upload YouTube video
+        env:
+          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY:    ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID:   ${{ secrets.ELEVENLABS_VOICE_ID }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python scripts/generate_blog_video.py "${{ github.event.inputs.blog_file }}"
