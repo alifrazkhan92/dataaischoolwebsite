@@ -34,9 +34,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install system fonts
+      - name: Install system fonts and ffmpeg
         run: |
-          sudo apt-get install -y --no-install-recommends fonts-liberation 2>/dev/null || true
+          sudo apt-get install -y --no-install-recommends fonts-liberation ffmpeg
 
       - name: Install Python dependencies
         run: |
