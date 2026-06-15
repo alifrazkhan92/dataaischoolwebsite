@@ -1,6 +1,6 @@
 name: Weekly Blog Post
 
-# Runs every Monday at 08:00 UTC (09:00 BST).
+# Runs every Monday at 06:00 UTC (07:00 BST in summer, 06:00 GMT in winter).
 #
 # WHY social sharing is done INLINE here (not via social-share.yml):
 # GitHub deliberately prevents workflows triggered by GITHUB_TOKEN from
@@ -9,7 +9,7 @@ name: Weekly Blog Post
 
 on:
   schedule:
-    - cron: "0 8 * * 1"   # Every Monday 08:00 UTC
+    - cron: "0 6 * * 1"   # Every Monday 06:00 UTC (07:00 BST)
 
   workflow_dispatch:
     inputs:
@@ -38,11 +38,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --quiet Pillow requests beautifulsoup4
+          pip install --quiet Pillow requests
 
       - name: Generate blog post
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           python scripts/generate_weekly_blog.py
 
