@@ -36,9 +36,13 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get install -y --no-install-recommends fonts-liberation 2>/dev/null || true
+
       - name: Install dependencies
         run: |
-          pip install --quiet Pillow requests beautifulsoup4 google-genai
+          pip install --quiet Pillow requests beautifulsoup4 google-genai google-api-python-client google-auth
 
       - name: Generate blog post
         env:
@@ -136,6 +140,21 @@ jobs:
           LI_ACCESS_TOKEN:      ${{ secrets.LI_ACCESS_TOKEN }}
           LI_AUTHOR_URN:        ${{ secrets.LI_AUTHOR_URN }}
         run: python scripts/social_share.py
+
+      # ── YouTube video (non-fatal: missing credentials are handled in the script) ──
+
+      - name: Generate and upload YouTube video
+        if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
+        continue-on-error: true
+        env:
+          NEW_FILES:             ${{ steps.detect.outputs.new_files }}
+          ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY:    ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID:   ${{ secrets.ELEVENLABS_VOICE_ID }}
+          YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/generate_blog_video.py
 
       - name: Update homepage latest post section
         if: steps.detect.outputs.new_post == 'true' && github.event.inputs.dry_run != 'true'
