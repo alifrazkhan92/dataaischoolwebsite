@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install --quiet Pillow requests google-genai
+          pip install --quiet Pillow requests beautifulsoup4 google-genai
 
       - name: Generate blog post
         env:
