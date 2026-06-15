@@ -112,7 +112,7 @@ def _paste_logo(canvas, logo, x, y):
 
 
 def _load_logo(target_h=65):
-    path = Path("images/logo-dais.png")
+    path = Path("images/logo-dais-new.png")
     if not path.exists():
         return None
     try:
