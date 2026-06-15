@@ -180,11 +180,23 @@ def update_blog_listing(p):
     return True
 
 
+def _safe_blog_path(raw):
+    """Return the real path only if it resolves inside blog/. Rejects traversal attempts."""
+    allowed = os.path.realpath('blog')
+    real    = os.path.realpath(raw)
+    if real.startswith(allowed + os.sep) or real == allowed:
+        return real
+    print(f'Skipping unsafe path (outside blog/): {raw}')
+    return None
+
+
 def main():
-    files = [f for f in sys.argv[1:] if f.endswith('.html') and os.path.exists(f)]
-    if not files:
-        env_files = os.environ.get('NEW_FILES', '').strip().split()
-        files = [f for f in env_files if f.endswith('.html') and os.path.exists(f)]
+    candidates = [f for f in sys.argv[1:] if f.endswith('.html') and os.path.exists(f)]
+    if not candidates:
+        env_files  = os.environ.get('NEW_FILES', '').strip().split()
+        candidates = [f for f in env_files if f.endswith('.html') and os.path.exists(f)]
+
+    files = [p for f in candidates for p in [_safe_blog_path(f)] if p]
 
     if not files:
         print('No blog post file provided — skipping homepage update')

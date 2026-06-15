@@ -13,7 +13,9 @@ Usage:
   python scripts/youtube_auth.py path/to/client_secret.json
 """
 
+import os
 import sys
+import stat
 import json
 import subprocess
 from pathlib import Path
@@ -23,8 +25,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube",   # needed to create/manage playlists
 ]
-REPO   = "alifrazkhan92/dataaischoolwebsite"
-BACKUP = Path("/tmp/yt_credentials_backup.json")
+REPO       = "alifrazkhan92/dataaischoolwebsite"
+BACKUP_DIR = Path.home() / ".cache" / "dais"
+BACKUP     = BACKUP_DIR / "yt_credentials_backup.json"
 
 
 def gh_secret(name, value):
@@ -64,9 +67,12 @@ def main():
         "YOUTUBE_CLIENT_SECRET": creds.client_secret,
     }
 
-    # Save backup to disk immediately (survives terminal close)
+    # Save backup to user-private directory (mode 0600, not world-readable /tmp)
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    os.chmod(BACKUP_DIR, stat.S_IRWXU)           # 0700 - owner only
     BACKUP.write_text(json.dumps(data, indent=2))
-    print(f"\nCredentials saved to {BACKUP} (backup in case anything fails below)")
+    os.chmod(BACKUP, stat.S_IRUSR | stat.S_IWUSR) # 0600 - owner read/write only
+    print(f"\nCredentials saved to {BACKUP} (owner-only permissions, backup in case anything fails below)")
 
     # Push directly to GitHub secrets
     print("\nPushing to GitHub secrets...")

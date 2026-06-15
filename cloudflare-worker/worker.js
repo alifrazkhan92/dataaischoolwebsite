@@ -91,7 +91,10 @@ async function getKnowledgeBase(env) {
   try {
     const url = env.KNOWLEDGE_BASE_URL ||
       'https://raw.githubusercontent.com/alifrazkhan92/dataaischoolwebsite/main/ai-knowledge-base.txt';
-    const res = await fetch(url, { cf: { cacheTtl: 3600, cacheEverything: true } });
+    const res = await fetch(url, {
+      cf: { cacheTtl: 3600, cacheEverything: true },
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) throw new Error('KB fetch failed: ' + res.status);
 
     // SEC-005: enforce a hard 512 KB cap on the knowledge base to prevent memory exhaustion
@@ -146,9 +149,10 @@ ${kb}`;
 // Applied to every response (API + admin). Varies per response type.
 
 const SECURITY_HEADERS = {
-  'X-Content-Type-Options': 'nosniff',          // SEC-009: prevent MIME sniffing
-  'X-Frame-Options':        'DENY',             // SEC-009: block iframe embedding
-  'Referrer-Policy':        'strict-origin-when-cross-origin',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains', // force HTTPS
+  'X-Content-Type-Options':    'nosniff',
+  'X-Frame-Options':           'DENY',
+  'Referrer-Policy':           'strict-origin-when-cross-origin',
 };
 
 const ADMIN_SECURITY_HEADERS = {
@@ -355,9 +359,13 @@ async function handleSTT(request, env, headers) {
     return jsonError(503, 'STT not configured', headers);
   }
 
-  const mimeType  = request.headers.get('Content-Type') || 'audio/webm';
+  const rawMime = (request.headers.get('Content-Type') || '').toLowerCase();
+  const ALLOWED_AUDIO = ['audio/webm', 'audio/mp4', 'audio/ogg', 'audio/mpeg', 'audio/wav'];
+  const mimeType = ALLOWED_AUDIO.find(t => rawMime.includes(t.split('/')[1])) || 'audio/webm';
   const extension = mimeType.includes('mp4') ? 'm4a'
                   : mimeType.includes('ogg') ? 'ogg'
+                  : mimeType.includes('mpeg') ? 'mp3'
+                  : mimeType.includes('wav')  ? 'wav'
                   : 'webm';
 
   let audioData;
@@ -709,6 +717,8 @@ async function handleAdminLogs(request, env) {
   }
 
   if (!env.ADMIN_KEY || !await timingSafeEqual(key, env.ADMIN_KEY)) {
+    const clientIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+    console.warn('Admin auth failed from IP:', clientIp);
     return new Response(
       '<!doctype html><html><head><title>Unauthorised</title></head><body style="font-family:system-ui;padding:2rem"><h2>401 Unauthorised</h2><p>Invalid or missing admin key.</p></body></html>',
       {
@@ -849,6 +859,7 @@ async function handleAdminEnquiries(request, env) {
   if (!key && authHeader.startsWith('Bearer ')) key = authHeader.slice(7).trim();
 
   if (!env.ADMIN_KEY || !await timingSafeEqual(key, env.ADMIN_KEY)) {
+    console.warn('Admin auth failed (enquiries) from IP:', request.headers.get('CF-Connecting-IP') || 'unknown');
     return new Response('Unauthorised', { status: 401, headers: ADMIN_SECURITY_HEADERS });
   }
   if (!env.dais_chat_logs) return new Response('D1 not configured', { status: 503 });
@@ -1024,8 +1035,11 @@ export default {
       return handleAdminEnquiries(request, env);
     }
 
-    // CORS preflight — respond before origin gate so browsers can check
+    // CORS preflight — only respond with CORS headers to allowed origins
     if (request.method === 'OPTIONS') {
+      if (!originAllowed(origin, env)) {
+        return new Response('Forbidden', { status: 403 });
+      }
       return new Response(null, { status: 204, headers });
     }
 

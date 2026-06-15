@@ -495,6 +495,15 @@ def main():
         print(f"Blog file not found: {blog_file}")
         sys.exit(1)
 
+    # Reject path traversal: file must be inside blog/ or the repo root
+    repo_root   = Path(__file__).resolve().parent.parent
+    allowed_dir = repo_root / "blog"
+    try:
+        blog_file.resolve().relative_to(allowed_dir)
+    except ValueError:
+        print(f"Rejected: {blog_file} is outside the blog/ directory.")
+        sys.exit(1)
+
     # Check required credentials
     anthropic_key  = os.environ.get("ANTHROPIC_API_KEY", "")
     elevenlabs_key = os.environ.get("ELEVENLABS_API_KEY", "")
