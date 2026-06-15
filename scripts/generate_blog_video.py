@@ -412,26 +412,46 @@ def youtube_upload(video_path, thumbnail_path, title, description, tags):
 
 # ── Claude script generation ──────────────────────────────────────────────────
 
-def _generate_script(title, content, description, api_key):
-    """Use Claude Sonnet to write a structured 4-5 minute video script."""
+def _generate_script(title, content, description, api_key, target_minutes=5):
+    """Use Claude Sonnet to write a structured video script.
+
+    target_minutes controls length: 5 for short blog videos, 15 for training videos.
+    """
     import anthropic as _ant
 
     client = _ant.Anthropic(api_key=api_key)
+
+    if target_minutes >= 15:
+        sections_req = "12 to 14"
+        narration_req = "140 to 170"
+        intro_req = "60 to 80"
+        outro_req = "50 to 70"
+        max_tokens = 6000
+        duration_label = "15 minute"
+    else:
+        sections_req = "5 or 6"
+        narration_req = "80 to 120"
+        intro_req = "40 to 60"
+        outro_req = "25 to 40"
+        max_tokens = 2500
+        duration_label = "4 to 5 minute"
+
     prompt = (
-        "You are writing a script for a 4 to 5 minute educational YouTube video "
+        f"You are writing a script for a {duration_label} educational YouTube video "
         "for The Data and AI School of London.\n\n"
         f"Blog title: {title}\n"
         f"Blog summary: {description}\n\n"
-        f"Blog content:\n{content[:5500]}\n\n"
+        f"Blog content:\n{content[:8000]}\n\n"
         "Requirements:\n"
         "- British English throughout\n"
         "- Professional, authoritative tone for UK professionals\n"
         "- No em dashes or en dashes. Use commas, colons or full stops instead\n"
         "- Each bullet point: max 12 words, clear and readable on screen\n"
-        "- Each section narration: 80 to 120 words of natural spoken English\n"
-        "- Intro narration: 40 to 60 words with an engaging opening hook\n"
-        "- Outro narration: 25 to 40 words with a clear call to action\n"
-        "- 5 or 6 content sections with a clear heading each\n\n"
+        f"- Each section narration: {narration_req} words of natural spoken English\n"
+        f"- Intro narration: {intro_req} words with an engaging opening hook\n"
+        f"- Outro narration: {outro_req} words with a clear call to action\n"
+        f"- {sections_req} content sections with a clear heading each\n"
+        "- 4 to 6 bullet points per section\n\n"
         "Return ONLY valid JSON in this exact format:\n"
         '{\n'
         '  "intro_narration": "...",\n'
@@ -444,7 +464,7 @@ def _generate_script(title, content, description, api_key):
 
     msg  = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=2500,
+        max_tokens=max_tokens,
         messages=[{"role": "user", "content": prompt}],
     )
     text = msg.content[0].text.strip()
@@ -512,8 +532,9 @@ def main():
     print(f"Blog: {title}")
 
     # Generate video script via Claude
-    print("Generating video script...")
-    script   = _generate_script(title, content, description, anthropic_key)
+    target_minutes = int(os.environ.get("VIDEO_DURATION_MINS", "5"))
+    print(f"Generating video script (target: {target_minutes} min)...")
+    script   = _generate_script(title, content, description, anthropic_key, target_minutes)
     sections = script.get("sections", [])
     print(f"Script: {len(sections)} sections")
 
