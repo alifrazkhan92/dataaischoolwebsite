@@ -338,46 +338,80 @@ def build_html(episode, body_html, image_filename):
   "author": {{"@type": "Organization", "name": "The Data and AI School of London", "url": "{BASE_URL}"}},
   "publisher": {{"@type": "Organization", "name": "The Data and AI School of London", "url": "{BASE_URL}"}},
   "keywords": {kw_json},
-  "isPartOf": {{
-    "@type": "CreativeWorkSeries",
-    "name": "AI Engineering: Zero to Master",
-    "url": "{BASE_URL}/blog/"
+  "breadcrumb": {{
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {{"@type": "ListItem", "position": 1, "name": "Home", "item": "{BASE_URL}/"}},
+      {{"@type": "ListItem", "position": 2, "name": "Blog", "item": "{BASE_URL}/blog.html"}},
+      {{"@type": "ListItem", "position": 3, "name": "{title}", "item": "{url}"}}
+    ]
   }}
 }}
 </script>
 </head>
 <body>
-<div id="navbar-placeholder"></div>
+<div id="site-nav"></div>
 <script src="../js/navbar.js"></script>
 
-<main class="blog-post-page" id="main-content">
-<article class="blog-post-article">
+<main>
+  <article class="blog-post">
+    <nav aria-label="Breadcrumb" style="margin-bottom:1.5rem;font-size:0.875rem;color:var(--text-muted)">
+      <a href="../index.html">Home</a> &rsaquo; <a href="../blog.html">Blog</a> &rsaquo; <span>{title}</span>
+    </nav>
 
-  <div class="blog-post-hero">
-    <img src="{img_tag}" alt="{title}" class="blog-post-hero-img" loading="eager" />
-  </div>
-
-  <div class="blog-post-content">
-    <div class="blog-post-meta">
-      <span class="blog-tag">{tag}</span>
-      <span class="blog-date">{date_disp}</span>
-      <span class="blog-read-time">15 min read</span>
-    </div>
-    <h1 class="blog-post-title">{title}</h1>
-
-    {playlist_link}
-
-    {body_html}
+    <header class="blog-post-header">
+      <div class="blog-card-meta">
+        <span class="blog-tag">{tag}</span>
+        <time class="blog-date" datetime="{date_iso}">{date_disp}</time>
+        <span class="blog-read-time">15 min read</span>
+      </div>
+      <h1>{title}</h1>
+      <div class="blog-post-meta">
+        <span class="blog-author">By <strong>Ali Fraz Khan, FHEA</strong>, CEO &amp; Principal, The Data and AI School of London</span>
+      </div>
+      <img
+        src="{img_tag}"
+        alt="{title}"
+        width="1792"
+        height="1024"
+        style="width:100%;height:auto;border-radius:var(--radius-lg);margin-bottom:1.5rem;"
+        loading="eager"
+      />
+    </header>
 
     {share_btns}
-  </div>
-</article>
+
+    <div class="blog-post-body">
+
+      <p style="background:var(--surface-2,#f0f4f8);border-left:4px solid var(--gold,#E8A020);padding:0.9rem 1.2rem;border-radius:0 6px 6px 0;margin-bottom:2rem;font-size:0.95rem;">
+        {playlist_link}
+      </p>
+
+      {body_html}
+
+    </div>
+
+    {share_btns.replace("Share this article", "Found this useful? Share it")}
+
+  </article>
 </main>
 
-<div id="footer-placeholder"></div>
-<script src="../js/footer.js"></script>
-<div id="chatbot-placeholder"></div>
-<script src="../js/chatbot.js"></script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>&copy; 2026 The Data and AI School of London. All rights reserved. &nbsp;|&nbsp; <a href="tel:+442070990956">+44 207 0990 956</a> &nbsp;|&nbsp; ICO Registration: <strong>ZC086597</strong></p>
+    <ul class="footer-nav">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../courses.html">Courses</a></li>
+      <li><a href="../blog.html">Blog</a></li>
+      <li><a href="../apply.html">Apply</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+      <li><a href="../privacy-policy.html">Privacy Policy</a></li>
+      <li><a href="https://learn.dataaischool.com" target="_blank" rel="noopener noreferrer">Student Portal</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
 </body>
 </html>
 """
