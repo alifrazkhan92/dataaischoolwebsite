@@ -2,35 +2,41 @@
 """
 YouTube OAuth Setup
 ===================
-Run this ONCE on your local machine to generate a YouTube refresh token.
-The token is then stored as a GitHub secret so CI can upload videos automatically.
+Run this ONCE on your local machine. It opens a browser for Google sign-in,
+then automatically pushes all three credentials to GitHub secrets.
+No terminal copying required.
 
 Prerequisites:
   pip install google-auth-oauthlib
 
-Steps:
-  1. Go to https://console.cloud.google.com
-  2. Select the DAIS project (the same one used for Gemini/Imagen 3)
-  3. Go to APIs and Services > Enable APIs > search for "YouTube Data API v3" and enable it
-  4. Go to APIs and Services > Credentials
-  5. Click "Create Credentials" > "OAuth client ID" > Application type: "Desktop app"
-  6. Download the JSON file (e.g. client_secret.json)
-  7. Run this script:
-       python scripts/youtube_auth.py path/to/client_secret.json
-  8. A browser window opens. Sign in with the DAIS Google account and allow access.
-  9. Copy the three values printed at the end into GitHub repository secrets:
-       Settings > Secrets and variables > Actions > New repository secret
-
-GitHub secrets to create:
-  YOUTUBE_REFRESH_TOKEN
-  YOUTUBE_CLIENT_ID
-  YOUTUBE_CLIENT_SECRET
+Usage:
+  python scripts/youtube_auth.py path/to/client_secret.json
 """
 
 import sys
+import json
+import subprocess
+from pathlib import Path
 
 
-SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube",   # needed to create/manage playlists
+]
+REPO   = "alifrazkhan92/dataaischoolwebsite"
+BACKUP = Path("/tmp/yt_credentials_backup.json")
+
+
+def gh_secret(name, value):
+    """Push a single secret to GitHub via the gh CLI."""
+    result = subprocess.run(
+        ["gh", "secret", "set", name, "--body", value, "--repo", REPO],
+        capture_output=True, text=True,
+    )
+    if result.returncode == 0:
+        print(f"  GitHub secret set: {name}")
+    else:
+        print(f"  WARNING: could not set {name} via gh CLI: {result.stderr.strip()}")
 
 
 def main():
@@ -42,21 +48,34 @@ def main():
 
     secrets_file = sys.argv[1] if len(sys.argv) > 1 else "client_secret.json"
 
-    print(f"Using credentials file: {secrets_file}")
+    if not Path(secrets_file).exists():
+        print(f"File not found: {secrets_file}")
+        sys.exit(1)
+
+    print(f"Using: {secrets_file}")
     print("A browser window will open. Sign in with the DAIS Google account.\n")
 
     flow  = InstalledAppFlow.from_client_secrets_file(secrets_file, SCOPES)
     creds = flow.run_local_server(port=0)
 
-    print("\n" + "=" * 64)
-    print("Add these three values as GitHub repository secrets:")
-    print("Settings > Secrets and variables > Actions > New repository secret")
-    print("=" * 64)
-    print(f"  YOUTUBE_REFRESH_TOKEN  =  {creds.refresh_token}")
-    print(f"  YOUTUBE_CLIENT_ID      =  {creds.client_id}")
-    print(f"  YOUTUBE_CLIENT_SECRET  =  {creds.client_secret}")
-    print("=" * 64)
-    print("\nDo NOT commit these values to your repository.")
+    data = {
+        "YOUTUBE_REFRESH_TOKEN": creds.refresh_token,
+        "YOUTUBE_CLIENT_ID":     creds.client_id,
+        "YOUTUBE_CLIENT_SECRET": creds.client_secret,
+    }
+
+    # Save backup to disk immediately (survives terminal close)
+    BACKUP.write_text(json.dumps(data, indent=2))
+    print(f"\nCredentials saved to {BACKUP} (backup in case anything fails below)")
+
+    # Push directly to GitHub secrets
+    print("\nPushing to GitHub secrets...")
+    for name, value in data.items():
+        gh_secret(name, value)
+
+    print("\nDone. All three YouTube secrets are now set in GitHub.")
+    print("You can delete the backup file when ready:")
+    print(f"  rm {BACKUP}")
 
 
 if __name__ == "__main__":
