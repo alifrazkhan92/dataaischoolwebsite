@@ -15,6 +15,11 @@ NCFE qualifications covering coding principles and practices. Level 2 Certificat
 From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Aligned to UK Cyber Security Council standards.
 SQL, Python, statistics and data visualisation. Entry-level certificates through to the Level 4 HTQ Diploma: Data Analyst.
 Digital support, data engineering and cloud networking. Two Level 5 HTQ Diplomas aligned to IfATE occupational standards.
+Beyond qualifications, DAIS designs, builds and deploys AI and automation solutions for UK organisations. From strategy to production.
+We work with your leadership team to identify where AI will deliver the fastest return: cost reduction, revenue growth, or competitive advantage. You leave with a prioritised, executable roadmap.
+Replace repetitive manual workflows with AI-powered automation: document processing, email triage, data extraction, reporting pipelines and more. Built on Python, n8n, or your existing stack.
+Bespoke AI solutions: intelligent chatbots, RAG-powered knowledge bases, LLM integrations, recommendation engines and data pipelines. We handle architecture, build and deployment.
+In-house workshops and bespoke programmes that upskill your entire team in AI literacy, prompt engineering, data skills and responsible AI use. Delivered by our FHEA-qualified faculty.
 Join a community of learners. Study from anywhere with live sessions
 Our vision: cutting-edge environments where data and AI education
 Why The Data and AI School of London?
