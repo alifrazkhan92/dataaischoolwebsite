@@ -365,10 +365,11 @@ def _veo3_clip(prompt, out_path, gemini_key):
     operation = client.models.generate_videos(
         model="veo-3.0-generate-preview",
         prompt=prompt,
-        config=_genai_types.GenerateVideoConfig(
+        config=_genai_types.GenerateVideosConfig(
             aspect_ratio="16:9",
             duration_seconds=8,
             number_of_videos=1,
+            generate_audio=False,  # ElevenLabs provides narration
         ),
     )
 
@@ -383,8 +384,15 @@ def _veo3_clip(prompt, out_path, gemini_key):
         raise RuntimeError(f"Veo 3 error {operation.error.code}: {operation.error.message}")
 
     for video in operation.response.generated_videos:
-        video_bytes = client.files.download(file=video.video)
-        Path(out_path).write_bytes(video_bytes)
+        vid_obj = video.video
+        # SDK returns either inline bytes or a URI-backed file
+        if vid_obj.video_bytes:
+            Path(out_path).write_bytes(vid_obj.video_bytes)
+        elif vid_obj.uri:
+            data = client.files.download(file=vid_obj)
+            Path(out_path).write_bytes(data)
+        else:
+            raise RuntimeError("Veo 3: video has neither bytes nor URI")
         return out_path
 
     raise RuntimeError("Veo 3: no video returned in response")
