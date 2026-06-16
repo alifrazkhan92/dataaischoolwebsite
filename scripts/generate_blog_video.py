@@ -363,7 +363,7 @@ def _veo3_clip(prompt, out_path, gemini_key):
     client = _genai.Client(api_key=gemini_key)
 
     operation = client.models.generate_videos(
-        model="veo-3.0-generate-preview",
+        model="veo-2.0-generate-001",
         prompt=prompt,
         config=_genai_types.GenerateVideosConfig(
             aspect_ratio="16:9",
