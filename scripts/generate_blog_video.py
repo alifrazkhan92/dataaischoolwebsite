@@ -24,10 +24,18 @@ import json
 import re
 import shutil
 import subprocess
+import time
 import requests
 from pathlib import Path
 from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw, ImageFont
+
+try:
+    from google import genai as _genai
+    from google.genai import types as _genai_types
+    VEO3_AVAILABLE = True
+except ImportError:
+    VEO3_AVAILABLE = False
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -311,6 +319,123 @@ def _audio_duration(path):
     return 6.0
 
 
+# ── Veo 3 video generation ───────────────────────────────────────────────────
+
+_VEO3_VISUAL_THEMES = {
+    "python":       "Python code flowing across holographic displays, developer workspace",
+    "machine learn": "abstract neural network nodes firing, data flowing through layers",
+    "deep learn":   "layered neural network visualisation, glowing synaptic connections",
+    "data":         "data streams and analytics dashboards, professional business environment",
+    "ai":           "futuristic artificial intelligence visualisation, circuit patterns",
+    "cloud":        "cloud infrastructure servers and data centres, clean tech environment",
+    "security":     "cybersecurity encrypted data streams, digital lock patterns",
+    "automation":   "robotic process automation, digital workflows and gears turning",
+    "nlp":          "natural language processing word clouds and text analysis visualisation",
+    "llm":          "large language model token streams, transformer attention patterns",
+    "pipeline":     "data engineering pipeline diagram, flowing ETL processes",
+    "api":          "API calls and microservices diagram, interconnected nodes",
+}
+
+
+def _veo3_prompt(heading, topic_title):
+    """Build a Veo 3 visual prompt for a section heading."""
+    lower = heading.lower()
+    visual = "professional educational technology setting, modern workspace, blue lighting"
+    for key, theme in _VEO3_VISUAL_THEMES.items():
+        if key in lower:
+            visual = theme
+            break
+    return (
+        f"Cinematic 4K footage for an educational video titled '{heading}' "
+        f"within the course '{topic_title}'. {visual}. "
+        "Colour palette: deep navy blue and gold accents. "
+        "Professional, inspiring, clean composition. No text, no people's faces. "
+        "Smooth slow camera movement. High production quality. 16:9 aspect ratio."
+    )
+
+
+def _veo3_clip(prompt, out_path, gemini_key):
+    """Generate an 8-second video clip via Google Veo 3.
+
+    Polls the long-running operation until complete (~2-5 min per clip).
+    Raises RuntimeError on failure so caller can fall back to PIL slide.
+    """
+    client = _genai.Client(api_key=gemini_key)
+
+    operation = client.models.generate_videos(
+        model="veo-3.0-generate-preview",
+        prompt=prompt,
+        config=_genai_types.GenerateVideoConfig(
+            aspect_ratio="16:9",
+            duration_seconds=8,
+            number_of_videos=1,
+        ),
+    )
+
+    print("  Veo 3 generating", end="", flush=True)
+    while not operation.done:
+        time.sleep(20)
+        print(".", end="", flush=True)
+        operation = client.operations.get(operation)
+    print(" done")
+
+    if getattr(operation, "error", None) and getattr(operation.error, "code", 0):
+        raise RuntimeError(f"Veo 3 error {operation.error.code}: {operation.error.message}")
+
+    for video in operation.response.generated_videos:
+        video_bytes = client.files.download(file=video.video)
+        Path(out_path).write_bytes(video_bytes)
+        return out_path
+
+    raise RuntimeError("Veo 3: no video returned in response")
+
+
+def _veo3_make_clip(veo_raw, audio_path, heading, out_path):
+    """Loop a Veo 3 raw clip to match audio duration, add narration audio and heading overlay."""
+    dur = _audio_duration(audio_path) + 0.5
+
+    # Escape heading for ffmpeg drawtext
+    safe_heading = (
+        heading.replace("\\", "\\\\")
+               .replace("'", "\\'")
+               .replace(":", "\\:")
+               .replace("[", "\\[")
+               .replace("]", "\\]")
+    )
+
+    font_candidates = [
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    ]
+    font_path = next((f for f in font_candidates if Path(f).exists()), None)
+
+    if font_path:
+        vf = (
+            f"drawbox=x=0:y=0:w=iw:h=76:color=0x0A2240@0.92:t=fill,"
+            f"drawtext=fontfile={font_path}:text='{safe_heading}':"
+            f"fontsize=44:fontcolor=0xE8A020:x=84:y=20"
+        )
+    else:
+        vf = "null"
+
+    subprocess.run(
+        [
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(veo_raw),
+            "-i", str(audio_path),
+            "-filter_complex", f"[0:v]{vf}[v]",
+            "-map", "[v]", "-map", "1:a",
+            "-c:v", "libx264", "-preset", "fast",
+            "-c:a", "aac", "-b:a", "128k",
+            "-pix_fmt", "yuv420p", "-r", "24",
+            "-movflags", "+faststart",
+            "-t", str(dur),
+            str(out_path),
+        ],
+        check=True, capture_output=True,
+    )
+
+
 def _make_clip(slide_path, audio_path, out_path):
     """Combine a slide image and an MP3 into an MP4 clip."""
     dur = _audio_duration(audio_path) + 0.5
@@ -508,6 +633,13 @@ def main():
     anthropic_key  = os.environ.get("ANTHROPIC_API_KEY", "")
     elevenlabs_key = os.environ.get("ELEVENLABS_API_KEY", "")
     voice_id       = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")  # Adam
+    gemini_key     = os.environ.get("GEMINI_API_KEY", "")
+
+    use_veo3 = VEO3_AVAILABLE and bool(gemini_key)
+    if use_veo3:
+        print("Veo 3 mode: cinematic video clips will replace static slides.")
+    else:
+        print("PIL slide mode (set GEMINI_API_KEY and install google-genai for Veo 3).")
 
     if not anthropic_key:
         print("ANTHROPIC_API_KEY not set. Skipping video generation.")
@@ -554,34 +686,82 @@ def main():
     try:
         clips = []
 
-        # ── Slide 0: Title ────────────────────────────────────────────────────
-        print("\nSlide 0: Title")
-        s0, a0, c0 = work / "slide_00.png", work / "audio_00.mp3", work / "clip_00.mp4"
-        slide_title(title, hero_local, s0)
+        # ── Clip 0: Title / Intro ─────────────────────────────────────────────
+        print("\nClip 0: Title")
+        a0, c0 = work / "audio_00.mp3", work / "clip_00.mp4"
         print("  Generating intro voiceover...")
         tts(script["intro_narration"], a0, elevenlabs_key, voice_id)
-        _make_clip(s0, a0, c0)
+
+        if use_veo3:
+            try:
+                raw0 = work / "veo_00.mp4"
+                intro_prompt = (
+                    f"Cinematic 4K title sequence for an educational YouTube video: '{title}'. "
+                    "Abstract data and AI visualisation. Deep navy blue with gold particles. "
+                    "Professional, inspiring. Smooth camera drift. No text. No faces."
+                )
+                _veo3_clip(intro_prompt, raw0, gemini_key)
+                _veo3_make_clip(raw0, a0, title, c0)
+            except Exception as exc:
+                print(f"  Veo 3 failed for title ({exc}). Falling back to PIL slide.")
+                s0 = work / "slide_00.png"
+                slide_title(title, hero_local, s0)
+                _make_clip(s0, a0, c0)
+        else:
+            s0 = work / "slide_00.png"
+            slide_title(title, hero_local, s0)
+            _make_clip(s0, a0, c0)
         clips.append(c0)
 
-        # ── Content slides ────────────────────────────────────────────────────
+        # ── Content clips ─────────────────────────────────────────────────────
         for i, sec in enumerate(sections, 1):
-            print(f"\nSlide {i}: {sec['heading']}")
-            si = work / f"slide_{i:02d}.png"
+            print(f"\nClip {i}: {sec['heading']}")
             ai = work / f"audio_{i:02d}.mp3"
             ci = work / f"clip_{i:02d}.mp4"
-            slide_content(sec["heading"], sec.get("bullets", []), i, len(sections), si)
-            print(f"  Generating voiceover...")
+            print("  Generating voiceover...")
             tts(sec["narration"], ai, elevenlabs_key, voice_id)
-            _make_clip(si, ai, ci)
+
+            if use_veo3:
+                try:
+                    raw_i = work / f"veo_{i:02d}.mp4"
+                    _veo3_clip(_veo3_prompt(sec["heading"], title), raw_i, gemini_key)
+                    _veo3_make_clip(raw_i, ai, sec["heading"], ci)
+                except Exception as exc:
+                    print(f"  Veo 3 failed ({exc}). Falling back to PIL slide.")
+                    si = work / f"slide_{i:02d}.png"
+                    slide_content(sec["heading"], sec.get("bullets", []), i, len(sections), si)
+                    _make_clip(si, ai, ci)
+            else:
+                si = work / f"slide_{i:02d}.png"
+                slide_content(sec["heading"], sec.get("bullets", []), i, len(sections), si)
+                _make_clip(si, ai, ci)
             clips.append(ci)
 
-        # ── CTA slide ─────────────────────────────────────────────────────────
-        print("\nSlide outro: CTA")
-        sc, ac, cc = work / "slide_cta.png", work / "audio_cta.mp3", work / "clip_cta.mp4"
-        slide_cta(sc)
+        # ── Outro / CTA clip ──────────────────────────────────────────────────
+        print("\nClip outro: CTA")
+        ac, cc = work / "audio_cta.mp3", work / "clip_cta.mp4"
         print("  Generating outro voiceover...")
         tts(script["outro_narration"], ac, elevenlabs_key, voice_id)
-        _make_clip(sc, ac, cc)
+
+        if use_veo3:
+            try:
+                raw_c = work / "veo_cta.mp4"
+                cta_prompt = (
+                    "Cinematic 4K closing sequence. Abstract data and AI visualisation fading "
+                    "to deep navy blue. Gold particle effects. The Data and AI School of London. "
+                    "Professional, warm, inspiring. Smooth slow zoom out. No text. No faces."
+                )
+                _veo3_clip(cta_prompt, raw_c, gemini_key)
+                _veo3_make_clip(raw_c, ac, "www.dataaischool.com", cc)
+            except Exception as exc:
+                print(f"  Veo 3 failed for CTA ({exc}). Falling back to PIL slide.")
+                sc = work / "slide_cta.png"
+                slide_cta(sc)
+                _make_clip(sc, ac, cc)
+        else:
+            sc = work / "slide_cta.png"
+            slide_cta(sc)
+            _make_clip(sc, ac, cc)
         clips.append(cc)
 
         # ── Assemble final video ──────────────────────────────────────────────
