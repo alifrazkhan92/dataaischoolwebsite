@@ -369,7 +369,6 @@ def _veo3_clip(prompt, out_path, gemini_key):
             aspect_ratio="16:9",
             duration_seconds=8,
             number_of_videos=1,
-            generate_audio=False,  # ElevenLabs provides narration
         ),
     )
 
