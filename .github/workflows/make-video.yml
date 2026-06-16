@@ -40,15 +40,19 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install --quiet Pillow requests beautifulsoup4 anthropic google-api-python-client google-auth
+          pip install --quiet \
+            Pillow requests beautifulsoup4 anthropic \
+            google-genai google-api-python-client google-auth
 
       - name: Generate and upload YouTube video
         env:
           ANTHROPIC_API_KEY:     ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY:        ${{ secrets.GEMINI_API_KEY }}
           ELEVENLABS_API_KEY:    ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID:   ${{ secrets.ELEVENLABS_VOICE_ID }}
           YOUTUBE_CLIENT_ID:     ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          VEO3_ONLY:             "true"
         run: |
           python scripts/generate_blog_video.py "${{ github.event.inputs.blog_file }}"

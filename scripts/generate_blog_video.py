@@ -635,9 +635,14 @@ def main():
     voice_id       = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")  # Adam
     gemini_key     = os.environ.get("GEMINI_API_KEY", "")
 
-    use_veo3 = VEO3_AVAILABLE and bool(gemini_key)
+    use_veo3  = VEO3_AVAILABLE and bool(gemini_key)
+    veo3_only = os.environ.get("VEO3_ONLY", "").lower() in ("1", "true", "yes")
+
     if use_veo3:
         print("Veo 3 mode: cinematic video clips will replace static slides.")
+    elif veo3_only:
+        print("VEO3_ONLY is set but Veo 3 is unavailable (missing key or package). Aborting.")
+        sys.exit(1)
     else:
         print("PIL slide mode (set GEMINI_API_KEY and install google-genai for Veo 3).")
 
@@ -692,25 +697,31 @@ def main():
         print("  Generating intro voiceover...")
         tts(script["intro_narration"], a0, elevenlabs_key, voice_id)
 
-        if use_veo3:
+        def _veo3_or_abort(prompt, raw_path, audio_path, heading, clip_path, pil_fallback_fn):
+            """Try Veo 3; if it fails abort when VEO3_ONLY, else run pil_fallback_fn."""
             try:
-                raw0 = work / "veo_00.mp4"
-                intro_prompt = (
-                    f"Cinematic 4K title sequence for an educational YouTube video: '{title}'. "
-                    "Abstract data and AI visualisation. Deep navy blue with gold particles. "
-                    "Professional, inspiring. Smooth camera drift. No text. No faces."
-                )
-                _veo3_clip(intro_prompt, raw0, gemini_key)
-                _veo3_make_clip(raw0, a0, title, c0)
+                _veo3_clip(prompt, raw_path, gemini_key)
+                _veo3_make_clip(raw_path, audio_path, heading, clip_path)
             except Exception as exc:
-                print(f"  Veo 3 failed for title ({exc}). Falling back to PIL slide.")
-                s0 = work / "slide_00.png"
-                slide_title(title, hero_local, s0)
-                _make_clip(s0, a0, c0)
+                if veo3_only:
+                    raise RuntimeError(f"Veo 3 failed and VEO3_ONLY is set: {exc}") from exc
+                print(f"  Veo 3 failed ({exc}). Falling back to PIL slide.")
+                pil_fallback_fn()
+
+        if use_veo3:
+            raw0 = work / "veo_00.mp4"
+            intro_prompt = (
+                f"Cinematic 4K title sequence for an educational YouTube video: '{title}'. "
+                "Abstract data and AI visualisation. Deep navy blue with gold particles. "
+                "Professional, inspiring. Smooth camera drift. No text. No faces."
+            )
+            def _title_pil():
+                slide_title(title, hero_local, work / "slide_00.png")
+                _make_clip(work / "slide_00.png", a0, c0)
+            _veo3_or_abort(intro_prompt, raw0, a0, title, c0, _title_pil)
         else:
-            s0 = work / "slide_00.png"
-            slide_title(title, hero_local, s0)
-            _make_clip(s0, a0, c0)
+            slide_title(title, hero_local, work / "slide_00.png")
+            _make_clip(work / "slide_00.png", a0, c0)
         clips.append(c0)
 
         # ── Content clips ─────────────────────────────────────────────────────
@@ -722,15 +733,12 @@ def main():
             tts(sec["narration"], ai, elevenlabs_key, voice_id)
 
             if use_veo3:
-                try:
-                    raw_i = work / f"veo_{i:02d}.mp4"
-                    _veo3_clip(_veo3_prompt(sec["heading"], title), raw_i, gemini_key)
-                    _veo3_make_clip(raw_i, ai, sec["heading"], ci)
-                except Exception as exc:
-                    print(f"  Veo 3 failed ({exc}). Falling back to PIL slide.")
-                    si = work / f"slide_{i:02d}.png"
-                    slide_content(sec["heading"], sec.get("bullets", []), i, len(sections), si)
+                raw_i = work / f"veo_{i:02d}.mp4"
+                def _content_pil(s=sec, idx=i):
+                    si = work / f"slide_{idx:02d}.png"
+                    slide_content(s["heading"], s.get("bullets", []), idx, len(sections), si)
                     _make_clip(si, ai, ci)
+                _veo3_or_abort(_veo3_prompt(sec["heading"], title), raw_i, ai, sec["heading"], ci, _content_pil)
             else:
                 si = work / f"slide_{i:02d}.png"
                 slide_content(sec["heading"], sec.get("bullets", []), i, len(sections), si)
@@ -744,20 +752,17 @@ def main():
         tts(script["outro_narration"], ac, elevenlabs_key, voice_id)
 
         if use_veo3:
-            try:
-                raw_c = work / "veo_cta.mp4"
-                cta_prompt = (
-                    "Cinematic 4K closing sequence. Abstract data and AI visualisation fading "
-                    "to deep navy blue. Gold particle effects. The Data and AI School of London. "
-                    "Professional, warm, inspiring. Smooth slow zoom out. No text. No faces."
-                )
-                _veo3_clip(cta_prompt, raw_c, gemini_key)
-                _veo3_make_clip(raw_c, ac, "www.dataaischool.com", cc)
-            except Exception as exc:
-                print(f"  Veo 3 failed for CTA ({exc}). Falling back to PIL slide.")
+            raw_c = work / "veo_cta.mp4"
+            cta_prompt = (
+                "Cinematic 4K closing sequence. Abstract data and AI visualisation fading "
+                "to deep navy blue. Gold particle effects. The Data and AI School of London. "
+                "Professional, warm, inspiring. Smooth slow zoom out. No text. No faces."
+            )
+            def _cta_pil():
                 sc = work / "slide_cta.png"
                 slide_cta(sc)
                 _make_clip(sc, ac, cc)
+            _veo3_or_abort(cta_prompt, raw_c, ac, "www.dataaischool.com", cc, _cta_pil)
         else:
             sc = work / "slide_cta.png"
             slide_cta(sc)
