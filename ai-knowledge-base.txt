@@ -20,6 +20,10 @@ We work with your leadership team to identify where AI will deliver the fastest 
 Replace repetitive manual workflows with AI-powered automation: document processing, email triage, data extraction, reporting pipelines and more. Built on Python, n8n, or your existing stack.
 Bespoke AI solutions: intelligent chatbots, RAG-powered knowledge bases, LLM integrations, recommendation engines and data pipelines. We handle architecture, build and deployment.
 In-house workshops and bespoke programmes that upskill your entire team in AI literacy, prompt engineering, data skills and responsible AI use. Delivered by our FHEA-qualified faculty.
+AI is not just what we teach: it works inside DAIS too. Our admissions process is supported by three AI team members who help us respond quickly and consistently. A human admissions manager reviews their work and makes every final decision.
+Carries out the first assessment of every application against DAIS's published entry criteria, then passes a clear recommendation to our human admissions manager.
+Re-assesses each application independently of Ada, then compares findings: an adversarial second opinion designed to catch anything missed before the human manager decides.
+The friendly assistant behind "Talk to my AI". Answers questions about courses, fees and how to apply any time of day, and hands off to a human colleague whenever you need one.
 Join a community of learners. Study from anywhere with live sessions
 Our vision: cutting-edge environments where data and AI education
 Why The Data and AI School of London?
