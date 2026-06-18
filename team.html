@@ -73,6 +73,26 @@
  .team-contact { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.875rem; }
  .team-contact a { color: var(--accent); }
  @media (max-width: 480px) { .team-grid { grid-template-columns: 1fr; } }
+ /* AI team */
+ .ai-team-section { margin-top: 3.5rem; }
+ .ai-section-intro { font-size: 1rem; color: var(--text-muted); line-height: 1.7; max-width: 68ch; margin-top: 0.75rem; }
+ .ai-badge {
+   display: inline-flex; align-items: center; justify-content: center;
+   font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em;
+   text-transform: uppercase; padding: 0.15rem 0.45rem; border-radius: 20px;
+   background: var(--gold); color: #fff;
+   vertical-align: middle; margin-left: 0.4rem; line-height: 1;
+   font-family: var(--font-mono);
+ }
+ .ai-persona { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem; font-style: italic; }
+ .ai-transparency {
+   margin-top: 2rem; padding: 1rem 1.25rem;
+   border-left: 3px solid var(--gold);
+   background: var(--bg-elevated);
+   border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+   font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
+ }
+ .ai-transparency strong { color: var(--text-primary); }
  </style>
  <script type="application/ld+json">
  {
@@ -205,6 +225,59 @@
  </div>
 
  </div>
+
+ <!-- AI Team -->
+ <section class="ai-team-section" aria-labelledby="ai-team-heading">
+
+   <h2 id="ai-team-heading" class="page-title" style="font-size:1.75rem">Meet our AI team</h2>
+   <p class="ai-section-intro">Our admissions process is assisted by AI team members who help us respond quickly and consistently. They assess and recommend; a human admissions manager reviews their work and makes every final decision. You can always ask to speak to a person.</p>
+
+   <div class="team-grid">
+
+     <!-- Ada -->
+     <div class="team-card">
+       <div class="team-avatar">
+         <img src="images/team/ada.jpg" alt="Ada, AI Admissions Reviewer" width="140" height="140" loading="lazy" />
+       </div>
+       <div class="team-body">
+         <p class="team-name">Ada <span class="ai-badge" aria-label="AI">AI</span></p>
+         <p class="team-role">AI Admissions Reviewer</p>
+         <p class="ai-persona">AI persona, named after Ada Lovelace</p>
+         <p class="team-bio">Ada is our AI Admissions Reviewer. She carries out the first assessment of every application against DAIS's published entry criteria, checking age and course-level eligibility, that the required documents are present, and that the application is complete and consistent. Ada produces a clear, evidence-based recommendation, but she never decides on her own: her assessment goes to our human admissions manager, who makes the final call.</p>
+       </div>
+     </div>
+
+     <!-- Alan -->
+     <div class="team-card">
+       <div class="team-avatar">
+         <img src="images/team/alan.jpg" alt="Alan, AI Admissions Auditor" width="140" height="140" loading="lazy" />
+       </div>
+       <div class="team-body">
+         <p class="team-name">Alan <span class="ai-badge" aria-label="AI">AI</span></p>
+         <p class="team-role">AI Admissions Auditor</p>
+         <p class="ai-persona">AI persona, named after Alan Turing</p>
+         <p class="team-bio">Alan is our AI Admissions Auditor. Working independently of Ada, he re-assesses each application from scratch and then compares his conclusion with hers: an adversarial second opinion designed to catch missed documents, borderline eligibility, or inconsistencies. Like Ada, Alan only assesses and recommends; the human manager retains the final decision and is the only one who issues an offer.</p>
+       </div>
+     </div>
+
+     <!-- Grace -->
+     <div class="team-card">
+       <div class="team-avatar">
+         <img src="images/team/grace.jpg" alt="Grace, AI Student Guide" width="140" height="140" loading="lazy" />
+       </div>
+       <div class="team-body">
+         <p class="team-name">Grace <span class="ai-badge" aria-label="AI">AI</span></p>
+         <p class="team-role">AI Student Guide</p>
+         <p class="ai-persona">AI persona, named after Grace Hopper</p>
+         <p class="team-bio">Grace is the friendly AI assistant behind "Talk to my AI" on our website. She answers questions about our NCFE qualifications, entry requirements, fees and how to apply, any time of day, and points you to a human colleague whenever you need one.</p>
+       </div>
+     </div>
+
+   </div>
+
+   <p class="ai-transparency"><strong>UK GDPR, Article 22:</strong> No automated system makes a final admissions decision. Our AI members assist our human admissions team; a human admissions manager makes every offer. If you would like a human to review any AI assessment, please <a href="contact.html">contact us</a>.</p>
+
+ </section>
 
  <section class="content-section" style="margin-top:3rem">
  <h2>Work with us</h2>
