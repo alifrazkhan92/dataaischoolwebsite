@@ -275,5 +275,13 @@ Registrar & Examinations Officer
 Learner Support Lead · Marketing Lead · Work Placement Coordinator
 Sheherbano manages all aspects of learner registration, NCFE Portal administration, and certification claims. She is the first point of contact for learners on all administrative, support, and technical matters, and oversees the school's examination logistics.
 She monitors learner engagement through weekly VLE analytics, coordinates all IAG sessions, and manages the school's marketing communications and work placement programme.
+Our admissions process is assisted by AI team members who help us respond quickly and consistently. They assess and recommend; a human admissions manager reviews their work and makes every final decision. You can always ask to speak to a person.
+AI persona, named after Ada Lovelace
+Ada is our AI Admissions Reviewer. She carries out the first assessment of every application against DAIS's published entry criteria, checking age and course-level eligibility, that the required documents are present, and that the application is complete and consistent. Ada produces a clear, evidence-based recommendation, but she never decides on her own: her assessment goes to our human admissions manager, who makes the final call.
+AI persona, named after Alan Turing
+Alan is our AI Admissions Auditor. Working independently of Ada, he re-assesses each application from scratch and then compares his conclusion with hers: an adversarial second opinion designed to catch missed documents, borderline eligibility, or inconsistencies. Like Ada, Alan only assesses and recommends; the human manager retains the final decision and is the only one who issues an offer.
+AI persona, named after Grace Hopper
+Grace is the friendly AI assistant behind "Talk to my AI" on our website. She answers questions about our NCFE qualifications, entry requirements, fees and how to apply, any time of day, and points you to a human colleague whenever you need one.
+UK GDPR, Article 22: No automated system makes a final admissions decision. Our AI members assist our human admissions team; a human admissions manager makes every offer. If you would like a human to review any AI assessment, please contact us .
 We are a growing team. If you are an experienced data scientist, AI engineer, or computing educator interested in associate tutoring or assessment roles, we would love to hear from you.
 © The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
