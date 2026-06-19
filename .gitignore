@@ -25,3 +25,7 @@ client_secret*.json
 # Google Apps Script source — managed inside the Apps Script IDE.
 # Keep locally for reference but do not expose backend logic in the public repo.
 google-apps-script/
+
+# Cloudflare Wrangler local cache (contains account id)
+cloudflare-worker/.wrangler/
+.wrangler/
