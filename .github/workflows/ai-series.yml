@@ -89,7 +89,7 @@ jobs:
 
       - name: Sync to local drive
         if: steps.detect.outputs.new_episode == 'true' && github.event.inputs.dry_run != 'true'
-        run: echo "Push complete. Sync /Users/alikhan/Documents/dataaischoolwebsite/ from main branch."
+        run: echo "Push complete. Sync /Users/alikhan/Documents/dais/website/ from main branch."
 
       - name: Summary
         run: |
