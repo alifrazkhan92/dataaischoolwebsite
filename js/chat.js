@@ -19,7 +19,9 @@
   'use strict';
 
   // ── Configuration ────────────────────────────────────────────────────────────
-  var WORKER_URL = 'https://dais-chat.alifrazkhan92.workers.dev';
+  // Chat backend now lives in the Django portal (conversations are stored and
+  // visible to staff in the admin and manager panels).
+  var WORKER_URL = 'https://apply.dataaischool.com/chat';
 
   var SUGGESTED_QUESTIONS = [
     'What qualifications do you offer?',
@@ -126,6 +128,9 @@
   }
 
   function playElevenLabs(text) {
+    // Voice output disabled: the Django chat backend is text only.
+    return;
+    /* eslint-disable no-unreachable */
     stopAudio();
     if (!text || !text.trim()) return;
 
@@ -196,13 +201,8 @@
 
   // ── Modal ─────────────────────────────────────────────────────────────────────
   function buildModal() {
-    var micBtn = hasMediaRecorder
-      ? '<button type="button" id="ai-chat-mic" aria-label="Tap to speak" title="Tap to speak">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
-        '<rect x="9" y="2" width="6" height="11" rx="3"/>' +
-        '<path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/>' +
-        '</svg></button>'
-      : '';
+    // Voice (mic + text-to-speech) is not part of the Django chat backend; text only.
+    var micBtn = '';
 
     var voiceToggle =
       '<button type="button" id="ai-chat-voice-toggle" aria-label="Voice on" title="Voice on">' +
@@ -367,7 +367,7 @@
 
     // POST visitor details to worker — wait for response before opening chat
     // so we know it saved. Show error if it fails rather than silently losing data.
-    fetch(WORKER_URL + '/visitor', {
+    fetch(WORKER_URL + '/visitor/', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -475,7 +475,7 @@
     setInputEnabled(false);
     setStatus('');
 
-    fetch(WORKER_URL, {
+    fetch(WORKER_URL + '/', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ messages: messages, sessionId: sessionId }),
