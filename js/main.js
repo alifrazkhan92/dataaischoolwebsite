@@ -211,12 +211,25 @@
  });
  });
 
- // ─── Form submission → Google Sheets via hidden iframe ───────────────────────
+ // ─── Contact form submission → DAIS portal (Django) ──────────────────────────
  //
- // fetch() with no-cors loses the POST body when Google redirects
- // script.google.com → script.googleusercontent.com (browser converts to GET).
- // A hidden iframe form submission uses the browser's native POST handling,
- // which follows redirects correctly and delivers e.parameter to Apps Script.
+ // Posts JSON to our own backend (apply.dataaischool.com/enquiry/). The backend
+ // stores the enquiry, emails the visitor a confirmation, and emails a backup
+ // copy to info@dataaischool.com. No third-party Google Sheets / Worker.
+
+ var ENQUIRY_ENDPOINT = "https://apply.dataaischool.com/enquiry/";
+
+ // Pull any UTM / referrer attribution from the current page for marketing.
+ function attribution() {
+   var p = new URLSearchParams(window.location.search);
+   return {
+     page_url: window.location.href.slice(0, 500),
+     referrer: (document.referrer || "").slice(0, 500),
+     utm_source: (p.get("utm_source") || "").slice(0, 120),
+     utm_medium: (p.get("utm_medium") || "").slice(0, 120),
+     utm_campaign: (p.get("utm_campaign") || "").slice(0, 120)
+   };
+ }
 
  var forms = document.querySelectorAll(".contact-form");
  forms.forEach(function (form) {
@@ -225,33 +238,18 @@
 
  var btn = form.querySelector('button[type="submit"]');
  var feedback = form.querySelector(".form-feedback");
- var origText = btn ? btn.textContent.trim() : "Submit";
- var scriptUrl = form.getAttribute("data-spreadsheet") || "";
+ var origText = btn ? btn.textContent.trim() : "Send message";
 
  // Reset feedback
  if (feedback) { feedback.className = "form-feedback"; feedback.textContent = ""; }
 
- // Guard: URL not configured
- if (!scriptUrl || scriptUrl === "YOUR_APPS_SCRIPT_URL") {
- if (feedback) {
- feedback.className = "form-feedback error";
- feedback.textContent = "⚠ Form not yet connected to Google Sheets.";
- }
- return;
- }
-
- // Detect form type early so it can be used everywhere below
- var isContact = form.classList.contains("contact-form");
-
- // Honeypot check, if filled, silently fake success (it's a bot)
+ // Honeypot, if filled, silently fake success (it's a bot)
  var hp = form.querySelector("[name='hp_website']");
  if (hp && hp.value.trim() !== "") {
  form.reset();
  if (feedback) {
  feedback.className = "form-feedback success";
- feedback.textContent = isContact
- ? "✓ Message received! We'll reply within two working days."
- : "✓ Application submitted! We'll be in touch within two working days.";
+ feedback.textContent = "✓ Message received! A member of our team will contact you shortly.";
  }
  return;
  }
@@ -273,83 +271,57 @@
  return;
  }
 
- // Collect values
- var fields = {
- formType: isContact ? "Contact Enquiry" : "Course Application",
+ // Collect values + attribution
+ var att = attribution();
+ var payload = {
+ source: "website",
  name: (form.querySelector("[name='name']") || {}).value || "",
  email: (form.querySelector("[name='email']") || {}).value || "",
  phone: (form.querySelector("[name='phone']") || {}).value || "",
  subject: (form.querySelector("[name='subject']") || {}).value || "",
- course: (form.querySelector("[name='course']") || {}).value || "",
  message: (form.querySelector("[name='message']") || {}).value || "",
- background: (form.querySelector("[name='background']") || {}).value || ""
+ hp_website: hp ? hp.value : "",
+ page_url: att.page_url,
+ referrer: att.referrer,
+ utm_source: att.utm_source,
+ utm_medium: att.utm_medium,
+ utm_campaign: att.utm_campaign
  };
 
  // Loading state
  if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
 
- // ── Hidden iframe technique ──────────────────────────────────────────────
- // Bypasses CORS and Google's redirect issue entirely.
- // The browser's native form POST follows redirects and delivers the body.
-
- var frameName = "dais-frame-" + Date.now();
-
- var iframe = document.createElement("iframe");
- iframe.name = frameName;
- iframe.style.cssText = "display:none;position:absolute;width:0;height:0;border:0;";
- document.body.appendChild(iframe);
-
- var tempForm = document.createElement("form");
- tempForm.method = "POST";
- tempForm.action = scriptUrl;
- tempForm.target = frameName;
- tempForm.style.display = "none";
-
- Object.keys(fields).forEach(function (key) {
- var input = document.createElement("input");
- input.type = "hidden";
- input.name = key;
- input.value = fields[key];
- tempForm.appendChild(input);
- });
-
- document.body.appendChild(tempForm);
- tempForm.submit();
-
- // Fire enquiry to Cloudflare Worker (stores in D1, sends WhatsApp confirmation).
- // Fire-and-forget: do not block the UX on this.
- if (isContact) {
-   fetch('https://dais-chat.alifrazkhan92.workers.dev/enquiry', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({
-       name:    fields.name,
-       email:   fields.email,
-       phone:   fields.phone,
-       subject: fields.subject,
-       message: fields.message,
-     }),
-   }).catch(function () {}); // silent — Google Sheets submission already confirmed success
- }
-
- // Can't read iframe response (cross-origin) so show success after delay.
- // Apps Script typically responds in under 2 seconds.
- setTimeout(function () {
+ fetch(ENQUIRY_ENDPOINT, {
+ method: "POST",
+ headers: { "Content-Type": "application/json" },
+ body: JSON.stringify(payload)
+ })
+ .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+ .then(function (res) {
+ if (res.ok && res.j && res.j.ok) {
  form.reset();
  if (feedback) {
  feedback.className = "form-feedback success";
- feedback.textContent = isContact
- ? "✓ Message received! We'll reply within two working days."
- : "✓ Application submitted! We'll be in touch within two working days.";
+ feedback.textContent = res.j.message ||
+ "✓ Message received! A member of our team will contact you shortly.";
  }
  if (btn) {
  btn.textContent = "Sent ✓";
  setTimeout(function () { btn.disabled = false; btn.textContent = origText; }, 4000);
  }
- // Cleanup
- try { document.body.removeChild(iframe); } catch (ex) {}
- try { document.body.removeChild(tempForm); } catch (ex) {}
- }, 2500);
+ } else {
+ throw new Error((res.j && res.j.error) || "Submission failed");
+ }
+ })
+ .catch(function (err) {
+ if (feedback) {
+ feedback.className = "form-feedback error";
+ feedback.textContent = (err && err.message && err.message !== "Submission failed")
+ ? err.message
+ : "Sorry, we couldn't send your message. Please email info@dataaischool.com or call +44 207 0990 956.";
+ }
+ if (btn) { btn.disabled = false; btn.textContent = origText; }
+ });
  });
  });
 
