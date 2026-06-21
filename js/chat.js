@@ -128,13 +128,10 @@
   }
 
   function playElevenLabs(text) {
-    // Voice output disabled: the Django chat backend is text only.
-    return;
-    /* eslint-disable no-unreachable */
     stopAudio();
     if (!text || !text.trim()) return;
 
-    fetch(WORKER_URL + '/tts', {
+    fetch(WORKER_URL + '/tts/', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ text: text }),
@@ -201,8 +198,13 @@
 
   // ── Modal ─────────────────────────────────────────────────────────────────────
   function buildModal() {
-    // Voice (mic + text-to-speech) is not part of the Django chat backend; text only.
-    var micBtn = '';
+    var micBtn = hasMediaRecorder
+      ? '<button type="button" id="ai-chat-mic" aria-label="Tap to speak" title="Tap to speak">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+        '<rect x="9" y="2" width="6" height="11" rx="3"/>' +
+        '<path d="M5 10a7 7 0 0014 0M12 19v3M8 22h8"/>' +
+        '</svg></button>'
+      : '';
 
     var voiceToggle =
       '<button type="button" id="ai-chat-voice-toggle" aria-label="Voice on" title="Voice on">' +
@@ -666,7 +668,7 @@
     setStatus('Thinking...');
     setInputEnabled(false);
 
-    fetch(WORKER_URL + '/stt', {
+    fetch(WORKER_URL + '/stt/', {
       method:  'POST',
       headers: { 'Content-Type': mimeType },
       body:    blob,
