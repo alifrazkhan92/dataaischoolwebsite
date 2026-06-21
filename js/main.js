@@ -280,6 +280,7 @@
  phone: (form.querySelector("[name='phone']") || {}).value || "",
  subject: (form.querySelector("[name='subject']") || {}).value || "",
  message: (form.querySelector("[name='message']") || {}).value || "",
+ callback_requested: !!(form.querySelector("[name='callback_requested']") || {}).checked,
  hp_website: hp ? hp.value : "",
  page_url: att.page_url,
  referrer: att.referrer,
