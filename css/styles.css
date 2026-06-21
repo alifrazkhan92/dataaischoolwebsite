@@ -2199,6 +2199,17 @@ html[data-theme="dark"] .form-feedback.error {
 }
 #ai-chat-close:hover { color: #fff; }
 
+/* ---- Body: wraps messages + input and fills the modal, so the messages area
+   has a constrained height to scroll within. Without this flex wrapper the
+   messages overflow and get clipped by the modal (you cannot scroll up). ---- */
+#ai-chat-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+#ai-chat-body[hidden] { display: none; }
+
 /* ---- Messages ---- */
 #ai-chat-messages {
   flex: 1;
