@@ -433,23 +433,30 @@ def update_blog_listing(episode, image_filename):
     file_name  = f"ai-eng-ep{ep_num:02d}-{slug}.html"
     img_src    = f"images/{image_filename}" if image_filename else "images/og-default.jpg"
     date_disp  = datetime.date.today().strftime("%-d %b %Y")
+    date_iso   = datetime.date.today().strftime("%Y-%m-%d")
 
-    new_card = f"""        <article class="blog-card">
-          <a href="blog/{file_name}" class="blog-card-img-link" tabindex="-1" aria-hidden="true">
-            <img src="{img_src}" alt="{title}" class="blog-card-img" loading="lazy" />
-          </a>
-          <div class="blog-card-body">
-            <div class="blog-card-meta">
-              <span class="blog-tag">{tag}</span>
-              <span class="blog-date">{date_disp}</span>
-            </div>
-            <h2 class="blog-card-title">
-              <a href="blog/{file_name}">{title}</a>
-            </h2>
-            <p class="blog-card-excerpt">{og_desc}</p>
-            <a href="blog/{file_name}" class="blog-card-read-more">Read article</a>
-          </div>
-        </article>"""
+    # Canonical blog card (matches scripts/generate_weekly_blog.py and the other
+    # cards in blog.html; these classes are the ones styled in css/styles.css).
+    new_card = f"""
+ <!-- {file_name[:-5]} -->
+ <article class="blog-card">
+ <div class="blog-card-img">
+   <img src="{img_src}" alt="{title}" loading="lazy"/>
+ </div>
+ <div class="blog-card-body">
+   <div class="blog-card-meta">
+     <span class="blog-tag">{tag}</span>
+     <time class="blog-date" datetime="{date_iso}">{date_disp}</time>
+     <span class="blog-read-time">15 min read</span>
+   </div>
+   <h2><a href="blog/{file_name}">{title}</a></h2>
+   <p>{og_desc}</p>
+   <div class="blog-card-footer">
+     <span class="blog-author">Ali Fraz Khan, FHEA</span>
+     <a href="blog/{file_name}" class="blog-read-more">Read more &#8594;</a>
+   </div>
+ </div>
+ </article>"""
 
     content = BLOG_LISTING.read_text(encoding="utf-8")
 
