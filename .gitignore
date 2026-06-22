@@ -29,3 +29,6 @@ google-apps-script/
 # Cloudflare Wrangler local cache (contains account id)
 cloudflare-worker/.wrangler/
 .wrangler/
+
+__pycache__/
+*.pyc
