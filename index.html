@@ -462,6 +462,29 @@
    </div>
  </section>
  <!-- LATEST-POST-END -->
+ <script>
+ /* Keep the "Latest from the Blog" box in sync with the live Django blog. */
+ (function () {
+   fetch('/blog/latest.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+     if (!d || !d.url) return;
+     var card = document.querySelector('.latest-post-card');
+     if (!card) return;
+     var imgLink = card.querySelector('a.latest-post-img');
+     if (imgLink) imgLink.href = d.url;
+     var img = card.querySelector('.latest-post-img img');
+     if (img && d.image) { img.src = d.image; img.alt = d.title; }
+     var tag = card.querySelector('.blog-tag'); if (tag) tag.textContent = d.tag;
+     var time = card.querySelector('.blog-date');
+     if (time) { time.setAttribute('datetime', d.date_iso); time.textContent = d.date_disp; }
+     var rt = card.querySelector('.blog-read-time'); if (rt) rt.textContent = d.read_time;
+     var titleA = card.querySelector('.latest-post-title a');
+     if (titleA) { titleA.href = d.url; titleA.textContent = d.title; }
+     var ex = card.querySelector('.latest-post-excerpt'); if (ex) ex.textContent = d.excerpt;
+     var readBtn = card.querySelector('a.latest-post-btn.btn-primary');
+     if (readBtn) readBtn.href = d.url;
+   }).catch(function () {});
+ })();
+ </script>
 
  <section class="content-section faq-section" id="faq">
  <h2 class="section-title">Frequently asked questions</h2>
