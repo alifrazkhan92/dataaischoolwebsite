@@ -270,14 +270,14 @@ a:hover { color: var(--accent-hover); }
 }
 
 .header-inner {
-  max-width: var(--site-width);
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0.55rem var(--side-pad);
+  padding: 0.5rem clamp(1rem, 2.5vw, 1.75rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
 }
 
 /* Logo: navy "The Data and AI" + gold "School of London" */
@@ -329,10 +329,11 @@ html[data-theme="dark"] .logo-location { color: rgba(255,255,255,0.55); }
 }
 .nav-main a {
   color: var(--text-muted);
-  padding: 0.45rem 0.5rem;
+  padding: 0.45rem 0.4rem;
   border-radius: var(--radius);
   font-size: 0.9375rem;
   font-weight: 500;
+  white-space: nowrap;
   transition: color var(--transition), background var(--transition);
 }
 .nav-main a:hover,
@@ -340,7 +341,7 @@ html[data-theme="dark"] .logo-location { color: rgba(255,255,255,0.55); }
   color: var(--accent);
   background: var(--accent-muted);
 }
-.nav-main .nav-theme-wrap { margin-left: 0.5rem; }
+.nav-main .nav-theme-wrap { margin-left: 0.35rem; }
 
 /* Student Portal nav button */
 .nav-portal-item { margin-left: 0.25rem; }
@@ -1093,7 +1094,7 @@ html[data-theme="dark"] .values-list .value-icon {
 }
 
 /* ─── Responsive — mobile (≤1040px) ─────────────────────────────────────────── */
-@media (max-width: 1040px) {
+@media (max-width: 1080px) {
 
   /* Navigation */
   .menu-toggle { display: block; }
