@@ -1109,7 +1109,7 @@ html[data-theme="dark"] .values-list .value-icon {
   }
   .nav-main.is-open { display: flex; }
   .nav-main a { padding: 0.85rem 0.75rem; font-size: 1rem; min-height: 60px; }
-  .header-inner { align-items: center; }
+  .header-inner { align-items: center; flex-wrap: wrap; }
   .nav-portal-item { margin-left: 0; margin-top: 0.25rem; }
   .nav-portal-btn {
     display: flex !important;
