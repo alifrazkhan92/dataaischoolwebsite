@@ -1094,9 +1094,10 @@ html[data-theme="dark"] .values-list .value-icon {
 }
 
 /* ─── Responsive — mobile (≤1040px) ─────────────────────────────────────────── */
+/* Nav-only breakpoint: collapse the menu to a hamburger slightly earlier
+   (1080px) so the full desktop nav never wraps to a second row. All the
+   other responsive rules keep their original 1040px breakpoint below. */
 @media (max-width: 1080px) {
-
-  /* Navigation */
   .menu-toggle { display: block; }
   .nav-main {
     display: none;
@@ -1120,9 +1121,10 @@ html[data-theme="dark"] .values-list .value-icon {
     min-height: 60px;
     border-radius: var(--radius);
   }
-
-  /* Theme toggle: move to row with menu button */
   .header-actions { margin-top: 0.5rem; }
+}
+
+@media (max-width: 1040px) {
 
   /* Hero section */
   .hero { padding: 2.5rem 0 1.75rem; }
