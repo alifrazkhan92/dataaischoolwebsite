@@ -23,6 +23,9 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
+# AI answer-engine context (AEO): structured summary of the school for LLMs
+# https://www.dataaischool.com/llms.txt
+
 # Sitemaps
 Sitemap: https://www.dataaischool.com/sitemap.xml
 Sitemap: https://www.dataaischool.com/blog/sitemap.xml

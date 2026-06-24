@@ -1,0 +1,48 @@
+# The Data and AI School of London (DAIS)
+
+> The Data and AI School of London is a UK-based, NCFE-approved online training provider delivering Ofqual-regulated qualifications in Programming, Cyber Security, Data Science, Cloud and Digital Support, and Functional Skills English. Qualifications range from Entry Level to Level 5 (including Level 4 and 5 Higher Technical Qualifications) on the Regulated Qualifications Framework (RQF). All courses are delivered 100% online with tutor support, and use portfolio-based assessment rather than traditional exams.
+
+## Key facts
+
+- **Name:** The Data and AI School of London (DAIS)
+- **Type:** NCFE-approved centre / online further and higher technical education provider
+- **Location:** Office LG06, 1 Quality Court, Chancery Lane, London WC2A 1HR, United Kingdom
+- **Delivery:** 100% online across the UK via a Moodle Virtual Learning Environment
+- **Regulation:** Qualifications regulated by NCFE, an Ofqual-approved Awarding Organisation; sit on the Regulated Qualifications Framework (RQF)
+- **Assessment:** Portfolio-based, internally assessed and externally verified by NCFE (no traditional written exams for most qualifications)
+- **Levels offered:** Entry Level to Level 5, including HTQ (Higher Technical Qualification) diplomas at Levels 4 and 5
+- **Phone:** +44 207 0990 956 (Monday to Friday, 9am to 6pm)
+- **Email:** info@dataaischool.com
+- **ICO registration:** ZC086597
+- **Response time:** Enquiries answered within two working days
+
+## Qualifications offered
+
+- Programming: NCFE Level 2 Certificate in Understanding Coding; NCFE Level 3 Certificate in Coding Practices (Python, Java, C#, PHP)
+- Cyber Security: NCFE Level 2 Certificate in the Principles of Cyber Security; NCFE Level 3 Certificate in Cyber Security Practices; NCFE Level 3 Technical Occupational Entry (TOE) in Cyber Security Diploma; NCFE Level 4 Diploma: Cyber Security Engineer (HTQ)
+- Data Science and Analytics: NCFE Level 2 Certificate in Data Analysis; NCFE Level 3 Certificate in Data; NCFE Level 3 TOE for the Data Technician Diploma; NCFE Level 4 Diploma: Data Analyst (HTQ)
+- Cloud and Digital Support: NCFE Level 3 TOE in Digital Support Diploma; NCFE Level 5 Diploma: Data Engineer (HTQ); NCFE Level 5 Diploma: Cloud Systems and Secure Networking (HTQ)
+- Functional Skills English: NCFE Entry Level 1, Entry Level 2 and Entry Level 3 Functional Skills in English
+
+## Admissions
+
+Applicants complete a short online application form. DAIS confirms places within two working days. Entry requirements vary by level: Level 2 qualifications are open to most learners aged 16 and over; Level 4 and 5 qualifications typically require prior learning at Level 3 or equivalent experience. Each applicant is assessed individually.
+
+The admissions process is assisted by AI team members (named Ada, Alan and Grace) that assess and recommend only. In line with UK GDPR Article 22, no automated system makes a final admissions decision; a human admissions manager reviews every assessment and makes every offer.
+
+## Services
+
+Beyond qualifications, DAIS designs, builds and deploys AI and automation solutions for UK organisations: AI strategy and roadmaps, workflow automation, custom AI development (chatbots, RAG knowledge bases, LLM integrations, data pipelines), and corporate AI training delivered by FHEA-qualified faculty.
+
+## Pages
+
+- [Home](https://www.dataaischool.com/): Overview of the school, subject areas and qualifications
+- [About](https://www.dataaischool.com/about.html): Mission, regulation and approach
+- [Courses](https://apply.dataaischool.com/courses/): Full course catalogue and levels
+- [Apply](https://apply.dataaischool.com/apply/): Online application form
+- [Services](https://www.dataaischool.com/services.html): AI and automation services for organisations
+- [Team](https://www.dataaischool.com/team.html): The people and AI assistants behind DAIS
+- [Contact](https://www.dataaischool.com/contact.html): Phone, email and enquiry form
+- [Blog](https://www.dataaischool.com/blog.html): Guides on AI, data and UK qualifications
+- [Complaints and Appeals](https://www.dataaischool.com/complaints.html): Procedures for learners
+- [Privacy Policy](https://www.dataaischool.com/privacy-policy.html): How DAIS handles personal data
