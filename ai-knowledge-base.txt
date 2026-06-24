@@ -126,8 +126,9 @@ CEO & Principal · Head of Centre
 FHEA · PgCert HE · MCT · AZ-204 · AZ-400 · AZ-104
 Ali is a Senior Lecturer in Computing with over eight years' experience in UK Higher Education. A Fellow of Advance HE and Microsoft Certified Trainer, he leads the school's academic delivery, quality assurance, safeguarding, and compliance. He is also the school's Data Protection Officer and Prevent Lead.
 His teaching connects live industry experience, Azure, DevOps, AI engineering, directly to learner outcomes, ensuring every programme reflects what employers actually need.
-Lead Internal Quality Assurer · Access Arrangements Coordinator
-Khadija leads all internal quality assurance activity across the school's NCFE qualifications. She designs and maintains the IQA strategy, conducts sampling of every assessor each term, chairs all standardisation meetings, and maintains direct claim status across all programmes.
+Internal Quality Assurer & Internal Verifier
+Internal Quality Assurer · Access Arrangements Coordinator
+Khadija carries out internal quality assurance across the school's NCFE qualifications. She conducts sampling of every assessor each term, takes part in standardisation meetings, and supports direct claim status across all programmes.
 She is the primary contact for NCFE's External Quality Assurer during EQA visits, and reviews all recognition of prior learning and reasonable adjustment applications.
 Registrar & Examinations Officer
 Learner Support Lead · Marketing Lead · Work Placement Coordinator
