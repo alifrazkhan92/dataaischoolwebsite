@@ -23,7 +23,7 @@
     '</span>' +
     '</a>' +
     '<button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-main">Menu</button>' +
-    '<nav id="nav-main">' +
+    '<nav id="nav-main" aria-label="Primary">' +
     '<ul class="nav-main">' +
     '<li><a href="/index.html">Home</a></li>' +
     '<li><a href="/about.html">About</a></li>' +
@@ -52,5 +52,38 @@
   var mount = document.getElementById('site-nav');
   if (mount) {
     mount.outerHTML = NAV_HTML;
+  }
+
+  // Accessibility: a skip link as the first focusable element so keyboard and
+  // screen-reader users can bypass the navigation (WCAG 2.4.1 Bypass Blocks).
+  if (!document.querySelector('.skip-link')) {
+    document.body.insertAdjacentHTML(
+      'afterbegin',
+      '<a class="skip-link" href="#main">Skip to main content</a>');
+  }
+
+  // Make <main> the skip-link target and programmatically focusable. This
+  // script tag sits above <main> in the page, so wait until the DOM is parsed.
+  function setupMain() {
+    var main = document.querySelector('main');
+    if (main) {
+      if (!main.id) { main.id = 'main'; }
+      main.setAttribute('tabindex', '-1');
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMain);
+  } else {
+    setupMain();
+  }
+
+  // Mark the current page in the nav for assistive tech (WCAG 1.3.1 / 4.1.2).
+  var here = location.pathname.replace(/\/index\.html$/, '/');
+  var links = document.querySelectorAll('.nav-main a');
+  for (var i = 0; i < links.length; i++) {
+    var p = links[i].pathname ? links[i].pathname.replace(/\/index\.html$/, '/') : '';
+    if (links[i].host === location.host && p && p === here) {
+      links[i].setAttribute('aria-current', 'page');
+    }
   }
 }());
