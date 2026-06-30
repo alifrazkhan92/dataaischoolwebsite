@@ -27,10 +27,10 @@
     '<ul class="nav-main">' +
     '<li><a href="/index.html">Home</a></li>' +
     '<li><a href="/about.html">About</a></li>' +
-    '<li><a href="https://apply.dataaischool.com/courses/">Courses</a></li>' +
+    '<li><a href="https://www.dataaischool.com/courses/">Courses</a></li>' +
     '<li><a href="/services.html">Services</a></li>' +
     '<li><a href="/blog.html">Blog</a></li>' +
-    '<li><a href="https://apply.dataaischool.com/apply/">Apply</a></li>' +
+    '<li><a href="https://www.dataaischool.com/apply/">Apply</a></li>' +
     '<li><a href="/contact.html">Contact</a></li>' +
     '<li class="nav-portal-item">' +
     '<a href="https://learn.dataaischool.com" class="nav-portal-btn" target="_blank" rel="noopener noreferrer">&#127891; Student Portal</a>' +

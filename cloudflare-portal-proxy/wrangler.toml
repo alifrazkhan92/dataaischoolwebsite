@@ -1,0 +1,16 @@
+name = "dais-portal-proxy"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+routes = [
+  { pattern = "www.dataaischool.com/courses/*",          zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/apply/*",            zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/static/*",           zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/media/*",            zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/postcode-lookup/*",  zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/upload-documents/*", zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/pdf/*",              zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/offer/*",            zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/duplicate/*",        zone_name = "dataaischool.com" },
+  { pattern = "www.dataaischool.com/confirmation/*",     zone_name = "dataaischool.com" }
+]

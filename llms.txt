@@ -38,8 +38,8 @@ Beyond qualifications, DAIS designs, builds and deploys AI and automation soluti
 
 - [Home](https://www.dataaischool.com/): Overview of the school, subject areas and qualifications
 - [About](https://www.dataaischool.com/about.html): Mission, regulation and approach
-- [Courses](https://apply.dataaischool.com/courses/): Full course catalogue and levels
-- [Apply](https://apply.dataaischool.com/apply/): Online application form
+- [Courses](https://www.dataaischool.com/courses/): Full course catalogue and levels
+- [Apply](https://www.dataaischool.com/apply/): Online application form
 - [Services](https://www.dataaischool.com/services.html): AI and automation services for organisations
 - [Team](https://www.dataaischool.com/team.html): The people and AI assistants behind DAIS
 - [Contact](https://www.dataaischool.com/contact.html): Phone, email and enquiry form
