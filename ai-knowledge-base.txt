@@ -10,7 +10,7 @@ Ask me anything about courses, fees or how to apply
 &#9729;&#65039; Cloud Computing
 &#128737;&#65039; Cyber Security
 &#129302; Artificial Intelligence
-Qualifications across five subject areas, from Entry Level to Level 5. We have applied for NCFE centre approval to deliver them, and they are recognised by UK employers and universities.
+Qualifications across five subject areas, from Entry Level to Level 5. We are an NCFE approved centre (Account No. 11001657), and these qualifications are recognised by UK employers and universities.
 NCFE qualifications covering coding principles and practices. Level 2 Certificate in Understanding Coding and Level 3 Certificate in Coding Practices.
 From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Aligned to UK Cyber Security Council standards.
 SQL, Python, statistics and data visualisation. Entry-level certificates through to the Level 4 HTQ Diploma: Data Analyst.
@@ -28,7 +28,7 @@ Join a community of learners. Study from anywhere with live sessions
 Our vision: cutting-edge environments where data and AI education
 Why The Data and AI School of London?
 A qualification portfolio in application for NCFE centre approval, expert tutors and a supportive online learning environment, based in Chancery Lane, London.
-NCFE qualifications, Ofqual regulated. The qualifications sit on the Regulated Qualifications Framework (RQF). We have applied for NCFE centre approval to deliver them, and they are recognised by UK employers and universities.
+NCFE qualifications, Ofqual regulated. The qualifications sit on the Regulated Qualifications Framework (RQF). We are an NCFE approved centre (Account No. 11001657), and these qualifications are recognised by UK employers and universities.
 Portfolio-based assessment. No traditional exams. You demonstrate competence through practical work, internally assessed by our qualified assessors and verified by NCFE.
 100% online delivery. Study from anywhere in the UK through our Moodle Virtual Learning Environment, with tutor support and structured schemes of work.
 HTQ diplomas at Level 4 and 5. Our Higher Technical Qualifications in Cyber Security, Data and Cloud are among the highest technical qualifications below degree level.
@@ -45,16 +45,16 @@ UK universities and colleges are actively hiring AI-skilled professionals. Here 
 ByAli Fraz Khan, FHEA, CEO & Principal, The Data and AI School of London
 Quick answers about our qualifications and how we work.
 What qualifications does The Data and AI School of London offer?
-We have applied for NCFE centre approval to deliver qualifications across five subject areas: Programming (Python, Java, C#, PHP), Cyber Security , Data Science and Analytics , Cloud and Digital Support , and Functional Skills English . Qualifications range from Entry Level to Level 5 on the Regulated Qualifications Framework (RQF).
+We are an NCFE approved centre (Account No. 11001657) delivering qualifications across five subject areas: Programming (Python, Java, C#, PHP), Cyber Security , Data Science and Analytics , Cloud and Digital Support , and Functional Skills English . Qualifications range from Entry Level to Level 5 on the Regulated Qualifications Framework (RQF).
 Are the qualifications regulated and recognised by employers?
-The qualifications are regulated by NCFE, an Ofqual-approved Awarding Organisation, and sit on the Regulated Qualifications Framework (RQF), recognised by UK employers and universities. We have applied for NCFE centre approval to deliver them and will confirm availability once approval is granted.
+The qualifications are regulated by NCFE, an Ofqual-approved Awarding Organisation, and sit on the Regulated Qualifications Framework (RQF), recognised by UK employers and universities. We are an NCFE approved centre (Account No. 11001657) and enrolment is open.
 Yes. All qualifications are delivered 100% online through our Moodle-based Virtual Learning Environment. You can study from anywhere in the UK with structured tutor support and flexible self-paced study.
 How are the qualifications assessed?
 Most qualifications use portfolio-based assessment, internally marked by our qualified assessors and verified by NCFE. Functional Skills English is internally assessed by our centre. There are no traditional written exams for most qualifications.
 Do I need prior experience to apply?
 Entry requirements vary by level. Level 2 qualifications are open to most learners aged 16 and over. Level 4 and 5 qualifications typically require prior learning at Level 3 or equivalent experience. We assess each applicant individually and recommend the most suitable qualification.
 How do I apply and what happens next?
-Register your interest using our short interest form . We will contact you as soon as NCFE approval is confirmed and enrolment opens.
+Register your interest using our short interest form . We will contact you with the next available start date.
 How can I contact The Data and AI School of London?
 Call us on +44 207 0990 956 (Monday to Friday, 9am to 6pm), email info@dataaischool.com , or use our contact form . We aim to reply within two working days.
 © The Data and AI School of London. All rights reserved. | +44 207 0990 956 | ICO Registration: ZC086597
