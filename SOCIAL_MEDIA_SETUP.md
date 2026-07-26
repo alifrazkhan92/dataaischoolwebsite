@@ -71,6 +71,19 @@ Also make sure your Facebook App has these permissions approved:
 
 LinkedIn tokens expire every 60 days. You will need to refresh them periodically.
 
+> **Expiry safeguard (built in).** LinkedIn tokens die about 60 days after
+> issue and there is no auto-refresh, so posting would otherwise fail silently.
+> A daily task (`blog.tasks.check_linkedin_token`, 07:30) now emails
+> `CONTACT_NOTIFICATION_EMAIL` a warning at 14, 7, 3 and 1 days before expiry,
+> and a stronger alert once the token has actually expired or been revoked.
+> Check anytime with `python manage.py check_linkedin_token`
+> (add `--send` to also fire the alert email). To get an **exact** expiry set
+> `LI_CLIENT_ID` + `LI_CLIENT_SECRET` (used with LinkedIn's token-introspection
+> endpoint); otherwise set `LI_TOKEN_ISSUED=YYYY-MM-DD` to the date you generated
+> the token and it counts 60 days from there. `LI_TOKEN_WARN_DAYS` (default 14)
+> sets the first warning milestone. When you refresh the token, update
+> `LI_ACCESS_TOKEN` and, if you use the date fallback, `LI_TOKEN_ISSUED`.
+
 ### LI_ACCESS_TOKEN
 
 1. Go to https://linkedin.com/developers and create an app
