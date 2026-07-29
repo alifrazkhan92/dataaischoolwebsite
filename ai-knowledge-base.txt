@@ -12,7 +12,7 @@ Ask me anything about courses, fees or how to apply
 &#129302; Artificial Intelligence
 Qualifications across five subject areas, from Entry Level to Level 5. We are an NCFE approved centre (Account No. 11001657), and these qualifications are recognised by UK employers and universities.
 NCFE qualifications covering coding principles and practices. Level 2 Certificate in Understanding Coding and Level 3 Certificate in Coding Practices.
-From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Aligned to UK Cyber Security Council standards.
+From foundational principles to the Level 4 HTQ Diploma: Cyber Security Engineer. Ofqual regulated qualifications awarded by NCFE.
 SQL, Python, statistics and data visualisation. Entry-level certificates through to the Level 4 HTQ Diploma: Data Analyst.
 Digital support, data engineering and cloud networking. Two Level 5 HTQ Diplomas aligned to IfATE occupational standards.
 Beyond qualifications, DAIS designs, builds and deploys AI and automation solutions for UK organisations. From strategy to production.
@@ -32,14 +32,6 @@ NCFE qualifications, Ofqual regulated. The qualifications sit on the Regulated Q
 Portfolio-based assessment. No traditional exams. You demonstrate competence through practical work, internally assessed by our qualified assessors and verified by NCFE.
 100% online delivery. Study from anywhere in the UK through our Moodle Virtual Learning Environment, with tutor support and structured schemes of work.
 HTQ diplomas at Level 4 and 5. Our Higher Technical Qualifications in Cyber Security, Data and Cloud are among the highest technical qualifications below degree level.
-What professionals think of our approach and our qualification portfolio.
-"I came in with no coding experience at all. By the time I completed the Level 2 Certificate in Understanding Coding I had built a complete project from scratch and understood how to keep learning. The tutor support made all the difference."
-NCFE Level 2 Certificate in Understanding Coding · London
-"The Data Analyst HTQ Diploma was exactly what I needed. The portfolio-based assessment meant I was building real, usable projects the whole way through, not just revising for exams. The NCFE qualification is already on my CV and employers recognise it."
-NCFE Level 4 Diploma: Data Analyst HTQ · Remote
-"I was sceptical about online learning after bad experiences elsewhere. This was completely different. The support team responds fast, the IQA process is rigorous, and the NCFE qualification is something I can actually put on my CV and have employers recognise. Highly recommended."
-NCFE Level 3 Certificate in Cyber Security Practices · Manchester
-⚠️ Testimonials are illustrative. Replace with verified reviews from your learners before publishing.
 AI Career Opportunities in UK Higher Education: 10 Roles That Are Hiring Now
 UK universities and colleges are actively hiring AI-skilled professionals. Here are the 10 most in-demand roles, what they pay, and how to qualify.
 ByAli Fraz Khan, FHEA, CEO & Principal, The Data and AI School of London
